@@ -88,5 +88,5 @@ try {
   } finally {
     assert.equal((await api('POST', '/v1/shutdown')).status, 200);
   }
-  console.log('Alice smoke passed: auth, draft validation, shared CLI/API state, recipient suggestions, invitation replies and calendar files, reply drafts, send idempotency, terminal control sanitization, restart persistence, terminal isolation, and graceful shutdown.');
-} finally { await stop(); rmSync(directory, { recursive: true, force: true }); }
+} finally { await stop(); rmSync(directory, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 }); }
+console.log('Alice smoke passed: auth, draft validation, shared CLI/API state, recipient suggestions, invitation replies and calendar files, reply drafts, send idempotency, terminal control sanitization, restart persistence, terminal isolation, and graceful shutdown.');
