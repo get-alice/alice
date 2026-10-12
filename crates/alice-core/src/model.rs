@@ -14,7 +14,6 @@ pub struct Account {
     pub name: String,
     pub email: String,
     pub provider: Provider,
-    pub is_demo: bool,
     pub imap_host: String,
     pub imap_port: u16,
     pub smtp_host: String,
@@ -721,7 +720,7 @@ mod tests {
     fn accounts_saved_before_spam_support_keep_their_mailbox_configuration() -> anyhow::Result<()> {
         let mut saved = serde_json::json!({
             "id": "old-account", "name": "Mail", "email": "me@example.test",
-            "provider": "imap", "is_demo": false,
+            "provider": "imap",
             "imap_host": "imap.example.test", "imap_port": 993,
             "smtp_host": "smtp.example.test", "smtp_port": 587,
             "folders": {

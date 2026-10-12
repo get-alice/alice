@@ -463,7 +463,7 @@ mod tests {
         let dir = tempfile::tempdir()?;
         let account = {
             let store = crate::store::Store::open(&dir.path().join("mail.db"))?;
-            store.add_demo()?
+            store.add_fixture()?
         };
         let raw = b"From: alerts@example.com\r\nReply-To: Support <support@example.com>, Helpers: helper@example.com;\r\nContent-Type: multipart/mixed; boundary=x\r\n\r\n--x\r\nContent-Type: multipart/alternative; boundary=y\r\n\r\n--y\r\nContent-Type: text/plain\r\n\r\nFirst section\r\n--y\r\nContent-Type: text/html\r\n\r\n<p>Duplicate HTML</p>\r\n--y--\r\n--x\r\nContent-Type: text/plain\r\n\r\nSecond section\r\n--x\r\nContent-Type: text/plain\r\nContent-Disposition: attachment; filename=private.txt\r\n\r\nAttachment only\r\n--x--\r\n";
         let message = parse_message(&account, "inbox", "INBOX", 1, 1, raw)?;
@@ -486,7 +486,7 @@ mod tests {
         let dir = tempfile::tempdir()?;
         let account = {
             let store = crate::store::Store::open(&dir.path().join("mail.db"))?;
-            store.add_demo()?
+            store.add_fixture()?
         };
         let raw=b"From: =?UTF-8?Q?Sophie_Chen?= <sophie@example.com>\r\nTo: alex@example.com\r\nSubject: Ideas\r\nMessage-ID: <same@example.com>\r\nContent-Type: multipart/alternative; boundary=x\r\n\r\n--x\r\nContent-Type: text/plain; charset=utf-8\r\n\r\nA quiet idea.\r\n--x\r\nContent-Type: text/html\r\n\r\n<img src='https://tracker.invalid'><p>HTML version</p>\r\n--x--\r\n";
         let inbox = parse_message(&account, "inbox", "INBOX", 5, 10, raw)?;
@@ -507,9 +507,9 @@ mod tests {
     fn rsvp_mail_carries_an_itip_reply_that_sync_reads_back() -> Result<()> {
         let dir = tempfile::tempdir()?;
         let store = crate::store::Store::open(&dir.path().join("mail.db"))?;
-        let account = store.add_demo()?;
-        let message = store.message("demo-13")?;
-        let invite = message.invite.clone().context("demo invitation")?;
+        let account = store.add_fixture()?;
+        let message = store.message("sample-13")?;
+        let invite = message.invite.clone().context("fixture invitation")?;
         for (locale, subject, body) in [
             (
                 Locale::EnUs,
@@ -538,7 +538,7 @@ mod tests {
             );
             assert_eq!(
                 parsed.headers.get_first_value("In-Reply-To").as_deref(),
-                Some("<demo-13@alice.local>")
+                Some("<sample-13@alice.local>")
             );
             assert!(
                 parsed

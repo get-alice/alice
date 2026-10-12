@@ -80,7 +80,19 @@ async fn existing_keys_never_cross_endpoint_origins() -> anyhow::Result<()> {
     let server = tokio::spawn(async move { axum::serve(listener, app).await });
     let directory = tempfile::tempdir()?;
     let store = Store::open(&directory.path().join("mail.db"))?;
-    store.add_demo()?;
+    store.save_account(&serde_json::from_value(serde_json::json!({
+        "id": "fixture", "name": "Fixture", "email": "alex@form.studio", "provider": "imap",
+        "imap_host": "", "imap_port": 993, "smtp_host": "", "smtp_port": 587,
+        "last_synced": null, "sync_error": null
+    }))?)?;
+    store.save_message(&serde_json::from_value(serde_json::json!({
+        "id": "sample-1", "account_id": "fixture", "from_name": "Sophie Chen",
+        "from_email": "sophie@form.studio", "to": ["alex@form.studio"],
+        "subject": "A little room for big ideas", "preview": "Hey Alex",
+        "body": "Hey Alex,\n\nWhat if we gave the new collection a little more room to breathe?",
+        "date": "2026-10-01T09:00:00Z", "folder": "inbox", "is_read": false,
+        "is_starred": false, "category": "work", "attachments": []
+    }))?)?;
     let original = "http://127.0.0.1:9/v1";
     let next = format!("http://127.0.0.1:{port}/v1");
     let config = |url: &str, key: Option<&str>| SaveAiSettings {
@@ -103,7 +115,7 @@ async fn existing_keys_never_cross_endpoint_origins() -> anyhow::Result<()> {
         &store,
         AiRequest {
             prompt: "Summarize this fixture".into(),
-            message_id: Some("demo-1".into()),
+            message_id: Some("sample-1".into()),
         },
         Locale::De,
     )
@@ -115,7 +127,7 @@ async fn existing_keys_never_cross_endpoint_origins() -> anyhow::Result<()> {
         &store,
         AiRequest {
             prompt: "Summarize again".into(),
-            message_id: Some("demo-1".into()),
+            message_id: Some("sample-1".into()),
         },
         Locale::EnUs,
     )
@@ -140,7 +152,7 @@ async fn existing_keys_never_cross_endpoint_origins() -> anyhow::Result<()> {
             &store,
             AiRequest {
                 prompt: "A missing scoped key must not use the legacy key".into(),
-                message_id: Some("demo-1".into()),
+                message_id: Some("sample-1".into()),
             },
             Locale::EnUs,
         )

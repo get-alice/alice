@@ -13,7 +13,7 @@
     "not_answered": "Invitation not answered",
     "saving": "Saving draft…",
     "syncing": "Syncing… You can keep browsing.",
-    "no_accounts": "No mail accounts yet. Connect one with `alice accounts add`, or try `alice accounts demo`.",
+    "no_accounts": "No mail accounts yet. Connect one with `alice accounts add`.",
     "event_cancelled": "The organizer cancelled this event",
     "no_answer_needed": "This invitation needs no answer",
     "not_invitation": "This message is not an invitation",
@@ -62,7 +62,7 @@
   "empty": {
     "loading": "{spinner} Loading {folder}…",
     "no_accounts": "No mail accounts yet",
-    "connect": "Connect one with `alice accounts add`, or try `alice accounts demo`.",
+    "connect": "Connect one with `alice accounts add`.",
     "no_matches": "No matches for “{query}”",
     "search_hint": "Press / to change the search or Esc to clear it.",
     "inbox": "Inbox zero",

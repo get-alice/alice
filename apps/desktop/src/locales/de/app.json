@@ -87,7 +87,6 @@
   "draftAlice": "Mit Alice entwerfen",
   "noSelected": "Keine Nachricht ausgewählt",
   "draftDiscarded": "Entwurf verworfen",
-  "demoSent": "Demo-Antwort unter Gesendet gespeichert. Es wurde keine E-Mail zugestellt.",
   "emailSent": "E-Mail gesendet",
   "draftSaved": "Entwurf gespeichert",
   "dismissNotification": "Benachrichtigung schließen",
@@ -105,7 +104,6 @@
   "unreadCount": "{count} ungelesen",
   "onlyAccount": "Nur {name} anzeigen",
   "replyTo": "{name} antworten",
-  "demoSuffix": " · Demo",
   "range": "{start}–{end} von {total}",
   "position": "{position} von {total}",
   "rowLabel": {

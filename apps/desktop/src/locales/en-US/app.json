@@ -87,7 +87,6 @@
   "draftAlice": "Draft with Alice",
   "noSelected": "No message selected",
   "draftDiscarded": "Draft discarded",
-  "demoSent": "Demo reply saved in Sent. No email was delivered.",
   "emailSent": "Email sent",
   "draftSaved": "Draft saved",
   "dismissNotification": "Dismiss notification",
@@ -105,7 +104,6 @@
   "unreadCount": "{count} unread",
   "onlyAccount": "Show only {name}",
   "replyTo": "Reply to {name}",
-  "demoSuffix": " · Demo",
   "range": "{start}–{end} of {total}",
   "position": "{position} of {total}",
   "rowLabel": {

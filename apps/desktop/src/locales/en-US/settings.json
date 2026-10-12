@@ -85,7 +85,6 @@
   "you_re_using_the_latest_published_version": "You’re using the latest published version.",
   "view_release": "View release",
   "gmail_outlook_and_any_account_with_imap_and_smtp": "Gmail, Outlook, and any account with IMAP and SMTP.",
-  "demo": "Demo",
   "needs_attention": "Needs attention",
   "connected": "Connected",
   "remove": "Remove",
@@ -178,10 +177,7 @@
   "connect_account": "Connect account",
   "connect_an_email_account": "Connect an email account",
   "gmail_outlook_or_any_imap_account": "Gmail, Outlook, or any IMAP account.",
-  "continue_to_your_inbox": "Continue to your inbox",
-  "adding_the_demo_inbox": "Adding the demo inbox…",
   "opening_your_inbox": "Opening your inbox…",
-  "also_add_a_demo_inbox": "Also add a demo inbox",
   "account_removed": "{email} was removed from Alice.",
   "account_removed_credentials": "{email} was removed from Alice, but its sign-in is still in your system's credential store. Delete the “email.getalice.alice” item for this account there (Keychain Access on macOS).",
   "daemon_connected": "Connected · daemon {version}",
@@ -221,7 +217,6 @@
   },
   "downloading_account": "Downloading {email}",
   "database_size": "Alice's mail database uses {size} on this device, including its search index.",
-  "demo_failed": "The demo inbox could not be added. {error}",
   "google_desktop_client": "Create an OAuth client with the {type} type. Paste its client ID below and its client secret if supplied.",
   "desktop_app_type": "Desktop app",
   "google_callback": "Alice requests Gmail mail access and receives sign-in at {url}. Public distribution of your registration may require Google's verification.",
@@ -292,9 +287,26 @@
   "for_a_personal_account_select_use": "For a personal account, select “Use a Gmail app password” below for a quicker setup.",
   "alice_currently_needs_your_own_microsoft": "Alice currently needs your own Microsoft app registration for browser sign-in.",
   "register_a_public_client_app_in": "Register a public-client app in Microsoft Entra. Include personal Microsoft accounts if you use Outlook.com.",
-  "sample_messages_to_explore_alice_nothing": "Sample messages to explore Alice. Nothing sent from it is delivered. You can remove it in Settings → Mail accounts.",
   "email_placeholder": "you@example.com",
   "imap_placeholder": "imap.example.com",
   "smtp_placeholder": "smtp.example.com",
-  "dav_name_placeholder": "iCloud, Fastmail…"
+  "dav_name_placeholder": "iCloud, Fastmail…",
+  "welcome": {
+    "title_lead": "Email,",
+    "title_accent": "light as air.",
+    "lede": "A lightweight email client that leaves the noise behind. Free, open source, and private by design.",
+    "continue_to_setup": "Continue to Setup",
+    "noise": {
+      "sale": "LAST CHANCE: 40% off ends tonight",
+      "unread": "1,284 unread",
+      "planning": "Re: Re: Fwd: Q3 planning (final) (2)",
+      "badge": "99+",
+      "follow_up": "Following up on my last email",
+      "trial": "Your trial ends in 2 days",
+      "no_subject": "(no subject)",
+      "standup": "Reminder: Reminder: Standup",
+      "digest": "48 posts you might have missed",
+      "out_of_office": "Out of office: Re: Budget"
+    }
+  }
 }

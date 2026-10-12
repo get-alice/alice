@@ -2,7 +2,7 @@
 
 An open-source Rust email client with a calmer desktop inbox, a native CLI and TUI, and bring-your-own-key AI. One local daemon owns the mail store, so every interface sees the same messages and drafts.
 
-**Version 0.1 is a runnable foundation.** The demo works without an account or API key. Gmail has passed live macOS app and CLI tests using an app password. Certificate-validated IMAP, SMTP STARTTLS, and SMTPS pass against isolated mail servers. Windows and Linux packages have been built; native Windows runtime and Outlook sign-in remain unverified. Android and iOS are planned. See the [verification report](docs/verification/2026-10-11/report.md) for exact coverage and remaining checks.
+**Version 0.1 is a runnable foundation.** Gmail has passed live macOS app and CLI tests using an app password. Certificate-validated IMAP, SMTP STARTTLS, and SMTPS pass against isolated mail servers. Windows and Linux packages have been built; native Windows runtime and Outlook sign-in remain unverified. Android and iOS are planned. See the [verification report](docs/verification/2026-10-11/report.md) for exact coverage and remaining checks.
 
 ![Alice's desktop inbox](docs/preview.jpg)
 
@@ -15,7 +15,7 @@ npm ci
 npm run dev
 ```
 
-Open **http://127.0.0.1:1420**. This starts the Rust daemon and the desktop UI in a development browser. The first run opens setup: connect at least one mail account to continue. Setup can also add a demo inbox with sample messages; nothing sent from it is delivered.
+Open **http://127.0.0.1:1420**. This starts the Rust daemon and the desktop UI in a development browser. The first run opens setup: connect at least one mail account to continue.
 
 For the native desktop application:
 
@@ -27,20 +27,20 @@ For the CLI and terminal UI:
 
 ```sh
 cargo install --path crates/alice --locked
-alice accounts demo      # optional: sample messages demo-1 … demo-13
+alice accounts add       # connect a mail account
 alice                    # opens the TUI
 alice list
 alice list --unread --json
-alice read demo-1
-alice reply demo-1 --body "Let's explore the softer direction."
+alice read <message-id>
+alice reply <message-id> --body "Let's explore the softer direction."
 alice list --folder drafts
-alice send <draft-id>     # explicit send; the demo inbox never delivers email
-alice archive demo-2
-alice star demo-3
+alice send <draft-id>     # explicit send
+alice archive <message-id>
+alice star <message-id>
 alice sync
 alice contacts search soph          # recipients from your mail and address books
-alice invite demo-13 accept         # answer an invitation by email
-alice calendar export demo-13 --open   # open the event in your calendar app
+alice invite <message-id> accept         # answer an invitation by email
+alice calendar export <message-id> --open   # open the event in your calendar app
 ```
 
 The native app and CLI start the daemon automatically when needed. It continues running when you close the UI. While the desktop app runs, it starts the daemon again if it stops. A client that finds a daemon from a different build (`alice --version` shows the build after the version) stops it and starts its own, so an app update or rebuild never talks to an older daemon's API. Use `alice daemon run` to start it in the foreground for diagnostics, `alice daemon status` to check its health, and `alice daemon stop` to stop it after quitting desktop clients (**Quit Alice** in the menu bar icon, or ⌘Q). `alice discard <draft-id>` removes an unsent local draft without touching provider mail.
@@ -71,7 +71,7 @@ LC_ALL=en_US.UTF-8 alice list         # English human-readable output
 
 `LANGUAGE` accepts a colon-separated preference list; otherwise `LC_ALL`, `LC_MESSAGES`, then `LANG` choose the language. `C` and `POSIX` force English, including when `LANGUAGE` is set. Without these variables, Alice uses the operating system's preferred language. Command names, flags, keyboard shortcuts, search syntax and JSON identifiers do not change.
 
-Alice does not translate email content, including demo messages, or raw provider/library diagnostics. Stored background diagnostics and Clap's generated parse-error prose can remain English. macOS permission dialogs follow the system's app-bundle language, not the live in-app selection.
+Alice does not translate email content, or raw provider/library diagnostics. Stored background diagnostics and Clap's generated parse-error prose can remain English. macOS permission dialogs follow the system's app-bundle language, not the live in-app selection.
 
 ### Add another language
 
@@ -82,11 +82,11 @@ Alice does not translate email content, including demo messages, or raw provider
 
 ## Connect mail
 
-Setup on first run, **Settings → Mail accounts → Add a mail account**, or the CLI. New installs start with no accounts; the desktop app requires at least one real account. The optional demo inbox (setup, or `alice accounts demo`) is labelled **Demo** and its mail appears alongside your own.
+Setup on first run, **Settings → Mail accounts → Add a mail account**, or the CLI. New installs start with no accounts; the desktop app requires at least one account.
 
 After Google or Microsoft browser sign-in, Alice shows a confirmation page that follows your system's light or dark appearance. You can close that tab and return to Alice. Cancelled or unverified sign-ins use the same appearance and explain the next step.
 
-To remove an account, use **Remove** next to it in **Settings → Mail accounts**, or `alice accounts remove <id-or-email>` (`--yes` skips the prompt; `alice accounts` lists IDs). This deletes the account's cached mail, unsent drafts, and stored sign-in from this device; mail on the server is not affected. The demo inbox can be removed once a real account is connected. Removing the last real account returns the desktop app to setup. Sample accounts created automatically by earlier versions are deleted when the daemon starts.
+To remove an account, use **Remove** next to it in **Settings → Mail accounts**, or `alice accounts remove <id-or-email>` (`--yes` skips the prompt; `alice accounts` lists IDs). This deletes the account's cached mail, unsent drafts, and stored sign-in from this device; mail on the server is not affected. Removing the last account returns the desktop app to setup. Sample accounts from earlier versions are deleted when the daemon starts.
 
 ### Gmail
 
@@ -184,7 +184,7 @@ Open **Settings → Alice & AI**. Choose OpenAI, Anthropic, or an OpenAI-compati
 alice ai configure --provider openai --model YOUR_MODEL_ID
 alice ai configure --provider anthropic --model YOUR_MODEL_ID
 alice ai configure --provider compatible --model YOUR_LOCAL_MODEL --base-url http://localhost:11434/v1
-alice ai ask "Summarize this email and draft a short reply" --message demo-1
+alice ai ask "Summarize this email and draft a short reply" --message <message-id>
 alice ai ask "Find messages that need my attention" --json
 ```
 
@@ -295,7 +295,7 @@ When the other binary first reads a credential, macOS asks once; choose **Always
 - SMTP sends are cached locally in Sent. A provider may additionally retain a server-side sent copy; sync merges it with the local receipt and preserves the delivery ID. Alice does not append a second copy automatically.
 - Read/star/move operations on real messages require the provider to be reachable. Cached mail remains readable offline; an offline mutation queue is not implemented.
 - Collections are sample categories. Automatic classification, snooze, IMAP push (new mail is found by polling), and starting Alice at login are not included yet.
-- Contacts and calendars have been tested against a local CalDAV/CardDAV server (Radicale) and with the demo invitation; Google People, Google Calendar, Microsoft Graph, Mac Contacts and real RSVP delivery have not run against live accounts yet. Microsoft calendars receive an invitation as one event without its recurrence, Microsoft busy times cover only the default calendar, and Google busy times cover your own calendars, not shared ones. The first CalDAV calendar found is treated as that server's primary one. Recipient names come from senders and address books, since Alice does not keep the names written in To headers.
+- Contacts and calendars have been tested against a local CalDAV/CardDAV server (Radicale); Google People, Google Calendar, Microsoft Graph, Mac Contacts and real RSVP delivery have not run against live accounts yet. Microsoft calendars receive an invitation as one event without its recurrence, Microsoft busy times cover only the default calendar, and Google busy times cover your own calendars, not shared ones. The first CalDAV calendar found is treated as that server's primary one. Recipient names come from senders and address books, since Alice does not keep the names written in To headers.
 - Android and iOS remain a later phase. The Rust core and Tauri shell keep that path open; mobile lifecycle, credential-store adapters, and background sync still need implementation and device testing.
 
 ## Support

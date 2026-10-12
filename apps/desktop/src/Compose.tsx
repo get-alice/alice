@@ -25,7 +25,6 @@ export default function ComposeModal({ initial, accounts, persisted, onClose, on
   const mounted = useRef(true);
   const storedRef = useRef(persisted);
   const current = useRef({ draft, to });
-  const demo = accounts.find(a => a.id === draft.account_id)?.is_demo;
   const focusStart = useEffectEvent(() => dialog.current?.querySelector<HTMLElement>(initial.in_reply_to ? 'textarea' : '#compose-to')?.focus());
   useEffect(() => {
     mounted.current = true;
@@ -88,15 +87,14 @@ export default function ComposeModal({ initial, accounts, persisted, onClose, on
       else if (matches(event.nativeEvent, shortcuts.saveDraft)) { event.preventDefault(); if (!busy) void save(false); }
     }}>
       <div className="dialog-top"><h2 id="compose-title"><span className="compose-dot" />{t(initial.in_reply_to ? 'compose.reply' : 'compose.newMessage')}</h2><div><button type="button" className="icon-button" aria-label={t('compose.saveAndCloseDraft')} aria-keyshortcuts={ariaKeys(shortcuts.closeCompose)} title={hint(t('compose.saveAndClose'), shortcuts.closeCompose)} disabled={busy} onClick={close}><Minus size={17} /></button><button type="button" className="icon-button" aria-label={t('compose.close')} disabled={busy} onClick={close}><X size={18} /></button></div></div>
-      <div className="compose-field"><label htmlFor="compose-from">{t('compose.from')}</label><select id="compose-from" value={draft.account_id} disabled={stored || !!initial.in_reply_to || busy} onChange={event => update({ ...draft, account_id: event.target.value })}>{accounts.map(account => <option key={account.id} value={account.id}>{account.is_demo ? t('compose.demoAccount', { email: account.email }) : account.email}</option>)}</select><span><ArrowUpRight size={14} /></span></div>
+      <div className="compose-field"><label htmlFor="compose-from">{t('compose.from')}</label><select id="compose-from" value={draft.account_id} disabled={stored || !!initial.in_reply_to || busy} onChange={event => update({ ...draft, account_id: event.target.value })}>{accounts.map(account => <option key={account.id} value={account.id}>{account.email}</option>)}</select><span><ArrowUpRight size={14} /></span></div>
       <div className="compose-field to-field"><label htmlFor="compose-to">{t('compose.to')}</label><RecipientInput value={to} accountId={draft.account_id} disabled={busy} onChange={value => update(draft, value)} /></div>
       <div className="compose-field subject-field"><label htmlFor="compose-subject">{t('compose.subject')}</label><input id="compose-subject" value={draft.subject} onChange={event => update({ ...draft, subject: event.target.value })} disabled={busy} /></div>
       <textarea className="compose-body" aria-label={t('compose.body')} value={draft.body} onChange={event => update({ ...draft, body: event.target.value })} disabled={busy} />
       <div className="compose-feedback"><p className="draft-status" role="status">{t(`compose.status.${saveState}`)}</p>
       {backupError && <motion.p className="form-error" role="alert" {...rise}>{t('compose.backupUnavailable')}</motion.p>}
       {error && <motion.p className="form-error" role="alert" {...rise}>{error.backup ? t('compose.saveFailed', { error: error.message }) : error.message}</motion.p>}</div>
-      <div className="compose-bottom"><div><button type="submit" className="primary" aria-keyshortcuts={ariaKeys(shortcuts.send)} title={hint(t(demo ? 'compose.sendDemo' : 'compose.sendEmail'), shortcuts.send)} disabled={busy || !to.trim()}><Send size={15} />{t(busy ? saveState === 'sending' ? 'compose.status.sending' : 'compose.saving' : demo ? 'compose.sendDemo' : 'compose.sendEmail')}</button><button type="button" className="text-button" aria-keyshortcuts={ariaKeys(shortcuts.saveDraft)} title={hint(t('compose.saveDraft'), shortcuts.saveDraft)} disabled={busy} onClick={() => void save(false)}><Check size={14} />{t('compose.saveDraft')}</button></div><button type="button" className="text-button muted" disabled={busy} onClick={() => void discard()}>{t('compose.discardDraft')}</button></div>
-      {demo && <p className="compose-demo-note">{t('compose.demoNote')}</p>}
+      <div className="compose-bottom"><div><button type="submit" className="primary" aria-keyshortcuts={ariaKeys(shortcuts.send)} title={hint(t('compose.sendEmail'), shortcuts.send)} disabled={busy || !to.trim()}><Send size={15} />{t(busy ? saveState === 'sending' ? 'compose.status.sending' : 'compose.saving' : 'compose.sendEmail')}</button><button type="button" className="text-button" aria-keyshortcuts={ariaKeys(shortcuts.saveDraft)} title={hint(t('compose.saveDraft'), shortcuts.saveDraft)} disabled={busy} onClick={() => void save(false)}><Check size={14} />{t('compose.saveDraft')}</button></div><button type="button" className="text-button muted" disabled={busy} onClick={() => void discard()}>{t('compose.discardDraft')}</button></div>
     </form>
   </motion.dialog>;
 }

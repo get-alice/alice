@@ -9,8 +9,8 @@ const cells = (text: string) => text.split(/([^\x20-\x7e\u2500-\u257f·–—…
 
 const commands = [
   ['alice list --unread --json', 'Your unread mail, ready for scripts'],
-  ['alice reply demo-1 --body "Let\'s explore the softer direction."', 'Drafts a reply; sending stays explicit'],
-  ['alice archive demo-2', 'Archived here, archived in the app'],
+  ['alice reply <id> --body "Let\'s explore the softer direction."', 'Drafts a reply; sending stays explicit'],
+  ['alice archive <id>', 'Archived here, archived in the app'],
 ];
 ---
 <section class="mirror" id="terminal" aria-labelledby="mirror-title">

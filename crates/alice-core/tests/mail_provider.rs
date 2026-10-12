@@ -9,7 +9,6 @@ fn gmail_discovers_localized_all_mail_from_special_use() -> Result<()> {
         name: "Gmail protocol fixture".into(),
         email: "alice@example.test".into(),
         provider: Provider::Gmail,
-        is_demo: false,
         imap_host: "localhost".into(),
         imap_port: 993,
         smtp_host: "localhost".into(),

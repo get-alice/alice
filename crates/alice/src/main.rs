@@ -253,7 +253,6 @@ enum AccountAction {
         #[arg(long, value_enum)]
         calendar: Option<Toggle>,
     },
-    Demo,
 }
 #[derive(Subcommand)]
 enum AiAction {
@@ -613,17 +612,7 @@ async fn run() -> Result<()> {
         ),
         Some(Action::Accounts { command: None }) => {
             for a in client.get::<Vec<Account>>("/v1/accounts").await? {
-                println!(
-                    "{}  {}  {:?}{}",
-                    a.id,
-                    terminal_text(&a.email),
-                    a.provider,
-                    if a.is_demo {
-                        alice_core::t!(locale(), "cli.demo_suffix")
-                    } else {
-                        String::new()
-                    }
-                );
+                println!("{}  {}  {:?}", a.id, terminal_text(&a.email), a.provider);
             }
         }
         Some(Action::Accounts {
@@ -666,20 +655,6 @@ async fn run() -> Result<()> {
                     )
                 );
             }
-        }
-        Some(Action::Accounts {
-            command: Some(AccountAction::Demo),
-        }) => {
-            let account: Account = client.post("/v1/demo", &json!({})).await?;
-            println!(
-                "{}",
-                alice_core::t!(
-                    locale(),
-                    "cli.demo_ready",
-                    id = account.id,
-                    email = terminal_text(&account.email)
-                )
-            );
         }
         Some(Action::Accounts {
             command: Some(AccountAction::Remove { account, yes }),
@@ -1038,9 +1013,7 @@ async fn run() -> Result<()> {
                     },
                 )
                 .await?;
-            let accounts: Vec<Account> = client.get("/v1/accounts").await?;
-            let demo = accounts.iter().any(|a| a.id == m.account_id && a.is_demo);
-            println!("{}", rsvp_done(&m, demo));
+            println!("{}", rsvp_done(&m));
         }
         Some(Action::Calendar {
             command: CalendarAction::List { json },
@@ -1498,20 +1471,11 @@ fn invite_summary(id: &str, invite: &Invite) -> String {
     lines.push(you);
     lines.join("\n")
 }
-/// What answering an invitation did, for the CLI and the TUI footer. The demo account records the
-/// answer without mailing anyone.
-pub(crate) fn rsvp_done(m: &Message, demo: bool) -> String {
+/// What answering an invitation did, for the CLI and the TUI footer.
+pub(crate) fn rsvp_done(m: &Message) -> String {
     let Some(invite) = &m.invite else {
         return alice_core::t!(locale(), "cli.answer_saved");
     };
-    if demo {
-        return alice_core::t!(
-            locale(),
-            "cli.rsvp_demo",
-            state = invite_state(invite),
-            title = event_title(&invite.event)
-        );
-    }
     let organizer = invite
         .organizer
         .as_ref()

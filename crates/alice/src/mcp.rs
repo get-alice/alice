@@ -163,9 +163,7 @@ async fn call(client: &Client, name: &str, args: &Value) -> Result<Value> {
             let accounts: Vec<Account> = client.get("/v1/accounts").await?;
             Ok(accounts
                 .iter()
-                .map(
-                    |a| json!({"id": a.id, "name": a.name, "email": a.email, "is_demo": a.is_demo}),
-                )
+                .map(|a| json!({"id": a.id, "name": a.name, "email": a.email}))
                 .collect())
         }
         "search_mail" => {

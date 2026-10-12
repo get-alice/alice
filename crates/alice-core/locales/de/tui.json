@@ -13,7 +13,7 @@
     "not_answered": "Einladung nicht beantwortet",
     "saving": "Entwurf wird gespeichert…",
     "syncing": "Wird synchronisiert… Sie können weiter navigieren.",
-    "no_accounts": "Noch keine E-Mail-Konten. Verbinden Sie eines mit `alice accounts add` oder testen Sie `alice accounts demo`.",
+    "no_accounts": "Noch keine E-Mail-Konten. Verbinden Sie eines mit `alice accounts add`.",
     "event_cancelled": "Der Veranstalter hat diesen Termin abgesagt",
     "no_answer_needed": "Diese Einladung erfordert keine Antwort",
     "not_invitation": "Diese Nachricht ist keine Einladung",
@@ -62,7 +62,7 @@
   "empty": {
     "loading": "{spinner} {folder} wird geladen…",
     "no_accounts": "Noch keine E-Mail-Konten",
-    "connect": "Verbinden Sie eines mit `alice accounts add` oder testen Sie `alice accounts demo`.",
+    "connect": "Verbinden Sie eines mit `alice accounts add`.",
     "no_matches": "Keine Treffer für „{query}“",
     "search_hint": "Drücken Sie / zum Ändern der Suche oder Esc zum Leeren.",
     "inbox": "Posteingang leer",

@@ -260,8 +260,8 @@ mod tests {
     {
         let dir = tempfile::tempdir()?;
         let store = Store::open(&dir.path().join("mail.db"))?;
-        store.add_demo()?;
-        let mut message = store.message("demo-1")?;
+        store.add_fixture()?;
+        let mut message = store.message("sample-1")?;
         message.subject = "Your verification code".into();
         message.body = "Your verification code is 001234".into();
         message.html_body = None;

@@ -85,7 +85,6 @@
   "you_re_using_the_latest_published_version": "Sie verwenden die neueste veröffentlichte Version.",
   "view_release": "Veröffentlichung ansehen",
   "gmail_outlook_and_any_account_with_imap_and_smtp": "Gmail, Outlook und jedes Konto mit IMAP und SMTP.",
-  "demo": "Demo",
   "needs_attention": "Erfordert Aufmerksamkeit",
   "connected": "Verbunden",
   "remove": "Entfernen",
@@ -178,10 +177,7 @@
   "connect_account": "Konto verbinden",
   "connect_an_email_account": "E-Mail-Konto verbinden",
   "gmail_outlook_or_any_imap_account": "Gmail, Outlook oder ein beliebiges IMAP-Konto.",
-  "continue_to_your_inbox": "Weiter zum Posteingang",
-  "adding_the_demo_inbox": "Demo-Posteingang wird hinzugefügt…",
   "opening_your_inbox": "Posteingang wird geöffnet…",
-  "also_add_a_demo_inbox": "Auch einen Demo-Posteingang hinzufügen",
   "account_removed": "{email} wurde aus Alice entfernt.",
   "account_removed_credentials": "{email} wurde aus Alice entfernt, aber die Anmeldung liegt noch im Anmeldedatenspeicher Ihres Systems. Löschen Sie dort den Eintrag „email.getalice.alice“ für dieses Konto (Schlüsselbundverwaltung unter macOS).",
   "daemon_connected": "Verbunden · Daemon {version}",
@@ -221,7 +217,6 @@
   },
   "downloading_account": "{email} wird heruntergeladen",
   "database_size": "Alices E-Mail-Datenbank belegt einschließlich Suchindex {size} auf diesem Gerät.",
-  "demo_failed": "Der Demo-Posteingang konnte nicht hinzugefügt werden. {error}",
   "google_desktop_client": "Erstellen Sie einen OAuth-Client vom Typ {type}. Fügen Sie unten die Client-ID und, falls vorhanden, das Client-Geheimnis ein.",
   "desktop_app_type": "Desktop-App",
   "google_callback": "Alice fordert Zugriff auf Gmail-E-Mails an und empfängt die Anmeldung unter {url}. Die öffentliche Verbreitung Ihrer Registrierung kann eine Überprüfung durch Google erfordern.",
@@ -292,9 +287,26 @@
   "for_a_personal_account_select_use": "Wählen Sie für ein persönliches Konto unten „Gmail-App-Passwort verwenden“, um die Einrichtung zu beschleunigen.",
   "alice_currently_needs_your_own_microsoft": "Alice benötigt derzeit Ihre eigene Microsoft-App-Registrierung für die Anmeldung im Browser.",
   "register_a_public_client_app_in": "Registrieren Sie eine Public-Client-App in Microsoft Entra. Schließen Sie persönliche Microsoft-Konten ein, wenn Sie Outlook.com verwenden.",
-  "sample_messages_to_explore_alice_nothing": "Beispielnachrichten, um Alice kennenzulernen. Daraus gesendete Nachrichten werden nicht zugestellt. Sie können ihn unter Einstellungen → E-Mail-Konten entfernen.",
   "email_placeholder": "sie@beispiel.de",
   "imap_placeholder": "imap.beispiel.de",
   "smtp_placeholder": "smtp.beispiel.de",
-  "dav_name_placeholder": "iCloud, Fastmail…"
+  "dav_name_placeholder": "iCloud, Fastmail…",
+  "welcome": {
+    "title_lead": "E-Mail,",
+    "title_accent": "leicht wie Luft.",
+    "lede": "Ein leichter E-Mail-Client, der den Lärm hinter sich lässt. Kostenlos, quelloffen und von Grund auf privat.",
+    "continue_to_setup": "Weiter zur Einrichtung",
+    "noise": {
+      "sale": "LETZTE CHANCE: 40 % Rabatt nur heute",
+      "unread": "1.284 ungelesen",
+      "planning": "Re: Re: Fwd: Q3-Planung (final) (2)",
+      "badge": "99+",
+      "follow_up": "Ich melde mich nochmal wegen meiner letzten E-Mail",
+      "trial": "Ihre Testphase endet in 2 Tagen",
+      "no_subject": "(kein Betreff)",
+      "standup": "Erinnerung: Erinnerung: Standup",
+      "digest": "48 Beiträge, die Sie verpasst haben könnten",
+      "out_of_office": "Abwesenheitsnotiz: Re: Budget"
+    }
+  }
 }

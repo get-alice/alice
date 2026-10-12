@@ -6,7 +6,7 @@ import { isMac } from './platform';
 /** Which provider APIs Alice may use for this account (Gmail and Outlook sign-ins only). */
 export interface Integrations { contacts: boolean; calendar: boolean }
 export interface Account {
-  id: string; name: string; email: string; provider: 'gmail' | 'outlook' | 'imap'; is_demo: boolean;
+  id: string; name: string; email: string; provider: 'gmail' | 'outlook' | 'imap';
   last_synced: string | null; sync_error: string | null; integrations?: Integrations;
 }
 /** `part` is the attachment's section on the mail server; mail cached before sections were recorded has none. */

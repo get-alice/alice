@@ -1,5 +1,6 @@
 @import '@fontsource-variable/dm-sans';
 @import '@fontsource-variable/newsreader';
+@import '@fontsource-variable/newsreader/wght-italic.css';
 
 /* ─── Tokens ──────────────────────────────────────────────────────────────── */
 
@@ -372,7 +373,6 @@ dialog[data-leaving]::backdrop { animation: fade-out var(--dur-fast) ease forwar
 .draft-status { padding: 0 24px 10px; color: var(--muted); font-size: var(--text-xs); }
 .compose-bottom { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 18px 14px 24px; border-top: 1px solid var(--line-soft); }
 .compose-bottom > div { display: flex; align-items: center; gap: 8px; }
-.compose-demo-note { padding: 0 24px 14px; color: var(--muted); font-size: var(--text-xs); }
 .compose-dialog .form-error { margin: 0 24px 14px; }
 /* Recipient suggestions: under the To field, aligned with what is typed. Shown on every keystroke, so instant. */
 .to-field { position: relative; }
@@ -628,14 +628,48 @@ input[role='switch']:checked:active::after { transform: translateX(12px); }
 .settings-content.setup-form { padding: 28px 32px 32px; border: 1px solid var(--border); border-radius: var(--radius-xl); background: var(--paper); box-shadow: 0 1px 2px var(--shadow), 0 16px 40px -20px var(--shadow-strong); }
 .setup-form > .preference-field { margin-bottom: 20px; }
 .setup-form .provider-options { margin-top: 0; }
-.setup-form form > .setup-demo-option { flex-direction: row; align-items: flex-start; gap: 12px; margin: 6px 0 20px; padding: 14px 16px; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); cursor: pointer; }
-.setup-form .setup-demo-option input { width: 16px; height: 16px; margin-top: 2px; padding: 0; flex-shrink: 0; accent-color: var(--violet); }
-.setup-demo-option > span { display: flex; flex-direction: column; gap: 4px; }
-.setup-demo-option strong { color: var(--ink); font-size: var(--text-base); font-weight: 600; }
-.setup-demo-option small { color: var(--muted); font-size: var(--text-sm); font-weight: 400; line-height: 1.6; }
 .setup-done .form-success { margin-top: 0; }
 .setup-done .primary { margin-top: 18px; }
 .setup-status { display: flex; align-items: center; gap: 8px; margin-top: 16px; color: var(--muted); font-size: var(--text-sm); }
+
+/* First-launch welcome: the website hero's sky, noise and flower, framed by the window. */
+.welcome { position: relative; display: grid; place-items: center; height: 100dvh; overflow: hidden; isolation: isolate; background: linear-gradient(180deg, #b7d9f2, #dcebf8 48%, var(--bg)); --sun: 255 247 214; }
+:root[data-theme='dark'] .welcome { background: linear-gradient(180deg, #04060e, #0d1126 50%, var(--bg)); --sun: 165 143 214; }
+.welcome-header { position: absolute; inset: 0 0 auto; z-index: 3; height: 52px; }
+.welcome-noise, .welcome-clouds { position: absolute; inset: 0; pointer-events: none; }
+.welcome-frag { position: absolute; translate: -50% -50%; }
+.welcome-chip { padding: 7px 14px; border: 1px solid var(--line); border-radius: 999px; background: var(--paper); color: var(--muted); font-size: var(--text-sm); white-space: nowrap; box-shadow: 0 12px 30px -18px var(--shadow-strong); }
+.welcome-frag.far .welcome-chip { filter: blur(1.5px); }
+/* Petals each message leaves behind on the breeze; fireflies at night, like the website. */
+.welcome-petal { position: absolute; left: 50%; top: 50%; width: 9px; height: 14px; margin: -7px -4px; box-shadow: 0 2px 5px var(--shadow); border-radius: 50% 50% 50% 50% / 62% 62% 38% 38%; background: var(--petal, #8770b5); opacity: 0; }
+.welcome-petal:nth-of-type(3n + 1) { --petal: #fff; }
+.welcome-petal:nth-of-type(3n + 2) { --petal: #f4c9dc; }
+.welcome-frag:nth-child(even) .welcome-petal:nth-of-type(3n) { --petal: #c9b8ec; }
+:root[data-theme='dark'] .welcome-petal { --petal: #ffe9a6; width: 5px; height: 5px; margin: -2px; border-radius: 50%; box-shadow: 0 0 8px 2px #ffe9a680; }
+/* Soft cumulus from overlapping circles; opacity on the whole cloud so the overlaps never show. A clear night has none. */
+.welcome-clouds span { position: absolute; width: 14rem; height: 4rem; border-radius: 999px; background: #fff; opacity: .9; animation: welcome-drift 22s ease-in-out infinite alternate; }
+.welcome-clouds span::before, .welcome-clouds span::after { content: ''; position: absolute; border-radius: 50%; background: inherit; }
+.welcome-clouds span::before { width: 6.5rem; height: 6.5rem; left: 2rem; bottom: 1.5rem; }
+.welcome-clouds span::after { width: 4.5rem; height: 4.5rem; left: 7rem; bottom: 1.4rem; }
+.welcome-clouds span:nth-child(1) { left: 4%; top: 24%; }
+.welcome-clouds span:nth-child(2) { left: 62%; top: 6%; scale: 1.2; animation-duration: 28s; }
+.welcome-clouds span:nth-child(3) { left: 74%; top: 80%; scale: .6; opacity: .7; animation-duration: 18s; }
+:root[data-theme='dark'] .welcome-clouds { display: none; }
+@keyframes welcome-drift { to { translate: 3rem 0; } }
+.welcome-stage { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 18px; padding: 24px; text-align: center; }
+.welcome-bloom { position: relative; width: 104px; height: 104px; margin-bottom: 10px; }
+.welcome-sun { position: absolute; inset: -110%; z-index: -1; border-radius: 50%; background: radial-gradient(closest-side, rgb(var(--sun) / .95), rgb(var(--sun) / .55) 35%, rgb(var(--sun) / .18) 62%, transparent); }
+:root[data-theme='dark'] .welcome-sun { inset: -70%; background: radial-gradient(closest-side, rgb(var(--sun) / .3), rgb(var(--sun) / .12) 50%, transparent); }
+.welcome-bloom svg { width: 100%; height: 100%; overflow: visible; color: var(--violet); filter: drop-shadow(0 14px 22px var(--shadow-strong)); }
+.welcome-bloom .heart { fill: #f6d66b; }
+.welcome h1 { font: 400 64px/1.02 var(--serif); letter-spacing: -.035em; color: var(--ink); text-wrap: balance; }
+.welcome h1 em { color: var(--violet); }
+/* Each word rises out of its own mask; the padding keeps descenders and the italic overhang inside it. */
+.welcome-word { display: inline-block; overflow: hidden; padding: 0 .06em .1em; margin: 0 -.06em -.1em; vertical-align: top; }
+.welcome-word > span { display: inline-block; }
+.welcome-word + .welcome-word { margin-left: .18em; }
+.welcome-stage > p { max-width: 420px; color: var(--muted); font-size: var(--text-md); line-height: 1.65; }
+.welcome-stage > .primary { margin-top: 12px; min-height: 42px; padding: 0 22px; }
 
 /* ─── Theme change: one quick cross-fade instead of every surface repainting at once ── */
 
@@ -839,6 +873,6 @@ input[role='switch']:checked:active::after { transform: translateX(12px); }
 
 /* Reduced motion: MotionConfig drops Motion's movement and keeps its fades; --motion zeroes CSS press scale. Stop the loops too. */
 @media (prefers-reduced-motion: reduce) {
-  .startup img, .connection-status.offline > span { animation: none; }
+  .startup img, .connection-status.offline > span, .welcome-clouds span { animation: none; }
   * { scroll-behavior: auto; }
 }

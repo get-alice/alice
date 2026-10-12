@@ -32,44 +32,9 @@ try {
   start(); await ready();
   const unauth = await fetch(`http://127.0.0.1:${port}/v1/messages`); assert.equal(unauth.status, 401);
   assert.equal(JSON.parse(cli('list', '--json')).total, 0);
-  cli('accounts', 'demo'); cli('accounts', 'demo');
-  assert.equal((await api('DELETE', '/v1/accounts/demo')).status, 400);
-  const invalid = await api('PATCH', '/v1/messages/demo-1', { folder: 'deleted' }); assert.equal(invalid.status, 400);
-  const protectedMail = await api('DELETE', '/v1/messages/demo-1'); assert.equal(protectedMail.status, 400);
-  const original = JSON.parse(cli('list', '--json')); assert.equal(original.total, 13);
-  const suggested = JSON.parse(cli('contacts', 'search', 'soph', '--json')); assert.equal(suggested[0].email, 'sophie@form.studio');
-  assert.equal(JSON.parse(cli('read', 'demo-13', '--json')).invite.method, 'REQUEST');
-  cli('invite', 'demo-13', 'decline');
-  assert.equal((await api('GET', '/v1/messages/demo-13')).data.invite.response, 'declined');
-  const eventFile = await api('POST', '/v1/calendar/ics', { message_id: 'demo-13' }); assert.ok(eventFile.data.ics.includes('BEGIN:VEVENT') && !eventFile.data.ics.includes('METHOD:REQUEST'));
-  cli('archive', 'demo-2');
-  const archived = await api('GET', '/v1/messages?folder=archive'); assert.equal(archived.data.messages[0].id, 'demo-2');
-  const star = await api('PATCH', '/v1/messages/demo-2', { is_starred: true }); assert.equal(star.status, 200);
-  const starred = JSON.parse(cli('list', '--folder', 'starred', '--json')); assert.ok(starred.messages.some(m => m.id === 'demo-2'));
-  cli('reply', 'demo-1', '--body', 'Thursday works. See you at the studio.');
-  const drafts = JSON.parse(cli('list', '--folder', 'drafts', '--json')); assert.equal(drafts.total, 1);
-  assert.equal(drafts.messages[0].in_reply_to, '<demo-1@alice.local>');
-  const id = drafts.messages[0].id; cli('send', id); cli('send', id);
-  assert.equal(JSON.parse(cli('list', '--folder', 'sent', '--json')).total, 1);
-  const frozen = await api('POST', '/v1/messages', { id, account_id: 'demo', to: ['sophie@form.studio'], subject: 'Changed', body: 'Cannot change a sent message', in_reply_to: null }); assert.equal(frozen.status, 400);
-  cli('reply', 'demo-3', '--body', 'Draft to discard');
-  const disposable = JSON.parse(cli('list', '--folder', 'drafts', '--json')).messages[0].id;
-  cli('discard', disposable);
-  assert.equal(JSON.parse(cli('list', '--folder', 'drafts', '--json')).total, 0);
-  const ai = await api('POST', '/v1/ai', { prompt: 'Summarize this', message_id: 'demo-1' }); assert.equal(ai.status, 400); assert.match(ai.data.error.message, /Connect an AI provider/);
+  const invalid = await api('PATCH', '/v1/messages/missing', { folder: 'deleted' }); assert.equal(invalid.status, 400);
+  const ai = await api('POST', '/v1/ai', { prompt: 'Summarize this' }); assert.equal(ai.status, 400); assert.match(ai.data.error.message, /Connect an AI provider/);
   const settings = await api('POST', '/v1/ai/settings', { provider: 'compatible', model: 'test', base_url: 'http://untrusted.invalid/v1', api_key: 'not-a-real-key' }); assert.equal(settings.status, 400);
-  const controlId = crypto.randomUUID();
-  const unsafeText = '\u001b[2Jmail\u009b31m\u001b]52;c;fixture\u0007\nReadable line';
-  const unfinished = { id: controlId, account_id: 'demo', to: ['unfinished@'], subject: unsafeText, body: unsafeText, in_reply_to: null };
-  assert.equal((await api('POST', '/v1/messages', unfinished)).status, 200);
-  assert.equal((await api('POST', `/v1/messages/${controlId}/send`, {})).status, 400);
-  assert.equal((await api('POST', '/v1/messages', { ...unfinished, to: ['support@example.com'] })).status, 200);
-  const human = cli('read', controlId);
-  assert.ok(!human.includes('\u001b') && !human.includes('\u009b') && !human.includes('\u0007'));
-  assert.ok(human.includes('Readable line'));
-  assert.equal(JSON.parse(cli('read', controlId, '--json')).body, unsafeText);
-  assert.ok(!cli('list', '--folder', 'drafts').includes('\u001b'));
-  cli('discard', controlId);
   const mcp = spawn(binary, ['mcp'], { env, stdio: ['pipe', 'pipe', 'inherit'] });
   const replies = []; let buffered = '';
   mcp.stdout.on('data', chunk => { buffered += chunk; let at; while ((at = buffered.indexOf('\n')) >= 0) { replies.push(JSON.parse(buffered.slice(0, at))); buffered = buffered.slice(at + 1); } });
@@ -86,24 +51,15 @@ try {
   assert.ok(toolNames.includes('draft_email') && toolNames.includes('send_draft'));
   assert.equal((await tool('search_mail')).isError, true);
   cli('mcp', 'read-only');
-  const found = JSON.parse((await tool('search_mail', { query: 'from:sophie' })).content[0].text); assert.equal(found.messages[0].from.includes('sophie@form.studio'), true);
-  const unreadBefore = (await api('GET', '/v1/messages/demo-4')).data.is_read;
-  const asStored = JSON.parse((await tool('read_message', { id: 'demo-4' })).content[0].text);
-  assert.deepEqual(asStored, (await api('GET', '/v1/messages/demo-4')).data);
-  assert.equal(asStored.is_read, unreadBefore);
-  assert.equal((await tool('draft_email', { reply_to: 'demo-1', body: 'Not allowed yet' })).isError, true);
-  cli('mcp', 'full');
-  const agentDraft = JSON.parse((await tool('draft_email', { reply_to: 'demo-1', body: 'Drafted by an agent' })).content[0].text);
-  assert.equal(agentDraft.folder, 'drafts'); assert.deepEqual(agentDraft.to, ['sophie@form.studio']);
-  const sentByAgent = JSON.parse((await tool('send_draft', { id: agentDraft.id })).content[0].text);
-  assert.equal(sentByAgent.folder, 'sent'); assert.equal(JSON.parse(cli('list', '--folder', 'sent', '--json')).total, 2);
+  assert.equal(JSON.parse((await tool('search_mail', { query: 'from:sophie' })).content[0].text).messages.length, 0);
+  assert.equal(JSON.parse((await tool('list_accounts')).content[0].text).length, 0);
+  assert.equal((await tool('draft_email', { to: ['sophie@form.studio'], body: 'Not allowed yet' })).isError, true);
   cli('mcp', 'off'); assert.equal((await tool('list_accounts')).isError, true);
   assert.equal((await rpc('nope')).error.code, -32601);
   mcp.stdin.end(); await once(mcp, 'exit'); assert.equal(mcp.exitCode, 0);
   // Signal termination leaves exitCode null; repeated cleanup must not wait for a past exit.
   await stop('SIGKILL'); await stop(); start(); await ready();
-  assert.equal(JSON.parse(cli('list', '--folder', 'archive', '--json')).messages[0].id, 'demo-2');
-  assert.equal(JSON.parse(cli('list', '--folder', 'sent', '--json')).total, 2);
+  assert.equal(JSON.parse(cli('list', '--json')).total, 0);
   await stop();
   try {
     const launched = spawnSync(binary, ['list', '--json'], { env, encoding: 'utf8', detached: process.platform !== 'win32' });
@@ -114,9 +70,9 @@ try {
     }
     await new Promise(done => setTimeout(done, 100));
     assert.equal((await api('GET', '/v1/health')).status, 200);
-    assert.equal(JSON.parse(cli('list', '--folder', 'sent', '--json')).total, 2);
+    assert.equal(JSON.parse(cli('list', '--json')).total, 0);
   } finally {
     assert.equal((await api('POST', '/v1/shutdown')).status, 200);
   }
 } finally { await stop(); rmSync(directory, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 }); }
-console.log('Alice smoke passed: auth, draft validation, shared CLI/API state, recipient suggestions, invitation replies and calendar files, reply drafts, send idempotency, terminal control sanitization, MCP access modes and agent sending, restart persistence, terminal isolation, and graceful shutdown.');
+console.log('Alice smoke passed: auth, request validation, AI settings checks, MCP access modes, restart, terminal isolation, and graceful shutdown.');

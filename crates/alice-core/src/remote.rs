@@ -608,7 +608,7 @@ mod tests {
         }
         let dir = tempfile::tempdir()?;
         let store = crate::store::Store::open(&dir.path().join("mail.db"))?;
-        let mut account = store.add_demo()?;
+        let mut account = store.add_fixture()?;
         account.folders.spam = "Custom Junk".into();
         for (provider, listed, expected) in [
             (

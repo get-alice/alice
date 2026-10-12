@@ -15,7 +15,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-account = dict(id="fixture-account", name="Fixture", email="me@example.invalid", provider="imap", is_demo=True, imap_host="imap.invalid", imap_port=993, smtp_host="smtp.invalid", smtp_port=587, last_synced=None, sync_error=None)
+account = dict(id="fixture-account", name="Fixture", email="me@example.invalid", provider="imap", imap_host="imap.invalid", imap_port=993, smtp_host="smtp.invalid", smtp_port=587, last_synced=None, sync_error=None)
 message = dict(id="fixture-1", account_id=account["id"], from_name="Notifications", from_email="alerts@example.invalid", reply_to=["support@example.invalid"], to=[account["email"]], subject="Fixture email", preview="A short fixture", body="Hello", date="2026-10-11T00:00:00Z", folder="inbox", is_read=False, is_starred=False, category="work", attachments=[], message_id="<fixture@example.invalid>")
 state = dict(accounts=[account], messages=[message], delay=0, saved=[], requests=[], patch_event=threading.Event(), loaded=threading.Event())
 
@@ -137,7 +137,7 @@ try:
     state["saved"] = []
     state["delay"] = 0
     with Terminal() as terminal:
-        state["accounts"] = [dict(account, id="new-real", email="real@example.invalid", is_demo=False)]
+        state["accounts"] = [dict(account, id="new-real", email="real@example.invalid")]
         state["messages"] = []
         state["loaded"].clear()
         assert state["loaded"].wait(3)

@@ -1,6 +1,6 @@
 use crate::{model::*, search};
 use anyhow::{Context, Result, bail};
-use chrono::{Duration, Utc};
+use chrono::Utc;
 use parking_lot::Mutex;
 use rusqlite::{Connection, Transaction, params};
 use std::{collections::HashSet, path::Path};
@@ -42,11 +42,11 @@ impl Store {
             db: Mutex::new(db),
             epoch: Utc::now().timestamp_micros(),
         };
-        // Earlier builds seeded two sample accounts on first launch. Sample data is now opt-in.
+        // Earlier builds could add sample accounts that no longer exist.
         {
             let mut db = store.db.lock();
             let tx = db.transaction()?;
-            for legacy in ["demo-work", "demo-personal"] {
+            for legacy in ["demo", "demo-work", "demo-personal"] {
                 delete_account(&tx, legacy)?;
             }
             tx.commit()?;
@@ -433,7 +433,6 @@ impl Store {
         Ok(())
     }
     /// Deletes an account and everything cached for it on this device. Provider mail is untouched.
-    /// The demo inbox stays until a real account exists, so the app never ends up with nothing to show.
     pub fn remove_account(&self, id: &str) -> Result<Account> {
         let mut db = self.db.lock();
         let tx = db.transaction()?;
@@ -441,14 +440,6 @@ impl Store {
             .query_row("SELECT data FROM accounts WHERE id=?1", [id], |r| r.get(0))
             .context(crate::text!("server.error.account_not_found"))?;
         let account: Account = serde_json::from_str(&data)?;
-        let real: bool = tx.query_row(
-            "SELECT EXISTS(SELECT 1 FROM accounts WHERE json_extract(data,'$.is_demo')=0)",
-            [],
-            |r| r.get(0),
-        )?;
-        if account.is_demo && !real {
-            bail!(crate::text!("server.error.remove_demo"));
-        }
         delete_account(&tx, id)?;
         tx.commit()?;
         Ok(account)
@@ -680,10 +671,7 @@ impl Store {
         if let Some(id) = &patch.default_account_id
             && !id.is_empty()
         {
-            let account = self.account(id)?;
-            if account.is_demo && self.accounts()?.iter().any(|a| !a.is_demo) {
-                bail!(crate::text!("server.error.choose_account"));
-            }
+            self.account(id)?;
         }
         let mut db = self.db.lock();
         let tx = db.transaction()?;
@@ -764,27 +752,76 @@ impl Store {
             return self.account(requested);
         }
         let accounts = self.accounts()?;
-        let real = accounts.iter().any(|a| !a.is_demo);
         let preferred = self.preferences()?.default_account_id;
         accounts
             .iter()
-            .find(|a| a.id == preferred && (!real || !a.is_demo))
-            .or_else(|| accounts.iter().find(|a| !a.is_demo))
+            .find(|a| a.id == preferred)
             .or(accounts.first())
             .cloned()
             .context(crate::text!("server.error.connect_before_composing"))
     }
-    /// Adds the single demo inbox with sample messages. Returns the existing one if already added.
-    pub fn add_demo(&self) -> Result<Account> {
-        if let Ok(account) = self.account(DEMO_ACCOUNT_ID) {
+    /// Records the account's answer to the invitation in message `id`, on every copy of that
+    /// message the account has (Gmail keeps one in several mailboxes).
+    pub fn record_rsvp(&self, id: &str, response: Rsvp) -> Result<Message> {
+        let mut db = self.db.lock();
+        let tx = db.transaction()?;
+        let data: String = tx
+            .query_row("SELECT data FROM messages WHERE id=?1", [id], |r| r.get(0))
+            .context("Message not found")?;
+        let message: Message = serde_json::from_str(&data)?;
+        let uid = message
+            .invite
+            .as_ref()
+            .map(|i| i.uid.clone())
+            .context("This message has no calendar invitation")?;
+        let mut ids = vec![id.to_string()];
+        if let Some(message_id) = &message.message_id {
+            let mut copies = tx.prepare("SELECT id FROM messages WHERE json_extract(data,'$.account_id')=?1 AND json_extract(data,'$.message_id')=?2 AND id<>?3")?;
+            ids.extend(
+                copies
+                    .query_map(params![message.account_id, message_id, id], |r| {
+                        r.get::<_, String>(0)
+                    })?
+                    .collect::<rusqlite::Result<Vec<_>>>()?,
+            );
+        }
+        let mut updated = None;
+        for copy_id in ids {
+            let data: String =
+                tx.query_row("SELECT data FROM messages WHERE id=?1", [&copy_id], |r| {
+                    r.get(0)
+                })?;
+            let mut copy: Message = serde_json::from_str(&data)?;
+            let Some(invite) = copy.invite.as_mut().filter(|i| i.uid == uid) else {
+                continue;
+            };
+            invite.response = Some(response);
+            tx.execute(
+                "UPDATE messages SET data=?2 WHERE id=?1",
+                params![copy_id, serde_json::to_string(&copy)?],
+            )?;
+            if copy_id == id {
+                updated = Some(copy);
+            }
+        }
+        tx.commit()?;
+        updated.context("Message not found")
+    }
+}
+#[cfg(test)]
+pub const FIXTURE_ACCOUNT_ID: &str = "fixture";
+#[cfg(test)]
+impl Store {
+    /// Adds an account with sample messages for tests. Returns the existing one if already added.
+    pub fn add_fixture(&self) -> Result<Account> {
+        if let Ok(account) = self.account(FIXTURE_ACCOUNT_ID) {
             return Ok(account);
         }
         let account = Account {
-            id: DEMO_ACCOUNT_ID.into(),
-            name: "Demo".into(),
+            id: FIXTURE_ACCOUNT_ID.into(),
+            name: "Fixture".into(),
             email: "alex@form.studio".into(),
             provider: Provider::Imap,
-            is_demo: true,
             imap_host: "".into(),
             imap_port: 993,
             smtp_host: "".into(),
@@ -907,7 +944,7 @@ impl Store {
         ];
         self.save_messages(samples.into_iter().enumerate().map(
             |(index, (name, email, subject, body, category, read, starred))| Message {
-                id: format!("demo-{}", index + 1),
+                id: format!("sample-{}", index + 1),
                 account_id: account.id.clone(),
                 from_name: name.into(),
                 from_email: email.into(),
@@ -917,13 +954,14 @@ impl Store {
                 preview: preview(body),
                 body: body.into(),
                 html_body: None,
-                date: (Utc::now() - Duration::minutes((index as i64) * 43 + 8)).to_rfc3339(),
+                date:
+                    (Utc::now() - chrono::Duration::minutes((index as i64) * 43 + 8)).to_rfc3339(),
                 folder: "inbox".into(),
                 is_read: read,
                 is_starred: starred,
                 category: category.into(),
                 attachments: vec![],
-                message_id: Some(format!("<demo-{}@alice.local>", index + 1)),
+                message_id: Some(format!("<sample-{}@alice.local>", index + 1)),
                 in_reply_to: None,
                 remote_mailbox: None,
                 remote_uid: None,
@@ -931,72 +969,26 @@ impl Store {
                 invite: None,
             },
         ))?;
-        self.save_message(&demo_invitation(&account)?)?;
+        self.save_message(&fixture_invitation(&account)?)?;
         Ok(account)
     }
-    /// Records the account's answer to the invitation in message `id`, on every copy of that
-    /// message the account has (Gmail keeps one in several mailboxes).
-    pub fn record_rsvp(&self, id: &str, response: Rsvp) -> Result<Message> {
-        let mut db = self.db.lock();
-        let tx = db.transaction()?;
-        let data: String = tx
-            .query_row("SELECT data FROM messages WHERE id=?1", [id], |r| r.get(0))
-            .context("Message not found")?;
-        let message: Message = serde_json::from_str(&data)?;
-        let uid = message
-            .invite
-            .as_ref()
-            .map(|i| i.uid.clone())
-            .context("This message has no calendar invitation")?;
-        let mut ids = vec![id.to_string()];
-        if let Some(message_id) = &message.message_id {
-            let mut copies = tx.prepare("SELECT id FROM messages WHERE json_extract(data,'$.account_id')=?1 AND json_extract(data,'$.message_id')=?2 AND id<>?3")?;
-            ids.extend(
-                copies
-                    .query_map(params![message.account_id, message_id, id], |r| {
-                        r.get::<_, String>(0)
-                    })?
-                    .collect::<rusqlite::Result<Vec<_>>>()?,
-            );
-        }
-        let mut updated = None;
-        for copy_id in ids {
-            let data: String =
-                tx.query_row("SELECT data FROM messages WHERE id=?1", [&copy_id], |r| {
-                    r.get(0)
-                })?;
-            let mut copy: Message = serde_json::from_str(&data)?;
-            let Some(invite) = copy.invite.as_mut().filter(|i| i.uid == uid) else {
-                continue;
-            };
-            invite.response = Some(response);
-            tx.execute(
-                "UPDATE messages SET data=?2 WHERE id=?1",
-                params![copy_id, serde_json::to_string(&copy)?],
-            )?;
-            if copy_id == id {
-                updated = Some(copy);
-            }
-        }
-        tx.commit()?;
-        updated.context("Message not found")
-    }
 }
-/// The demo inbox's calendar invitation, written as Google Calendar writes them: a review a few
+#[cfg(test)]
+/// The fixture's calendar invitation, written as Google Calendar writes them: a review a few
 /// weekdays ahead at 10:00 in Los Angeles, with the zone's `VTIMEZONE`.
-fn demo_invitation(account: &Account) -> Result<Message> {
+fn fixture_invitation(account: &Account) -> Result<Message> {
     use chrono::{Datelike, TimeZone, Weekday};
     use chrono_tz::America::Los_Angeles;
     let now = Utc::now();
-    let mut day = now.with_timezone(&Los_Angeles).date_naive() + Duration::days(3);
+    let mut day = now.with_timezone(&Los_Angeles).date_naive() + chrono::Duration::days(3);
     while matches!(day.weekday(), Weekday::Sat | Weekday::Sun) {
-        day += Duration::days(1);
+        day += chrono::Duration::days(1);
     }
     let start = Los_Angeles
-        .from_local_datetime(&day.and_hms_opt(10, 0, 0).context("Invalid demo time")?)
+        .from_local_datetime(&day.and_hms_opt(10, 0, 0).context("Invalid fixture time")?)
         .earliest()
-        .context("Invalid demo time")?;
-    let end = start + Duration::minutes(45);
+        .context("Invalid fixture time")?;
+    let end = start + chrono::Duration::minutes(45);
     let local = |time: chrono::DateTime<chrono_tz::Tz>| time.format("%Y%m%dT%H%M%S").to_string();
     let ics = [
         "BEGIN:VCALENDAR".to_string(),
@@ -1027,7 +1019,7 @@ fn demo_invitation(account: &Account) -> Result<Message> {
         format!("DTEND;TZID=America/Los_Angeles:{}", local(end)),
         format!("DTSTAMP:{}", now.format("%Y%m%dT%H%M%SZ")),
         "ORGANIZER;CN=Maya Patel:mailto:maya@studio-north.co".into(),
-        "UID:demo-13-identity-review@studio-north.co".into(),
+        "UID:sample-13-identity-review@studio-north.co".into(),
         "ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED;CN=Maya Pat".into(),
         " el;X-NUM-GUESTS=0:mailto:maya@studio-north.co".into(),
         "ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;RSVP=".into(),
@@ -1050,7 +1042,7 @@ fn demo_invitation(account: &Account) -> Result<Message> {
         "Hi Alex,\n\nBefore we share the identity directions with the wider team, I'd love to walk you through them. I've booked 45 minutes at the studio; there's a video link too if you'd rather join remotely.\n\nIf the time doesn't work, let me know and I'll find another.\n\nMaya\n\nIdentity review — Studio North × Form\n{when} · 10am – 10:45am (Pacific Time)\nStudio North, 2150 Mission St, San Francisco\nJoin by video: https://meet.example.com/studio-north-review"
     );
     Ok(Message {
-        id: "demo-13".into(),
+        id: "sample-13".into(),
         account_id: account.id.clone(),
         from_name: "Maya Patel".into(),
         from_email: "maya@studio-north.co".into(),
@@ -1063,13 +1055,13 @@ fn demo_invitation(account: &Account) -> Result<Message> {
         preview: preview(&body),
         body,
         html_body: None,
-        date: (now - Duration::minutes(30)).to_rfc3339(),
+        date: (now - chrono::Duration::minutes(30)).to_rfc3339(),
         folder: "inbox".into(),
         is_read: false,
         is_starred: false,
         category: "work".into(),
         attachments: vec![],
-        message_id: Some("<demo-13@alice.local>".into()),
+        message_id: Some("<sample-13@alice.local>".into()),
         in_reply_to: None,
         remote_mailbox: None,
         remote_uid: None,
@@ -1077,7 +1069,6 @@ fn demo_invitation(account: &Account) -> Result<Message> {
         invite: Some(invite),
     })
 }
-pub const DEMO_ACCOUNT_ID: &str = "demo";
 /// The owner of contacts imported from the operating system's address book.
 pub const SYSTEM_CONTACTS: &str = "system";
 /// An address book contact as stored: who brought it (`owner`: an account ID, a DAV source ID or
@@ -1464,9 +1455,9 @@ pub fn preview(body: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    fn store_with_demo(path: &Path) -> Result<Store> {
+    fn store_with_fixture(path: &Path) -> Result<Store> {
         let store = Store::open(path)?;
-        store.add_demo()?;
+        store.add_fixture()?;
         Ok(store)
     }
     #[test]
@@ -1510,41 +1501,21 @@ mod tests {
         Ok(())
     }
     #[test]
-    fn sample_data_is_opt_in_and_the_demo_stays_until_a_real_account_exists() -> Result<()> {
+    fn sample_accounts_from_earlier_builds_are_cleared_on_open() -> Result<()> {
         let dir = tempfile::tempdir()?;
         let path = dir.path().join("mail.db");
         let store = Store::open(&path)?;
         assert!(store.accounts()?.is_empty());
-        assert_eq!(store.list(&MessageQuery::default())?.total, 0);
-        assert_eq!(store.add_demo()?.id, DEMO_ACCOUNT_ID);
-        store.add_demo()?;
-        assert_eq!(store.accounts()?.len(), 1);
-        assert_eq!(store.list(&MessageQuery::default())?.total, 13);
-        assert!(
-            store
-                .remove_account(DEMO_ACCOUNT_ID)
-                .unwrap_err()
-                .to_string()
-                .contains("real mail account")
-        );
-        let mut real = store.account(DEMO_ACCOUNT_ID)?;
+        let mut real = store.add_fixture()?;
+        let mut mail = store.message("sample-1")?;
         real.id = "real".into();
-        real.is_demo = false;
         store.save_account(&real)?;
-        let mut mail = store.message("demo-1")?;
-        mail.id = "real-1".into();
-        mail.account_id = real.id.clone();
-        store.save_message(&mail)?;
-        // Demo mail is shown alongside real mail, not hidden behind it.
-        assert_eq!(store.list(&MessageQuery::default())?.total, 14);
-        store.remove_account(DEMO_ACCOUNT_ID)?;
-        assert_eq!(store.list(&MessageQuery::default())?.total, 1);
+        store.remove_account(FIXTURE_ACCOUNT_ID)?;
         drop(store);
         // Sample accounts seeded by earlier builds are cleared on open; real accounts stay.
         let legacy = Connection::open(&path)?;
         let mut sample = real.clone();
-        sample.id = "demo-work".into();
-        sample.is_demo = true;
+        sample.id = "demo".into();
         legacy.execute(
             "INSERT INTO accounts VALUES(?1,?2)",
             params![sample.id, serde_json::to_string(&sample)?],
@@ -1571,7 +1542,7 @@ mod tests {
     #[test]
     fn category_counts_and_pages_use_the_same_account_scope() -> Result<()> {
         let dir = tempfile::tempdir()?;
-        let store = store_with_demo(&dir.path().join("mail.db"))?;
+        let store = store_with_fixture(&dir.path().join("mail.db"))?;
         for m in store.list(&MessageQuery::default())?.messages {
             store.patch(
                 &m.id,
@@ -1581,12 +1552,12 @@ mod tests {
                 },
             )?;
         }
-        let mut mail = store.message("demo-1")?;
+        let mut mail = store.message("sample-1")?;
         mail.folder = "inbox".into();
         for i in 0..65 {
             mail.id = format!("scope-{i:02}");
             mail.account_id = if i < 60 {
-                DEMO_ACCOUNT_ID
+                FIXTURE_ACCOUNT_ID
             } else {
                 "other-account"
             }
@@ -1594,12 +1565,12 @@ mod tests {
             mail.category = if i >= 55 { "work" } else { "personal" }.into();
             mail.is_read = i % 2 == 1;
             mail.body = "HÉLLO, user".into();
-            mail.date = (Utc::now() - Duration::minutes(i)).to_rfc3339();
+            mail.date = (Utc::now() - chrono::Duration::minutes(i)).to_rfc3339();
             store.save_message(&mail)?;
         }
         let query = MessageQuery {
             folder: Some("inbox".into()),
-            account_id: Some(DEMO_ACCOUNT_ID.into()),
+            account_id: Some(FIXTURE_ACCOUNT_ID.into()),
             category: Some("work".into()),
             limit: Some(2),
             offset: Some(2),
@@ -1634,8 +1605,8 @@ mod tests {
     #[test]
     fn importing_a_remote_message_with_a_new_id_preserves_its_existing_cache_row() -> Result<()> {
         let dir = tempfile::tempdir()?;
-        let store = store_with_demo(&dir.path().join("mail.db"))?;
-        let mut sent = store.message("demo-1")?;
+        let store = store_with_fixture(&dir.path().join("mail.db"))?;
+        let mut sent = store.message("sample-1")?;
         sent.folder = "sent".into();
         sent.remote_mailbox = Some("Sent".into());
         sent.remote_uid = Some(42);
@@ -1648,14 +1619,14 @@ mod tests {
             ..Default::default()
         })?;
         assert_eq!(page.total, 1);
-        assert_eq!(page.messages[0].id, "demo-1");
+        assert_eq!(page.messages[0].id, "sample-1");
         Ok(())
     }
     #[test]
     fn conversations_group_by_subject_once_and_follow_the_view() -> Result<()> {
         let dir = tempfile::tempdir()?;
-        let store = store_with_demo(&dir.path().join("mail.db"))?;
-        let original = store.message("demo-1")?;
+        let store = store_with_fixture(&dir.path().join("mail.db"))?;
+        let original = store.message("sample-1")?;
         let fixture = |id: &str,
                        subject: &str,
                        folder: &str,
@@ -1679,11 +1650,11 @@ mod tests {
         let me = ("Alex", "ALEX@form.studio");
         store.save_messages([
             fixture(
-                "demo-1",
+                "sample-1",
                 "A little room for big ideas",
                 "inbox",
                 "2030-01-01T10:00:00Z",
-                "<demo-1@alice.local>",
+                "<sample-1@alice.local>",
                 sophie,
                 false,
             ),
@@ -1748,14 +1719,14 @@ mod tests {
             ..Default::default()
         };
         let page = store.threads(&inbox)?;
-        // Thirteen demo conversations (one now with three messages) and two subjects with nothing to group by.
+        // Thirteen fixture conversations (one now with three messages) and two subjects with nothing to group by.
         assert_eq!(page.all_total, 15);
         let thread = &page.threads[0];
         assert_eq!(thread.message.id, "answer");
-        assert_eq!(thread.ids, ["answer", "demo-1"]);
+        assert_eq!(thread.ids, ["answer", "sample-1"]);
         assert_eq!(thread.count, 3);
         assert_eq!(thread.participants, ["Sophie Chen", "me"]);
-        assert_eq!(thread.unread_ids, ["demo-1", "answer"]);
+        assert_eq!(thread.unread_ids, ["sample-1", "answer"]);
         assert_eq!(
             page.threads
                 .iter()
@@ -1773,15 +1744,15 @@ mod tests {
         let ids = |messages: Vec<Message>| messages.into_iter().map(|m| m.id).collect::<Vec<_>>();
         assert_eq!(
             ids(store.conversation("answer")?),
-            ["demo-1", "my-reply", "answer"]
+            ["sample-1", "my-reply", "answer"]
         );
         assert_eq!(
             ids(store.conversation("my-reply-copy")?),
-            ["demo-1", "my-reply-copy", "answer"]
+            ["sample-1", "my-reply-copy", "answer"]
         );
         assert_eq!(
             ids(store.conversation("thrown-away")?),
-            ["demo-1", "my-reply", "answer", "thrown-away"]
+            ["sample-1", "my-reply", "answer", "thrown-away"]
         );
         assert_eq!(ids(store.conversation("blank-1")?), ["blank-1"]);
         let sent = store.threads(&MessageQuery {
@@ -1795,8 +1766,8 @@ mod tests {
     #[test]
     fn dates_sort_by_instant_and_synced_sent_mail_keeps_local_identity() -> Result<()> {
         let dir = tempfile::tempdir()?;
-        let store = store_with_demo(&dir.path().join("mail.db"))?;
-        let mut a = store.message("demo-1")?;
+        let store = store_with_fixture(&dir.path().join("mail.db"))?;
+        let mut a = store.message("sample-1")?;
         a.id = "offset-a".into();
         a.date = "2026-10-11T09:00:00+09:00".into();
         a.subject = "timezone fixture".into();
@@ -1812,7 +1783,7 @@ mod tests {
 
         let draft = Compose {
             id: Uuid::new_v4().to_string(),
-            account_id: DEMO_ACCOUNT_ID.into(),
+            account_id: FIXTURE_ACCOUNT_ID.into(),
             to: vec!["support@example.com".into()],
             subject: "sent fixture".into(),
             body: "hello".into(),
@@ -1842,7 +1813,7 @@ mod tests {
         sent.body = "Incoming mail cannot replace a delivery receipt".into();
         store.save_message(&sent)?;
         assert_eq!(store.message(&draft.id)?.body, "hello");
-        let account = store.account(DEMO_ACCOUNT_ID)?;
+        let account = store.account(FIXTURE_ACCOUNT_ID)?;
         let bytes = crate::providers::build_mail(&account, &store.message(&draft.id)?)?.formatted();
         use mailparse::MailHeaderMap;
         let parsed = mailparse::parse_mail(&bytes)?;
@@ -1856,9 +1827,9 @@ mod tests {
     fn inbox_changes_survive_restart_and_drafts_are_not_resent() -> Result<()> {
         let dir = tempfile::tempdir()?;
         let path = dir.path().join("mail.db");
-        let store = store_with_demo(&path)?;
+        let store = store_with_fixture(&path)?;
         store.patch(
-            "demo-1",
+            "sample-1",
             &MessagePatch {
                 folder: Some("archive".into()),
                 ..Default::default()
@@ -1866,7 +1837,7 @@ mod tests {
         )?;
         let draft = Compose {
             id: Uuid::new_v4().to_string(),
-            account_id: DEMO_ACCOUNT_ID.into(),
+            account_id: FIXTURE_ACCOUNT_ID.into(),
             to: vec!["sophie@form.studio".into()],
             subject: "Re: Ideas".into(),
             body: "Let's explore this.".into(),
@@ -1879,7 +1850,7 @@ mod tests {
         store.finish_delivery(&draft.id, true)?;
         drop(store);
         let reopened = Store::open(&path)?;
-        assert_eq!(reopened.message("demo-1")?.folder, "archive");
+        assert_eq!(reopened.message("sample-1")?.folder, "archive");
         assert!(!reopened.claim_delivery(&draft.id)?);
         assert_eq!(reopened.message(&draft.id)?.folder, "sent");
         assert_eq!(
@@ -1896,15 +1867,14 @@ mod tests {
     #[test]
     fn removing_an_account_deletes_only_its_local_data() -> Result<()> {
         let dir = tempfile::tempdir()?;
-        let store = store_with_demo(&dir.path().join("mail.db"))?;
-        let mut connected = store.account(DEMO_ACCOUNT_ID)?;
+        let store = store_with_fixture(&dir.path().join("mail.db"))?;
+        let mut connected = store.account(FIXTURE_ACCOUNT_ID)?;
         connected.id = "connected".into();
-        connected.is_demo = false;
         store.save_account(&connected)?;
         let mut other = connected.clone();
         other.id = "other".into();
         store.save_account(&other)?;
-        let mut cached = store.message("demo-1")?;
+        let mut cached = store.message("sample-1")?;
         cached.id = "connected-1".into();
         cached.account_id = connected.id.clone();
         store.save_message(&cached)?;
@@ -1978,13 +1948,13 @@ mod tests {
     fn search_ranks_sender_above_body_and_its_index_follows_every_change() -> Result<()> {
         let dir = tempfile::tempdir()?;
         let path = dir.path().join("mail.db");
-        let store = store_with_demo(&path)?;
-        let mut sender = store.message("demo-1")?;
+        let store = store_with_fixture(&path)?;
+        let mut sender = store.message("sample-1")?;
         sender.id = "sender".into();
         sender.from_name = "Quarterly Reports".into();
         sender.subject = "Hello".into();
         sender.body = "Nothing to see".into();
-        sender.date = (Utc::now() - Duration::days(3)).to_rfc3339();
+        sender.date = (Utc::now() - chrono::Duration::days(3)).to_rfc3339();
         let mut body = sender.clone();
         body.id = "body".into();
         body.from_name = "Zed".into();
@@ -2025,7 +1995,7 @@ mod tests {
         assert_eq!(ids(&store, "resched")?, ["body"]);
         let draft = store.save_draft(&Compose {
             id: Uuid::new_v4().to_string(),
-            account_id: DEMO_ACCOUNT_ID.into(),
+            account_id: FIXTURE_ACCOUNT_ID.into(),
             to: vec![],
             subject: "Quarterly draft".into(),
             body: String::new(),
@@ -2049,8 +2019,8 @@ mod tests {
     #[test]
     fn spam_conversations_are_isolated_and_restoring_inbox_rejoins_normal_mail() -> Result<()> {
         let dir = tempfile::tempdir()?;
-        let store = store_with_demo(&dir.path().join("mail.db"))?;
-        let mut normal = store.message("demo-1")?;
+        let store = store_with_fixture(&dir.path().join("mail.db"))?;
+        let mut normal = store.message("sample-1")?;
         normal.subject = "Quarantine fixture".into();
         normal.date = "2026-10-01T10:00:00Z".into();
         normal.is_read = true;
@@ -2111,12 +2081,12 @@ mod tests {
         );
         let ids = |messages: Vec<Message>| messages.into_iter().map(|m| m.id).collect::<Vec<_>>();
         assert_eq!(
-            ids(store.conversation("demo-1")?),
-            ["demo-1", "normal-reply"]
+            ids(store.conversation("sample-1")?),
+            ["sample-1", "normal-reply"]
         );
         assert_eq!(
             ids(store.conversation("normal-trash")?),
-            ["demo-1", "normal-reply", "normal-trash"]
+            ["sample-1", "normal-reply", "normal-trash"]
         );
         assert_eq!(ids(store.conversation("spam-reply")?), ["spam-reply"]);
         let spam_page = store.threads(&query(Some("spam")))?;
@@ -2142,7 +2112,7 @@ mod tests {
         assert!(inbox.threads[0].is_starred);
         assert_eq!(
             ids(store.conversation("spam-reply")?),
-            ["demo-1", "normal-reply", "spam-reply"]
+            ["sample-1", "normal-reply", "spam-reply"]
         );
         assert_eq!(
             store.list(&query(Some("starred")))?.messages[0].id,

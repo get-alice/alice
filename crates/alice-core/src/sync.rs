@@ -161,9 +161,6 @@ impl SyncEngine {
             entry.yield_requested.store(false, Ordering::Release);
         }
         let account = self.store.account(account_id)?;
-        if account.is_demo {
-            return Ok(Outcome::default());
-        }
         entry.active.store(true, Ordering::Release);
         let active = Active(&entry.active);
         let result = async {
@@ -211,7 +208,7 @@ impl SyncEngine {
     /// Catches up every account now; older mail keeps downloading in the background.
     pub async fn sync_all(&self) -> Result<Vec<(String, Result<Outcome>)>> {
         let mut results = Vec::new();
-        for account in self.store.accounts()?.into_iter().filter(|a| !a.is_demo) {
+        for account in self.store.accounts()? {
             results.push((
                 account.id.clone(),
                 self.sync_account(&account.id, Mode::CatchUp).await,
@@ -225,13 +222,7 @@ impl SyncEngine {
     pub async fn run_background(self: Arc<Self>) {
         loop {
             let mut more = false;
-            for account in self
-                .store
-                .accounts()
-                .unwrap_or_default()
-                .into_iter()
-                .filter(|a| !a.is_demo)
-            {
+            for account in self.store.accounts().unwrap_or_default() {
                 if let Ok(outcome) = self
                     .sync_account(&account.id, Mode::Backfill(BACKFILL_SLICE))
                     .await

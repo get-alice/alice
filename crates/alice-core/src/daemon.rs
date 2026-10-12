@@ -262,7 +262,6 @@ fn routes(state: AppState) -> Router {
         .route("/v1/accounts", get(accounts).post(connect))
         .route("/v1/accounts/{id}", delete(remove_account))
         .route("/v1/accounts/{id}/integrations", post(integrations))
-        .route("/v1/demo", post(add_demo))
         .route("/v1/connections/{id}", get(connection))
         .route("/v1/contacts", get(contacts_suggest))
         .route("/v1/contacts/sync", post(contacts_sync))
@@ -364,10 +363,6 @@ async fn remove_account(
         "message": credentials.err().map(|e| i18n::error_text(&e, locale)),
     })))
 }
-async fn add_demo(State(state): State<AppState>) -> ApiResult<Account> {
-    let _lock = state.hold(crate::store::DEMO_ACCOUNT_ID).await;
-    Ok(Json(state.store.add_demo()?))
-}
 async fn snapshot(
     State(state): State<AppState>,
     Query(query): Query<MessageQuery>,
@@ -424,7 +419,7 @@ async fn change(
     if input.folder.is_some() && ["drafts", "sent"].contains(&message.folder.as_str()) {
         return Err(anyhow::anyhow!(crate::text!("server.error.move_sent")).into());
     }
-    if !account.is_demo && message.folder != "drafts" {
+    if message.folder != "drafts" {
         let secret = oauth::credentials(&account).await?;
         let account = account.clone();
         let original = message.clone();
@@ -459,11 +454,7 @@ async fn change(
         }
         return Ok(Json(updated));
     }
-    let result = state.store.patch(&id, &input)?;
-    if message.folder != result.folder && (message.folder == "spam" || result.folder == "spam") {
-        state.contacts.invalidate();
-    }
-    Ok(Json(result))
+    Ok(Json(state.store.patch(&id, &input)?))
 }
 fn validate_patch(input: &MessagePatch) -> Result<()> {
     if input
@@ -499,22 +490,16 @@ async fn send(State(state): State<AppState>, Path(id): Path<String>) -> ApiResul
         return Err(anyhow::anyhow!(crate::text!("server.error.send_draft")).into());
     }
     let mail = providers::build_mail(&account, &message)?;
-    let secret = if account.is_demo {
-        Secret::default()
-    } else {
-        oauth::credentials(&account).await?
-    };
+    let secret = oauth::credentials(&account).await?;
     if !state.store.claim_delivery(&id)? {
         return Ok(Json(state.store.message(&id)?));
     }
-    if !account.is_demo {
-        let outcome =
-            tokio::task::spawn_blocking(move || providers::deliver(&account, &secret, &mail)).await;
-        let outcome = outcome.map_err(anyhow::Error::from).and_then(|r| r);
-        if let Err(error) = outcome {
-            state.store.finish_delivery(&id, false)?;
-            return Err(error.into());
-        }
+    let outcome =
+        tokio::task::spawn_blocking(move || providers::deliver(&account, &secret, &mail)).await;
+    let outcome = outcome.map_err(anyhow::Error::from).and_then(|r| r);
+    if let Err(error) = outcome {
+        state.store.finish_delivery(&id, false)?;
+        return Err(error.into());
     }
     state.store.finish_delivery(&id, true)?;
     Ok(Json(state.store.message(&id)?))
@@ -551,9 +536,6 @@ async fn attachment(
     ) else {
         return Err(anyhow::anyhow!(crate::text!("server.error.message_not_remote")).into());
     };
-    if account.is_demo {
-        return Err(anyhow::anyhow!(crate::text!("server.error.demo_attachments")).into());
-    }
     let secret = oauth::credentials(&account).await?;
     let known = message.attachments;
     let bytes = tokio::task::spawn_blocking(move || -> Result<Vec<u8>> {
@@ -604,7 +586,7 @@ fn percent_encode(value: &str) -> String {
         .collect()
 }
 /// Answers the invitation in message `id`: mails the organizer an iTIP `REPLY` through the account's
-/// SMTP server (the demo account only records it), then records the answer on the message.
+/// SMTP server, then records the answer on the message.
 async fn rsvp(
     State(state): State<AppState>,
     Path(id): Path<String>,
@@ -639,20 +621,18 @@ async fn rsvp(
     if input.comment.as_ref().is_some_and(|c| c.len() > 2_000) {
         return Err(anyhow::anyhow!(crate::text!("server.error.note_limits")).into());
     }
-    if !account.is_demo {
-        let mail = providers::rsvp_mail(
-            &account,
-            &message,
-            invite,
-            input.response,
-            input.comment.as_deref(),
-            locale,
-        )?;
-        let secret = oauth::credentials(&account).await?;
-        tokio::task::spawn_blocking(move || providers::deliver(&account, &secret, &mail))
-            .await
-            .map_err(anyhow::Error::from)??;
-    }
+    let mail = providers::rsvp_mail(
+        &account,
+        &message,
+        invite,
+        input.response,
+        input.comment.as_deref(),
+        locale,
+    )?;
+    let secret = oauth::credentials(&account).await?;
+    tokio::task::spawn_blocking(move || providers::deliver(&account, &secret, &mail))
+        .await
+        .map_err(anyhow::Error::from)??;
     Ok(Json(state.store.record_rsvp(&id, input.response)?))
 }
 async fn calendar_file(
@@ -735,7 +715,7 @@ async fn connect(
         .store
         .accounts()?
         .into_iter()
-        .find(|a| !a.is_demo && a.email.eq_ignore_ascii_case(&input.email));
+        .find(|a| a.email.eq_ignore_ascii_case(&input.email));
     if existing
         .as_ref()
         .is_some_and(|a| a.provider != input.provider)
@@ -768,7 +748,6 @@ async fn connect(
         name: input.name.trim().into(),
         email: input.email.trim().into(),
         provider: input.provider.clone(),
-        is_demo: false,
         imap_host: imap.into(),
         imap_port: input.imap_port.unwrap_or(993),
         smtp_host: smtp.into(),
@@ -910,7 +889,7 @@ async fn integrations(
         let account = save_integrations(&state, &id, wanted).await?;
         return Ok(Json(json!({"account":account})));
     }
-    if account.is_demo || account.provider == Provider::Imap {
+    if account.provider == Provider::Imap {
         return Err(anyhow::anyhow!(crate::text!("server.error.integration_provider")).into());
     }
     let secret = vault::load(&id).await?;
@@ -1108,9 +1087,11 @@ pub async fn run() -> Result<()> {
     if lock.try_lock().is_err() {
         bail!(crate::text!("server.error.daemon_running"));
     }
-    let listener = tokio::net::TcpListener::bind((std::net::Ipv4Addr::LOCALHOST, client::port()?))
+    let port = client::port()?;
+    // A string, not a number: numbers render with digit grouping, and a port reads "4815", not "4,815".
+    let listener = tokio::net::TcpListener::bind((std::net::Ipv4Addr::LOCALHOST, port))
         .await
-        .context(crate::text!("server.error.port_in_use"))?;
+        .with_context(|| crate::text!("server.error.port_in_use", port = port.to_string()))?;
     let token = format!("{}{}", Uuid::new_v4().simple(), Uuid::new_v4().simple());
     let token_path = root.join("daemon.token");
     std::fs::write(&token_path, &token)?;
@@ -1122,7 +1103,7 @@ pub async fn run() -> Result<()> {
     let state = AppState::new(Arc::new(Store::open(&root.join("mail.sqlite3"))?), token);
     tokio::spawn(state.sync.clone().run_background());
     tokio::spawn(contacts::run_background(state.store.clone()));
-    println!("Alice daemon listening on 127.0.0.1:{}", client::port()?);
+    println!("Alice daemon listening on 127.0.0.1:{port}");
     let shutdown = state.shutdown.clone();
     axum::serve(listener, routes(state))
         .with_graceful_shutdown(async move {
@@ -1136,25 +1117,25 @@ pub async fn run() -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::store::DEMO_ACCOUNT_ID;
+    use crate::store::FIXTURE_ACCOUNT_ID;
     use axum::{
         body::{Body, to_bytes},
         http::Request,
     };
     use std::time::Duration;
     use tower::ServiceExt;
-    fn demo_store(path: &std::path::Path) -> Result<Arc<Store>> {
+    fn fixture_store(path: &std::path::Path) -> Result<Arc<Store>> {
         let store = Store::open(path)?;
-        store.add_demo()?;
+        store.add_fixture()?;
         Ok(Arc::new(store))
     }
     #[tokio::test]
     async fn localized_errors_keep_their_status_and_protocol_codes() -> Result<()> {
         let dir = tempfile::tempdir()?;
-        let store = demo_store(&dir.path().join("mail.db"))?;
+        let store = fixture_store(&dir.path().join("mail.db"))?;
         let draft = Compose {
             id: Uuid::new_v4().to_string(),
-            account_id: DEMO_ACCOUNT_ID.into(),
+            account_id: FIXTURE_ACCOUNT_ID.into(),
             to: vec!["support@example.com".into()],
             subject: String::new(),
             body: String::new(),
@@ -1210,13 +1191,13 @@ mod tests {
                 "Ungültige Anfrage",
             ),
             (
-                "POST",
-                format!("/v1/messages/{}/send", draft.id),
+                "DELETE",
+                format!("/v1/messages/{}", draft.id),
                 "",
                 true,
                 StatusCode::CONFLICT,
-                "Delivery is pending or uncertain. Check your provider's Sent folder before creating another draft.",
-                "Die Zustellung steht noch aus oder ihr Ergebnis ist ungewiss. Prüfen Sie den Ordner Gesendet bei Ihrem Anbieter, bevor Sie einen weiteren Entwurf erstellen.",
+                "Delivery is pending or uncertain. Check your provider before discarding this draft.",
+                "Die Zustellung steht noch aus oder ihr Ergebnis ist ungewiss. Prüfen Sie dies bei Ihrem Anbieter, bevor Sie diesen Entwurf verwerfen.",
             ),
         ] {
             for (language, tag, expected) in [
@@ -1250,7 +1231,7 @@ mod tests {
     async fn language_preference_is_backward_compatible_and_persists() -> Result<()> {
         let dir = tempfile::tempdir()?;
         let path = dir.path().join("mail.db");
-        let store = demo_store(&path)?;
+        let store = fixture_store(&path)?;
         // Preferences written before language selection existed remain readable.
         let mut legacy = serde_json::to_value(Preferences::default())?;
         legacy.as_object_mut().unwrap().remove("language");
@@ -1294,10 +1275,10 @@ mod tests {
     #[tokio::test]
     async fn delivery_prevents_concurrent_edit_and_discard() -> Result<()> {
         let dir = tempfile::tempdir()?;
-        let store = demo_store(&dir.path().join("mail.db"))?;
+        let store = fixture_store(&dir.path().join("mail.db"))?;
         let draft = Compose {
             id: Uuid::new_v4().to_string(),
-            account_id: DEMO_ACCOUNT_ID.into(),
+            account_id: FIXTURE_ACCOUNT_ID.into(),
             to: vec!["support@example.com".into()],
             subject: "Original".into(),
             body: "Original body".into(),
@@ -1306,7 +1287,7 @@ mod tests {
         store.save_draft(&draft)?;
         let state = AppState::new(store.clone(), "test-token".into());
         let app = routes(state.clone());
-        let delivery = state.hold(DEMO_ACCOUNT_ID).await;
+        let delivery = state.hold(FIXTURE_ACCOUNT_ID).await;
         let edit_request = Request::builder()
             .method("POST")
             .uri("/v1/messages")
@@ -1347,12 +1328,11 @@ mod tests {
     async fn real_sent_flags_require_provider_credentials() -> Result<()> {
         keyring::set_default_credential_builder(keyring::mock::default_credential_builder());
         let dir = tempfile::tempdir()?;
-        let store = demo_store(&dir.path().join("mail.db"))?;
-        let mut account = store.account(DEMO_ACCOUNT_ID)?;
+        let store = fixture_store(&dir.path().join("mail.db"))?;
+        let mut account = store.account(FIXTURE_ACCOUNT_ID)?;
         account.id = Uuid::new_v4().to_string();
-        account.is_demo = false;
         store.save_account(&account)?;
-        let mut mail = store.message("demo-1")?;
+        let mut mail = store.message("sample-1")?;
         mail.account_id = account.id;
         mail.folder = "sent".into();
         mail.is_starred = false;
@@ -1364,107 +1344,29 @@ mod tests {
             .oneshot(
                 Request::builder()
                     .method("PATCH")
-                    .uri("/v1/messages/demo-1")
+                    .uri("/v1/messages/sample-1")
                     .header("Authorization", "Bearer test-token")
                     .header("Content-Type", "application/json")
                     .body(Body::from(r#"{"is_starred":true}"#))?,
             )
             .await?;
         assert!(!response.status().is_success());
-        assert!(!store.message("demo-1")?.is_starred);
+        assert!(!store.message("sample-1")?.is_starred);
         Ok(())
     }
-    #[tokio::test]
-    async fn message_patch_moves_to_spam_and_not_spam_restores_inbox() -> Result<()> {
-        let dir = tempfile::tempdir()?;
-        let store = demo_store(&dir.path().join("mail.db"))?;
-        let mut mail = store.message("demo-2")?;
-        mail.from_name = "Quarantine Contact".into();
-        mail.from_email = "quarantine-contact@example.test".into();
-        store.save_message(&mail)?;
-        let app = router(store.clone(), "test-token".into());
-        // Warm the recipient-suggestion cache before moving mail into quarantine.
-        let contacts = || async {
-            let response = app
-                .clone()
-                .oneshot(
-                    Request::builder()
-                        .uri("/v1/contacts?q=quarantine")
-                        .header("Authorization", "Bearer test-token")
-                        .body(Body::empty())?,
-                )
-                .await?;
-            anyhow::Ok(serde_json::from_slice::<Vec<Contact>>(
-                &to_bytes(response.into_body(), 1_000_000).await?,
-            )?)
-        };
-        assert_eq!(contacts().await?.len(), 1);
-        for folder in ["spam", "inbox"] {
-            let response = app
-                .clone()
-                .oneshot(
-                    Request::builder()
-                        .method("PATCH")
-                        .uri("/v1/messages/demo-2")
-                        .header("Authorization", "Bearer test-token")
-                        .header("Content-Type", "application/json")
-                        .body(Body::from(format!(r#"{{"folder":"{folder}"}}"#)))?,
-                )
-                .await?;
-            assert_eq!(response.status(), StatusCode::OK);
-            let updated: Message =
-                serde_json::from_slice(&to_bytes(response.into_body(), 1_000_000).await?)?;
-            assert_eq!(updated.folder, folder);
-            let response = app
-                .clone()
-                .oneshot(
-                    Request::builder()
-                        .uri(format!("/v1/messages?folder={folder}"))
-                        .header("Authorization", "Bearer test-token")
-                        .body(Body::empty())?,
-                )
-                .await?;
-            let page: MessagePage =
-                serde_json::from_slice(&to_bytes(response.into_body(), 1_000_000).await?)?;
-            assert!(page.messages.iter().any(|m| m.id == "demo-2"));
-            assert_eq!(contacts().await?.len(), usize::from(folder == "inbox"));
-        }
-        assert_eq!(
-            store
-                .list(&MessageQuery {
-                    folder: Some("spam".into()),
-                    ..Default::default()
-                })?
-                .total,
-            0
-        );
-        Ok(())
-    }
-
     #[tokio::test]
     async fn authenticated_clients_share_the_same_inbox() -> Result<()> {
         let dir = tempfile::tempdir()?;
-        let app = router(
-            demo_store(&dir.path().join("mail.db"))?,
-            "test-token".into(),
-        );
+        let store = fixture_store(&dir.path().join("mail.db"))?;
+        let app = router(store.clone(), "test-token".into());
         let unauth = app
             .clone()
             .oneshot(Request::builder().uri("/v1/messages").body(Body::empty())?)
             .await?;
         assert_eq!(unauth.status(), StatusCode::UNAUTHORIZED);
-        let response = app
-            .clone()
-            .oneshot(
-                Request::builder()
-                    .method("PATCH")
-                    .uri("/v1/messages/demo-2")
-                    .header("Authorization", "Bearer test-token")
-                    .header("Content-Type", "application/json")
-                    .body(Body::from(r#"{"folder":"archive"}"#))?,
-            )
-            .await?;
-        assert_eq!(response.status(), StatusCode::OK);
+        let mut mail = store.message("sample-2")?;
+        mail.folder = "archive".into();
+        store.save_message(&mail)?;
         let response = app
             .oneshot(
                 Request::builder()
@@ -1476,20 +1378,20 @@ mod tests {
         let page: MessagePage =
             serde_json::from_slice(&to_bytes(response.into_body(), 1_000_000).await?)?;
         assert_eq!(page.messages.len(), 1);
-        assert_eq!(page.messages[0].id, "demo-2");
+        assert_eq!(page.messages[0].id, "sample-2");
         Ok(())
     }
 
     #[tokio::test]
     async fn unread_count_counts_inbox_conversations_beyond_the_first_page() -> Result<()> {
         let dir = tempfile::tempdir()?;
-        let store = demo_store(&dir.path().join("mail.db"))?;
+        let store = fixture_store(&dir.path().join("mail.db"))?;
         let inbox = MessageQuery {
             folder: Some("inbox".into()),
             ..Default::default()
         };
         let before = store.threads(&inbox)?.unread_total;
-        let mut mail = store.message("demo-1")?;
+        let mut mail = store.message("sample-1")?;
         mail.is_read = false;
         // 120 new conversations of two unread messages each: the badge counts conversations, as the
         // Unread tab does, not messages.
@@ -1517,9 +1419,9 @@ mod tests {
     #[tokio::test]
     async fn otp_api_is_cursorless_ordered_and_claims_without_a_request_body() -> Result<()> {
         let dir = tempfile::tempdir()?;
-        let store = demo_store(&dir.path().join("mail.db"))?;
+        let store = fixture_store(&dir.path().join("mail.db"))?;
         let now = chrono::Utc::now();
-        let mut account = store.account(DEMO_ACCOUNT_ID)?;
+        let mut account = store.account(FIXTURE_ACCOUNT_ID)?;
         account.last_synced = Some((now - chrono::Duration::minutes(1)).to_rfc3339());
         store.save_account(&account)?;
         store.save_preferences(PreferencesPatch {
@@ -1599,7 +1501,7 @@ mod tests {
             serde_json::from_slice(&to_bytes(response.into_body(), 100).await?)?;
         assert_eq!(code.as_deref(), Some("009876"));
         let response = app
-            .oneshot(request("GET", "/v1/messages/demo-1/otp")?)
+            .oneshot(request("GET", "/v1/messages/sample-1/otp")?)
             .await?;
         let code: Option<String> =
             serde_json::from_slice(&to_bytes(response.into_body(), 100).await?)?;
@@ -1609,7 +1511,7 @@ mod tests {
     #[test]
     fn arrivals_are_unread_inbox_mail_received_since_the_previous_sync() -> Result<()> {
         let dir = tempfile::tempdir()?;
-        let template = demo_store(&dir.path().join("mail.db"))?.message("demo-1")?;
+        let template = fixture_store(&dir.path().join("mail.db"))?.message("sample-1")?;
         let mail = |id: &str, folder: &str, is_read: bool, date: &str| Message {
             id: id.into(),
             folder: folder.into(),
@@ -1661,10 +1563,10 @@ mod tests {
         assert_eq!(log.since(Some("earlier.7")).messages.len(), 3);
     }
     #[tokio::test]
-    async fn suggests_demo_correspondents_and_imported_system_contacts() -> Result<()> {
+    async fn suggests_fixture_correspondents_and_imported_system_contacts() -> Result<()> {
         let dir = tempfile::tempdir()?;
         let app = router(
-            demo_store(&dir.path().join("mail.db"))?,
+            fixture_store(&dir.path().join("mail.db"))?,
             "test-token".into(),
         );
         let call = |method: &str, uri: &str, body: &str| {
@@ -1711,13 +1613,13 @@ mod tests {
         Ok(())
     }
     #[tokio::test]
-    async fn answering_the_demo_invitation_records_the_response_without_delivery() -> Result<()> {
+    async fn invitations_parse_and_export_as_calendar_files() -> Result<()> {
         let dir = tempfile::tempdir()?;
-        let store = demo_store(&dir.path().join("mail.db"))?;
+        let store = fixture_store(&dir.path().join("mail.db"))?;
         let invite = store
-            .message("demo-13")?
+            .message("sample-13")?
             .invite
-            .context("demo-13 carries an invitation")?;
+            .context("sample-13 carries an invitation")?;
         assert_eq!(
             (
                 invite.method.as_str(),
@@ -1739,35 +1641,17 @@ mod tests {
                 .header("Content-Type", "application/json")
                 .body(Body::from(body.to_string()))
         };
-        let response = app
-            .clone()
-            .oneshot(post(
-                "/v1/messages/demo-13/rsvp",
-                r#"{"response":"tentative"}"#,
-            )?)
-            .await?;
-        assert_eq!(response.status(), StatusCode::OK);
-        let answered: Message =
-            serde_json::from_slice(&to_bytes(response.into_body(), 4_000_000).await?)?;
-        assert_eq!(
-            answered.invite.and_then(|i| i.response),
-            Some(Rsvp::Tentative)
-        );
-        assert_eq!(
-            store.message("demo-13")?.invite.and_then(|i| i.response),
-            Some(Rsvp::Tentative)
-        );
         // Mail without an invitation cannot be answered.
         let response = app
             .clone()
             .oneshot(post(
-                "/v1/messages/demo-1/rsvp",
+                "/v1/messages/sample-1/rsvp",
                 r#"{"response":"accepted"}"#,
             )?)
             .await?;
         assert_eq!(response.status(), StatusCode::BAD_REQUEST);
         let response = app
-            .oneshot(post("/v1/calendar/ics", r#"{"message_id":"demo-13"}"#)?)
+            .oneshot(post("/v1/calendar/ics", r#"{"message_id":"sample-13"}"#)?)
             .await?;
         assert_eq!(response.status(), StatusCode::OK);
         let file: EventFile =
@@ -1780,7 +1664,7 @@ mod tests {
         );
         assert!(
             file.ics
-                .contains("UID:demo-13-identity-review@studio-north.co")
+                .contains("UID:sample-13-identity-review@studio-north.co")
                 && !file.ics.contains("METHOD:")
         );
         Ok(())

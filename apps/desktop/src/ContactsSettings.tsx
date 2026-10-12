@@ -21,7 +21,6 @@ function synced(value: string | null | undefined) {
  * changes contacts or keeps a calendar of its own.
  */
 export default function ContactsSettings({ accounts, preferences, onPreferences, onChanged }: { accounts: Account[]; preferences: Preferences; onPreferences: (patch: Partial<Preferences>) => void; onChanged: () => void }) {
-  const real = accounts.filter(a => !a.is_demo);
   const [sources, setSources] = useState<DavSource[] | null>(null);
   const [calendars, setCalendars] = useState<CalendarList | null>(null);
   const [busy, setBusy] = useState('');
@@ -87,7 +86,7 @@ export default function ContactsSettings({ accounts, preferences, onPreferences,
   return <>
     <div className="settings-section-heading"><h2>{t('settings.contacts_calendars')}</h2><p>{t('settings.alice_suggests_recipients_as_you_write')}</p></div>
     <section className="preference-section"><h3>{t('settings.google_and_microsoft')}</h3><p>{t('settings.let_alice_read_the_address_book')}</p>
-      {real.length ? <div className="connected-accounts integration-list">{real.map(account => <Fragment key={account.id}><div>
+      {accounts.length ? <div className="connected-accounts integration-list">{accounts.map(account => <Fragment key={account.id}><div>
         <ProviderIcon provider={account.provider} /><span><strong>{account.name}</strong><small>{account.email}</small></span>
         {account.provider === 'imap' ? <span className="integration-note">{t('settings.uses_carddav_and_caldav')}</span> : <div className="integration-switches">{(['contacts', 'calendar'] as const).map(kind => <span key={kind}><input id={`${kind}-${account.id}`} type="checkbox" role="switch" checked={!!account.integrations?.[kind]} disabled={!!busy || !!flow} onChange={event => void allow(account, { [kind]: event.target.checked })} /><label htmlFor={`${kind}-${account.id}`}>{kind === 'contacts' ? t('settings.contacts') : t('settings.calendar')}</label></span>)}</div>}
       </div>

@@ -1,21 +1,46 @@
 name: Alice
-on: [push, pull_request]
+on:
+  push:
+    branches: ['**']
+    tags: ['v*']
+  pull_request:
+
+# A newer push to the same branch or PR cancels the run it supersedes.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # CI debug and test builds need no debug info; dropping it speeds up compiling and linking and shrinks the caches.
+  CARGO_PROFILE_DEV_DEBUG: 0
 
 jobs:
-  desktop-and-cli:
+  # Tests and release bundles run as separate jobs so each OS builds both at the same time.
+  # Windows works on a copy of the checkout that setup-dev-drive puts at `<mount-path>/<repo name>`: ReFS with Defender in performance mode builds faster.
+  test:
     strategy:
       fail-fast: false
       matrix:
         include:
           - os: macos-latest
-            bundles: app
+            workdir: .
           - os: windows-latest
-            bundles: nsis
+            workdir: ../dev-drive/alice
           - os: ubuntu-24.04
-            bundles: deb
+            workdir: .
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: ${{ matrix.workdir }}
     steps:
       - uses: actions/checkout@v4
+      - uses: samypr100/setup-dev-drive@v4
+        if: runner.os == 'Windows'
+        with:
+          drive-size: 20GB
+          mount-path: ../dev-drive
+          workspace-copy: true
+          trusted-dev-drive: true
       - uses: actions/setup-node@v4
         with:
           node-version: 24
@@ -24,6 +49,8 @@ jobs:
         with:
           components: rustfmt, clippy
       - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: ${{ matrix.workdir }} -> target
       - name: Linux prerequisites
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential libssl-dev libayatana-appindicator3-dev librsvg2-dev libdbus-1-dev
@@ -38,15 +65,133 @@ jobs:
         timeout-minutes: 5
       - run: python3 scripts/test-tui.py
         if: runner.os != 'Windows'
+
+  # Installers and release CLIs are built only for main and version tags.
+  bundle:
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            bundles: app,dmg
+            workdir: .
+          - os: windows-latest
+            bundles: nsis
+            workdir: ../dev-drive/alice
+          - os: ubuntu-24.04
+            bundles: deb
+            workdir: .
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: ${{ matrix.workdir }}
+    env:
+      # Fork PRs get no secrets; the condition keeps their macOS builds unsigned instead of failing.
+      MACOS_SIGNING: ${{ matrix.os == 'macos-latest' && secrets.APPLE_CERTIFICATE != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: samypr100/setup-dev-drive@v4
+        if: runner.os == 'Windows'
+        with:
+          drive-size: 20GB
+          mount-path: ../dev-drive
+          workspace-copy: true
+          trusted-dev-drive: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: ${{ matrix.workdir }} -> target
+      - name: Linux prerequisites
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential libssl-dev libayatana-appindicator3-dev librsvg2-dev libdbus-1-dev
+      - run: npm ci
       - run: cargo build -p alice --release --locked
+      # Tauri signs with APPLE_SIGNING_IDENTITY from this keychain and notarizes with the APPLE_API_* variables.
+      - name: Import Developer ID certificate
+        if: env.MACOS_SIGNING == 'true'
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_API_PRIVATE_KEY: ${{ secrets.APPLE_API_PRIVATE_KEY }}
+        run: |
+          keychain="$RUNNER_TEMP/signing.keychain-db"
+          password="$(openssl rand -base64 24)"
+          echo "$APPLE_CERTIFICATE" | base64 --decode > "$RUNNER_TEMP/certificate.p12"
+          security create-keychain -p "$password" "$keychain"
+          security set-keychain-settings -lut 21600 "$keychain"
+          security unlock-keychain -p "$password" "$keychain"
+          security import "$RUNNER_TEMP/certificate.p12" -k "$keychain" -P "$APPLE_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$password" "$keychain"
+          security list-keychains -d user -s "$keychain" login.keychain-db
+          rm "$RUNNER_TEMP/certificate.p12"
+          printf '%s' "$APPLE_API_PRIVATE_KEY" > "$RUNNER_TEMP/AuthKey.p8"
+          {
+            echo "APPLE_SIGNING_IDENTITY=${{ secrets.APPLE_SIGNING_IDENTITY }}"
+            echo "APPLE_API_ISSUER=${{ secrets.APPLE_API_ISSUER }}"
+            echo "APPLE_API_KEY=${{ secrets.APPLE_API_KEY }}"
+            echo "APPLE_API_KEY_PATH=$RUNNER_TEMP/AuthKey.p8"
+          } >> "$GITHUB_ENV"
       - run: npm run desktop:build -- --bundles ${{ matrix.bundles }}
+      # Tauri notarizes the app inside the DMG; the DMG and the bare CLI binary are notarized here. A bare binary cannot
+      # have a ticket stapled, so Gatekeeper looks its ticket up online.
+      - name: Notarize CLI and DMG
+        if: env.MACOS_SIGNING == 'true'
+        run: |
+          notarize() {
+            status=$(xcrun notarytool submit "$1" --key "$APPLE_API_KEY_PATH" --key-id "$APPLE_API_KEY" --issuer "$APPLE_API_ISSUER" --wait --output-format json | jq -r .status)
+            echo "$1: $status"
+            test "$status" = Accepted
+          }
+          codesign --force --sign "$APPLE_SIGNING_IDENTITY" --options runtime --timestamp target/release/alice
+          ditto -c -k target/release/alice "$RUNNER_TEMP/alice.zip"
+          notarize "$RUNNER_TEMP/alice.zip"
+          for dmg in target/release/bundle/dmg/*.dmg; do notarize "$dmg"; xcrun stapler staple "$dmg"; done
+      - name: Verify macOS signatures
+        if: env.MACOS_SIGNING == 'true'
+        run: |
+          spctl --assess --type execute -vv target/release/bundle/macos/Alice.app
+          codesign --verify --strict -vv target/release/alice
+      - name: Collect release files
+        shell: bash
+        run: |
+          mkdir release
+          case "$RUNNER_OS" in
+            macOS) cp target/release/bundle/dmg/*.dmg release/ ;;
+            Windows) cp target/release/bundle/nsis/*.exe release/ ;;
+            Linux) cp target/release/bundle/deb/*.deb release/ ;;
+          esac
+          if [ "$RUNNER_OS" = Windows ]; then
+            cp target/release/alice.exe "release/alice-cli-$RUNNER_OS-$RUNNER_ARCH.exe"
+          else
+            tar -czf "release/alice-cli-$RUNNER_OS-$RUNNER_ARCH.tar.gz" -C target/release alice
+          fi
       - uses: actions/upload-artifact@v4
         with:
           name: alice-${{ runner.os }}
-          path: |
-            target/release/bundle/
-            target/release/alice
-            target/release/alice.exe
+          path: ${{ matrix.workdir }}/release/
+          if-no-files-found: error
+
+  # A version tag publishes a GitHub release with every platform's files, once all tests pass.
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [test, bundle, mail-protocol]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: alice-*
+          path: release
+          merge-multiple: true
+      - run: gh release create "$GITHUB_REF_NAME" release/* --repo "$GITHUB_REPOSITORY" --verify-tag --generate-notes
+        env:
+          GH_TOKEN: ${{ github.token }}
 
   mail-protocol:
     runs-on: ubuntu-24.04

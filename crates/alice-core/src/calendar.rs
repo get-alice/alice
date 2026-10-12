@@ -45,7 +45,7 @@ fn sources(store: &Store) -> Result<Vec<Source>> {
     let mut sources: Vec<Source> = store
         .accounts()?
         .into_iter()
-        .filter(|account| account.integrations.calendar && !account.is_demo)
+        .filter(|account| account.integrations.calendar)
         .filter_map(|account| match account.provider {
             Provider::Gmail => Some(Source::Google(account)),
             Provider::Outlook => Some(Source::Microsoft(account)),
@@ -315,7 +315,7 @@ pub fn event_file(store: &Store, request: EventFileRequest) -> Result<EventFile>
 /// The account a Google or Microsoft calendar belongs to, if it still allows calendar access.
 fn calendar_account(store: &Store, id: &str, provider: Provider) -> Result<Account> {
     let account = store.account(id)?;
-    if account.provider != provider || account.is_demo {
+    if account.provider != provider {
         bail!(crate::text!("mail.calendar.choose"));
     }
     if !account.integrations.calendar {

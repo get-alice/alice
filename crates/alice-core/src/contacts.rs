@@ -837,7 +837,7 @@ fn unescape(value: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::store::{DEMO_ACCOUNT_ID, SYSTEM_CONTACTS};
+    use crate::store::{FIXTURE_ACCOUNT_ID, SYSTEM_CONTACTS};
     use chrono::{TimeDelta, Utc};
 
     fn suggest(directory: &Directory, store: &Store, q: &str, limit: usize) -> Result<Vec<String>> {
@@ -857,9 +857,9 @@ mod tests {
     fn people_you_write_to_outrank_people_who_only_write_to_you() -> Result<()> {
         let dir = tempfile::tempdir()?;
         let store = Store::open(&dir.path().join("mail.db"))?;
-        let account = store.add_demo()?;
+        let account = store.add_fixture()?;
         let me = account.email.as_str();
-        let template = store.message("demo-1")?;
+        let template = store.message("sample-1")?;
         let mut n: i64 = 0;
         let mut mail = |folder: &str, from: &str, to: &[&str], days_ago: i64| -> Result<()> {
             n += 1;
@@ -937,7 +937,7 @@ mod tests {
     fn matches_name_word_and_address_prefixes_ignoring_case_and_accents() -> Result<()> {
         let dir = tempfile::tempdir()?;
         let store = Store::open(&dir.path().join("mail.db"))?;
-        store.add_demo()?;
+        store.add_fixture()?;
         let imported = tidy([
             ImportedContact {
                 name: "Zoë  Ångström".into(),
@@ -955,7 +955,7 @@ mod tests {
         assert_eq!(imported.len(), 2);
         store.replace_contacts(ContactSource::System, SYSTEM_CONTACTS, &imported)?;
         let directory = Directory::default();
-        // The demo inbox has people at example.com too.
+        // The fixture has people at example.com too.
         for q in [
             "zoe",
             "ZOË",
@@ -1007,7 +1007,7 @@ mod tests {
         );
         assert_eq!(suggest(&directory, &store, "zoe", 0)?.len(), 1);
         // The sending account's people come first.
-        let mut account = store.account(DEMO_ACCOUNT_ID)?;
+        let mut account = store.account(FIXTURE_ACCOUNT_ID)?;
         account.id = "work".into();
         account.email = "me@work.example".into();
         account.integrations.contacts = true;
@@ -1037,7 +1037,7 @@ mod tests {
     fn provider_contacts_are_kept_only_while_the_account_shares_them() -> Result<()> {
         let dir = tempfile::tempdir()?;
         let store = Store::open(&dir.path().join("mail.db"))?;
-        let mut account = store.add_demo()?;
+        let mut account = store.add_fixture()?;
         let contacts = tidy([ImportedContact {
             name: "Zed".into(),
             email: "zed@example.com".into(),

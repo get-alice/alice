@@ -704,7 +704,7 @@ pub(crate) fn delete_account(tx: &Transaction<'_>, account_id: &str) -> Result<(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{providers, store::DEMO_ACCOUNT_ID};
+    use crate::{providers, store::FIXTURE_ACCOUNT_ID};
 
     struct Fixture {
         store: Store,
@@ -714,7 +714,7 @@ mod tests {
     fn fixture() -> Result<Fixture> {
         let dir = tempfile::tempdir()?;
         let store = Store::open(&dir.path().join("mail.db"))?;
-        let account = store.add_demo()?;
+        let account = store.add_fixture()?;
         for (folder, mailbox) in [
             ("inbox", "INBOX"),
             ("sent", "Sent"),
@@ -723,7 +723,7 @@ mod tests {
             ("spam", "Junk"),
         ] {
             store.save_mailbox_state(
-                DEMO_ACCOUNT_ID,
+                FIXTURE_ACCOUNT_ID,
                 mailbox,
                 &MailboxState {
                     folder: folder.into(),
@@ -764,7 +764,7 @@ mod tests {
             let needed = self
                 .store
                 .needs_content(
-                    DEMO_ACCOUNT_ID,
+                    FIXTURE_ACCOUNT_ID,
                     folder,
                     mailbox,
                     1,
@@ -787,7 +787,7 @@ mod tests {
             Ok((
                 needed,
                 self.store
-                    .import_copies(DEMO_ACCOUNT_ID, folder, mailbox, 1, None, vec![incoming])?
+                    .import_copies(FIXTURE_ACCOUNT_ID, folder, mailbox, 1, None, vec![incoming])?
                     .0,
             ))
         }
@@ -814,7 +814,7 @@ mod tests {
         // Flags come from the copy the message shows, not from its other copies.
         assert_eq!(
             f.store.apply_flags(
-                DEMO_ACCOUNT_ID,
+                FIXTURE_ACCOUNT_ID,
                 "All Mail",
                 1,
                 &[RemoteFlags {
@@ -827,7 +827,7 @@ mod tests {
         );
         assert_eq!(
             f.store.apply_flags(
-                DEMO_ACCOUNT_ID,
+                FIXTURE_ACCOUNT_ID,
                 "INBOX",
                 1,
                 &[RemoteFlags {
@@ -841,7 +841,11 @@ mod tests {
         assert!(f.store.message(&id)?.is_read);
         // Archived elsewhere (the Inbox copy left the server): the message moves to Archive.
         let before = f.store.revision();
-        assert_eq!(f.store.remove_copies(DEMO_ACCOUNT_ID, "INBOX", 1, &[7])?, 0);
+        assert_eq!(
+            f.store
+                .remove_copies(FIXTURE_ACCOUNT_ID, "INBOX", 1, &[7])?,
+            0
+        );
         let archived = f.store.message(&id)?;
         assert_eq!(
             (
@@ -859,7 +863,7 @@ mod tests {
         // With its last copy gone, the message is gone.
         assert_eq!(
             f.store
-                .remove_copies(DEMO_ACCOUNT_ID, "All Mail", 1, &[70])?,
+                .remove_copies(FIXTURE_ACCOUNT_ID, "All Mail", 1, &[70])?,
             1
         );
         assert!(f.store.message(&id).is_err());
@@ -899,7 +903,7 @@ mod tests {
             );
             assert_eq!(
                 f.store.apply_flags(
-                    DEMO_ACCOUNT_ID,
+                    FIXTURE_ACCOUNT_ID,
                     "INBOX",
                     1,
                     &[RemoteFlags {
@@ -911,7 +915,7 @@ mod tests {
                 0
             );
             f.store.apply_flags(
-                DEMO_ACCOUNT_ID,
+                FIXTURE_ACCOUNT_ID,
                 "Junk",
                 1,
                 &[RemoteFlags {
@@ -944,12 +948,15 @@ mod tests {
             assert_eq!(spam_page.threads[0].count, 1);
             assert_eq!(
                 f.store
-                    .remove_copies(DEMO_ACCOUNT_ID, "All Mail", 1, &[70])?,
+                    .remove_copies(FIXTURE_ACCOUNT_ID, "All Mail", 1, &[70])?,
                 0
             );
             assert_eq!(f.store.message(&id)?.folder, "spam");
             // Removing Junk on the provider restores the best remaining normal copy and its flags.
-            assert_eq!(f.store.remove_copies(DEMO_ACCOUNT_ID, "Junk", 1, &[5])?, 0);
+            assert_eq!(
+                f.store.remove_copies(FIXTURE_ACCOUNT_ID, "Junk", 1, &[5])?,
+                0
+            );
             let restored = f.store.message(&id)?;
             assert_eq!(
                 (restored.folder.as_str(), restored.remote_uid),
@@ -974,14 +981,18 @@ mod tests {
         moved.remote_uid = None;
         f.store.save_message(&moved)?;
         f.store.record_move(&moved, ("INBOX", 1, 7))?;
-        assert!(f.store.known_uids(DEMO_ACCOUNT_ID, "INBOX", 1)?.is_empty());
+        assert!(
+            f.store
+                .known_uids(FIXTURE_ACCOUNT_ID, "INBOX", 1)?
+                .is_empty()
+        );
         assert!(
             !f.arrive("archive", "All Mail", 70, "<moved-junk@x>", true)?
                 .0
         );
         assert_eq!(f.store.message(&id)?.folder, "spam");
         f.store
-            .remove_copies(DEMO_ACCOUNT_ID, "All Mail", 1, &[70])?;
+            .remove_copies(FIXTURE_ACCOUNT_ID, "All Mail", 1, &[70])?;
         assert_eq!(f.store.message(&id)?.folder, "spam");
         let (needed, added) = f.arrive("spam", "Junk", 5, "<moved-junk@x>", false)?;
         assert!(
@@ -995,13 +1006,17 @@ mod tests {
         restored.remote_uid = Some(8);
         f.store.save_message(&restored)?;
         f.store.record_move(&restored, ("Junk", 1, 5))?;
-        assert!(f.store.known_uids(DEMO_ACCOUNT_ID, "Junk", 1)?.is_empty());
+        assert!(
+            f.store
+                .known_uids(FIXTURE_ACCOUNT_ID, "Junk", 1)?
+                .is_empty()
+        );
         assert!(
             !f.arrive("archive", "All Mail", 71, "<moved-junk@x>", true)?
                 .0
         );
         assert_eq!(f.store.message(&id)?.folder, "inbox");
-        assert_eq!(f.store.known_uids(DEMO_ACCOUNT_ID, "INBOX", 1)?, [8]);
+        assert_eq!(f.store.known_uids(FIXTURE_ACCOUNT_ID, "INBOX", 1)?, [8]);
         assert_eq!(f.store.conversation(&id)?.len(), 1);
         Ok(())
     }
@@ -1027,12 +1042,12 @@ mod tests {
         };
         let (added, skipped) =
             f.store
-                .import_copies(DEMO_ACCOUNT_ID, "inbox", "INBOX", 1, None, vec![lone])?;
+                .import_copies(FIXTURE_ACCOUNT_ID, "inbox", "INBOX", 1, None, vec![lone])?;
         assert!(added.is_empty());
         assert_eq!(skipped, [9]);
         assert!(
             !f.store
-                .known_uids(DEMO_ACCOUNT_ID, "INBOX", 1)?
+                .known_uids(FIXTURE_ACCOUNT_ID, "INBOX", 1)?
                 .contains(&9)
         );
         Ok(())
@@ -1043,7 +1058,7 @@ mod tests {
         let f = fixture()?;
         let draft = Compose {
             id: uuid::Uuid::new_v4().to_string(),
-            account_id: DEMO_ACCOUNT_ID.into(),
+            account_id: FIXTURE_ACCOUNT_ID.into(),
             to: vec!["alex@form.studio".into()],
             subject: "Plans".into(),
             body: "Sent by Alice".into(),
@@ -1105,26 +1120,24 @@ mod tests {
         let (_, inbox) = f.arrive("inbox", "INBOX", 1, "<a@x>", false)?;
         f.arrive("archive", "All Mail", 10, "<a@x>", false)?;
         let (_, trash) = f.arrive("trash", "Trash", 5, "<b@x>", false)?;
-        f.store.forget_mailbox(DEMO_ACCOUNT_ID, "INBOX")?;
+        f.store.forget_mailbox(FIXTURE_ACCOUNT_ID, "INBOX")?;
         assert_eq!(f.store.message(&inbox[0].id)?.folder, "archive");
         assert_eq!(
-            f.store.known_uids(DEMO_ACCOUNT_ID, "INBOX", 1)?,
+            f.store.known_uids(FIXTURE_ACCOUNT_ID, "INBOX", 1)?,
             Vec::<u32>::new()
         );
-        assert!(f.store.mailbox_state(DEMO_ACCOUNT_ID, "INBOX")?.is_none());
+        assert!(
+            f.store
+                .mailbox_state(FIXTURE_ACCOUNT_ID, "INBOX")?
+                .is_none()
+        );
         f.store
-            .forget_other_mailboxes(DEMO_ACCOUNT_ID, &["All Mail".into()])?;
+            .forget_other_mailboxes(FIXTURE_ACCOUNT_ID, &["All Mail".into()])?;
         assert!(f.store.message(&trash[0].id).is_err());
-        assert_eq!(f.store.sync_totals(DEMO_ACCOUNT_ID)?, (1, 0));
-        // The demo inbox can only be removed once a real account exists.
-        f.store.save_account(&Account {
-            id: "work".into(),
-            is_demo: false,
-            ..f.account.clone()
-        })?;
-        f.store.remove_account(DEMO_ACCOUNT_ID)?;
+        assert_eq!(f.store.sync_totals(FIXTURE_ACCOUNT_ID)?, (1, 0));
+        f.store.remove_account(FIXTURE_ACCOUNT_ID)?;
         assert_eq!(
-            f.store.known_uids(DEMO_ACCOUNT_ID, "All Mail", 1)?,
+            f.store.known_uids(FIXTURE_ACCOUNT_ID, "All Mail", 1)?,
             Vec::<u32>::new()
         );
         assert!(
@@ -1140,7 +1153,7 @@ mod tests {
         let path = dir.path().join("mail.db");
         let (account, legacy, current_id, sent_id) = {
             let store = Store::open(&path)?;
-            let account = store.add_demo()?;
+            let account = store.add_fixture()?;
             let raw = |id: &str| {
                 format!(
                     "From: Ana <ana@example.test>\r\nSubject: Plans\r\nMessage-ID: {id}\r\nDate: Thu, 01 Oct 2026 10:00:00 +0000\r\n\r\nBody\r\n"
@@ -1411,9 +1424,12 @@ mod tests {
         let (database, folders) = f.store.storage()?;
         let (_, inbox) = folders
             .iter()
-            .find(|(account, usage)| account == DEMO_ACCOUNT_ID && usage.folder == "inbox")
+            .find(|(account, usage)| account == FIXTURE_ACCOUNT_ID && usage.folder == "inbox")
             .unwrap();
-        assert_eq!(inbox.messages, 14, "thirteen demo messages and the new one");
+        assert_eq!(
+            inbox.messages, 14,
+            "thirteen fixture messages and the new one"
+        );
         assert!(inbox.bytes > 0 && database >= inbox.bytes);
         Ok(())
     }

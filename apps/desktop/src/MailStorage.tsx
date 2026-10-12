@@ -25,7 +25,6 @@ export default function MailStorage({ accounts, window, onWindow }: { accounts: 
     const timer = setInterval(() => { if (!document.hidden) void load(); }, 3000);
     return () => { active = false; clearInterval(timer); };
   }, []);
-  const real = accounts.filter(a => !a.is_demo);
   const folderLabels = folderNames();
   return <section className="preference-section mail-storage">
     <h3>{t('settings.mail_on_this_device')}</h3>
@@ -34,7 +33,7 @@ export default function MailStorage({ accounts, window, onWindow }: { accounts: 
       <div className="segmented-control" role="group" aria-label={t('settings.keep_mail_from_the_last')}>{windows().map(([id, label]) => <button key={id} aria-pressed={window === id} className={window === id ? 'selected' : ''} onClick={() => onWindow(id)}>{window === id && <Glide group="sync-window" />}{label}</button>)}</div>
     </div>
     {error && <p className="form-error" role="alert">{error}</p>}
-    {report && <div className="storage-list">{real.map(account => {
+    {report && <div className="storage-list">{accounts.map(account => {
       const usage = report.accounts.find(a => a.account_id === account.id);
       if (!usage) return null;
       const { sync } = usage;

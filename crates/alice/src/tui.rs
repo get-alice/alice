@@ -369,10 +369,6 @@ async fn run_loop(client: &Client, terminal: &mut ratatui::DefaultTerminal) -> R
                 (Some(response), Some(m)) if mutation.is_none() => {
                     let client = client.clone();
                     let path = format!("/v1/messages/{}/rsvp", crate::encode(&m.id));
-                    let demo = app
-                        .accounts
-                        .iter()
-                        .any(|a| a.id == m.account_id && a.is_demo);
                     mutation = Some(tokio::spawn(async move {
                         let message: Message = client
                             .post(
@@ -383,7 +379,7 @@ async fn run_loop(client: &Client, terminal: &mut ratatui::DefaultTerminal) -> R
                                 },
                             )
                             .await?;
-                        let text = crate::rsvp_done(&message, demo);
+                        let text = crate::rsvp_done(&message);
                         Ok(Update::Answered(Box::new(message), text))
                     }));
                     app.status
@@ -529,11 +525,7 @@ async fn run_loop(client: &Client, terminal: &mut ratatui::DefaultTerminal) -> R
                     .or_else(|| {
                         accounts
                             .iter()
-                            .find(|a| {
-                                a.id == app.preferences.default_account_id
-                                    && (!a.is_demo || accounts.iter().all(|a| a.is_demo))
-                            })
-                            .or_else(|| accounts.iter().find(|a| !a.is_demo))
+                            .find(|a| a.id == app.preferences.default_account_id)
                             .or(accounts.first())
                             .map(|a| a.id.clone())
                     });

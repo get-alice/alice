@@ -516,7 +516,7 @@ mod tests {
     fn html_only_mime_is_decoded_before_recognition() -> Result<()> {
         let dir = tempfile::tempdir()?;
         let store = Store::open(&dir.path().join("mail.db"))?;
-        let account = store.add_demo()?;
+        let account = store.add_fixture()?;
         let raw = format!(
             "Subject: =?UTF-8?Q?Your_verification_code?=\r\nContent-Type: text/html; charset=utf-8\r\nContent-Transfer-Encoding: quoted-printable\r\n\r\n<p>{}</p><p>Your verification code is <b>001234</b>.</p>",
             "Introductory text. ".repeat(40)
@@ -585,9 +585,8 @@ mod tests {
         let path = dir.path().join("mail.db");
         let store = Store::open(&path)?;
         assert!(!store.preferences()?.otp_autocopy);
-        let mut account = store.add_demo()?;
+        let mut account = store.add_fixture()?;
         account.id = "otp-account".into();
-        account.is_demo = false;
         account.last_synced = None;
         store.save_account(&account)?;
         let now = Utc::now().timestamp();
