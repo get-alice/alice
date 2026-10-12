@@ -35,6 +35,7 @@ jobs:
       - run: npm run test:reader
       - run: npm run test:html
       - run: npm run test:smoke
+        timeout-minutes: 5
       - run: python3 scripts/test-tui.py
         if: runner.os != 'Windows'
       - run: cargo build -p alice --release --locked

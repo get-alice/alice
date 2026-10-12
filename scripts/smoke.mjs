@@ -26,7 +26,7 @@ async function api(method, path, body) {
   return { status: response.status, data: await response.json() };
 }
 function cli(...args) { return execFileSync(binary, args, { env, encoding: 'utf8' }); }
-async function stop() { if (daemon && daemon.exitCode === null) { const exited = once(daemon, 'exit'); daemon.kill('SIGINT'); await exited; } }
+async function stop(signal = 'SIGINT') { if (daemon && daemon.exitCode === null && daemon.signalCode === null) { const exited = once(daemon, 'exit'); daemon.kill(signal); await exited; } }
 
 try {
   start(); await ready();
@@ -70,7 +70,8 @@ try {
   assert.equal(JSON.parse(cli('read', controlId, '--json')).body, unsafeText);
   assert.ok(!cli('list', '--folder', 'drafts').includes('\u001b'));
   cli('discard', controlId);
-  await stop(); start(); await ready();
+  // Signal termination leaves exitCode null; repeated cleanup must not wait for a past exit.
+  await stop('SIGKILL'); await stop(); start(); await ready();
   assert.equal(JSON.parse(cli('list', '--folder', 'archive', '--json')).messages[0].id, 'demo-2');
   assert.equal(JSON.parse(cli('list', '--folder', 'sent', '--json')).total, 1);
   await stop();
