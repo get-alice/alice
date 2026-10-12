@@ -12,7 +12,7 @@ const port = probe.address().port; await new Promise(done => probe.close(done));
 const binary = resolve('target/debug', process.platform === 'win32' ? 'alice.exe' : 'alice');
 const env = { ...process.env, LC_ALL: 'C', ALICE_DATA_DIR: directory, ALICE_PORT: String(port) };
 let daemon;
-function start() { daemon = spawn(binary, ['daemon', 'run'], { env, stdio: 'ignore' }); }
+function start() { console.error('[DEBUG-ci-windows] Starting daemon'); daemon = spawn(binary, ['daemon', 'run'], { env, stdio: 'ignore' }); }
 async function ready() {
   for (let i = 0; i < 100; i++) {
     try { const token = readFileSync(join(directory, 'daemon.token'), 'utf8').trim(); const r = await fetch(`http://127.0.0.1:${port}/v1/health`, { headers: { Authorization: `Bearer ${token}` } }); if (r.ok) return; } catch { /* waiting for the process */ }
@@ -21,12 +21,13 @@ async function ready() {
   throw new Error('Daemon did not start');
 }
 async function api(method, path, body) {
+  console.error('[DEBUG-ci-windows] API', method, path);
   const token = readFileSync(join(directory, 'daemon.token'), 'utf8').trim();
   const response = await fetch(`http://127.0.0.1:${port}${path}`, { method, headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }, body: body === undefined ? undefined : JSON.stringify(body) });
   return { status: response.status, data: await response.json() };
 }
-function cli(...args) { return execFileSync(binary, args, { env, encoding: 'utf8' }); }
-async function stop(signal = 'SIGINT') { if (daemon && daemon.exitCode === null && daemon.signalCode === null) { const exited = once(daemon, 'exit'); daemon.kill(signal); await exited; } }
+function cli(...args) { console.error('[DEBUG-ci-windows] CLI', args[0], args[1]); return execFileSync(binary, args, { env, encoding: 'utf8' }); }
+async function stop(signal = 'SIGINT') { console.error('[DEBUG-ci-windows] Stopping daemon', signal, daemon?.exitCode, daemon?.signalCode); if (daemon && daemon.exitCode === null && daemon.signalCode === null) { const exited = once(daemon, 'exit'); daemon.kill(signal); await exited; } }
 
 try {
   start(); await ready();
@@ -76,6 +77,7 @@ try {
   assert.equal(JSON.parse(cli('list', '--folder', 'sent', '--json')).total, 1);
   await stop();
   try {
+    console.error('[DEBUG-ci-windows] Checking CLI daemon auto-start');
     const launched = spawnSync(binary, ['list', '--json'], { env, encoding: 'utf8', detached: process.platform !== 'win32' });
     assert.equal(launched.status, 0, launched.stderr);
     if (process.platform !== 'win32') {
