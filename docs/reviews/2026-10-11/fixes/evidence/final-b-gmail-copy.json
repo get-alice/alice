@@ -1,0 +1,12 @@
+{
+  "checkboxLabel": "Use a Gmail app password",
+  "checkboxRect": {
+    "bottom": 715.5703125,
+    "top": 695.5703125
+  },
+  "copy": "For a personal account, select “Use a Gmail app password” below for a quicker setup.",
+  "copyRect": {
+    "bottom": 579.0703125,
+    "top": 559.2734375
+  }
+}

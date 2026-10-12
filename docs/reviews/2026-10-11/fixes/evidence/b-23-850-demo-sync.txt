@@ -1,0 +1,163 @@
+- complementary:
+  - generic: alice.
+  - button "Compose ⌘ N":
+    - generic: Compose
+    - generic: ⌘ N
+  - navigation "Mail folders":
+    - button "Inbox 12":
+      - generic: Inbox
+      - generic: "12"
+    - button "Starred":
+      - generic: Starred
+    - button "Sent":
+      - generic: Sent
+    - button "Drafts":
+      - generic: Drafts
+    - button "Archive":
+      - generic: Archive
+    - button "Trash":
+      - generic: Trash
+  - generic: Your collections
+  - button "Work":
+    - generic: Work
+  - button "Personal":
+    - generic: Personal
+  - button "Reading list":
+    - generic: Reading list
+  - generic: Sample accounts
+  - button "Add account":
+  - button "Gmail Work alex@form.studio":
+    - generic "Gmail":
+    - strong: Work
+    - generic: alex@form.studio
+  - button "Outlook Personal alex@outlook.com":
+    - generic "Outlook":
+      - generic: O
+    - strong: Personal
+    - generic: alex@outlook.com
+  - button "Ask Alice AI":
+    - generic: Ask Alice
+    - generic: AI
+  - generic: AM
+  - strong: Alex Morgan
+  - generic: Demo workspace
+  - button "Settings":
+- banner:
+  - generic: Mail
+  - generic: All inboxes
+  - generic: Demo inbox
+  - generic: Connected
+  - button "Keyboard shortcuts":
+  - button "Toggle Alice assistant":
+- region "Message list":
+  - heading "Inbox" [level=1]
+  - paragraph: A little space for what matters.
+  - button "Sync accounts":
+  - textbox "Search mail":
+    - /placeholder: Search your mail
+  - generic: ⌘ K
+  - button "A little help from Alice Less sorting. More space to think.":
+    - strong: A little help from Alice
+    - generic: Less sorting. More space to think.
+  - button "All mail 12" [pressed]:
+    - text: All mail
+    - generic: "12"
+  - button "Unread 4":
+    - text: Unread
+    - generic: "4"
+  - button "Newest":
+    - generic: Newest
+  - 'generic "Messages: j and k navigate"':
+    - generic: Today
+    - 'button "Sophie Chen: A little room for big ideas, unread, starred"':
+      - generic: SC
+      - strong: Sophie Chen
+      - time: 5:35
+      - generic: A little room for big ideas
+      - paragraph: Hey Alex, I've been thinking about our conversation yesterday. What if we gave the new collection a little more room to breathe? Less noise, more intention. I p
+      - generic: Work
+    - 'button "Oliver Park: The website is ready for a first look, unread"':
+      - generic: OP
+      - strong: Oliver Park
+      - time: 4:52
+      - generic: The website is ready for a first look
+      - paragraph: "Hi Alex, The first version of the website is ready. All the little details we talked about are in: the quiet transitions, generous spacing, and that unexpected"
+      - generic: Work
+    - 'button "Maya Williams: Sunday, somewhere outside?, unread, starred"':
+      - generic: MW
+      - strong: Maya Williams
+      - time: 4:09
+      - generic: Sunday, somewhere outside?
+      - paragraph: Hey you, The forecast looks lovely for Sunday. Coffee, a long walk, and absolutely no agenda? I'm thinking the little place by the canal. Around 10? Maya
+      - generic: Personal
+    - 'button "Linear: Your weekly workspace, in perspective, read"':
+      - generic: L
+      - strong: Linear
+      - time: 3:26
+      - generic: Your weekly workspace, in perspective
+      - paragraph: Your team completed 12 issues this week. The studio website is on track for Friday, and the identity refresh is ready for review. Take a moment to appreciate th
+      - generic: Updates
+    - 'button "Daniel Foster: Re: Studio notes — October, read"':
+      - generic: DF
+      - strong: Daniel Foster
+      - time: 2:43
+      - generic: "Re: Studio notes — October"
+      - paragraph: Thanks Alex, This feels right. Let's go with the quieter direction and give the typography some space. I'll pull together the production estimates ahead of our
+      - generic: Work
+    - 'button "Are.na: A few things worth keeping, read"':
+      - generic: A
+      - strong: Are.na
+      - time: 2:00
+      - generic: A few things worth keeping
+      - paragraph: "This week's collection: small rituals, independent publishing, and the surprising beauty of everyday objects. A good place to begin: make a little room for some"
+      - generic: Reading list
+    - 'button "Emma Laurent: An invitation to collaborate, unread"':
+      - generic: EL
+      - strong: Emma Laurent
+      - time: 1:17
+      - generic: An invitation to collaborate
+      - paragraph: Hello Alex, We've been following your studio's work and would love to explore a collaboration for our winter exhibition. Would you be open to a short call next
+      - generic: Work
+    - 'button "Noah Kim: That book I was telling you about, read"':
+      - generic: NK
+      - strong: Noah Kim
+      - time: 0:34
+      - generic: That book I was telling you about
+      - paragraph: Found it! The one about noticing the things we usually walk past. I've left a copy for you at the studio. Page 42 is a good place to start. Noah
+      - generic: Personal
+    - generic: Yesterday
+    - 'button "Figma: The details make the difference, read"':
+      - generic: F
+      - strong: Figma
+      - time: 10 Oct
+      - generic: The details make the difference
+      - paragraph: A handful of new tools for your next idea. Explore the latest updates to components and prototyping in your workspace.
+      - generic: Updates
+    - 'button "The Modern House: Spaces that make you feel something, read"':
+      - generic: TM
+      - strong: The Modern House
+      - time: 10 Oct
+      - generic: Spaces that make you feel something
+      - paragraph: This weekend's journal explores a home built around a courtyard, a painter's quiet studio, and the art of living with less.
+      - generic: Reading list
+    - 'button "Sophie Chen: Thursday''s studio session, read"':
+      - generic: SC
+      - strong: Sophie Chen
+      - time: 10 Oct
+      - generic: Thursday's studio session
+      - paragraph: "Hi everyone, A quick reminder: we'll meet at the studio on Thursday at 2 pm to review the new identity directions. Bring your questions and something you found"
+      - generic: Work
+    - 'button "Goodhood: A slower kind of weekend, read"':
+      - generic: G
+      - strong: Goodhood
+      - time: 10 Oct
+      - generic: A slower kind of weekend
+      - paragraph: New arrivals for slower mornings and longer walks. Visit the store this weekend to explore the autumn selection.
+      - generic: Reading list
+  - generic: 1–12 of 12
+  - button "Previous page" [disabled]:
+  - button "Next page" [disabled]:
+- status:
+  - generic: Demo inbox is up to date
+  - button "Dismiss notification":
+- status: 1Password menu is available. Press down arrow to select.

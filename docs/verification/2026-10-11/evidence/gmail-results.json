@@ -1,0 +1,50 @@
+{
+  "authentication": "app_password",
+  "authorized_scope": "labeled self-addressed test messages only",
+  "checks": [
+    "SMTP self-send acknowledged",
+    "Repeated send returns existing receipt",
+    "IMAP received UTF-8 text and distinct Inbox/Sent copies",
+    "App/API and CLI read/star flags survive provider sync",
+    "Sent star survives provider sync",
+    "archive survives provider sync",
+    "trash survives provider sync",
+    "restore survives provider sync",
+    "CLI reply delivered with UTF-8 text and In-Reply-To",
+    "Native reply draft appears unchanged in CLI",
+    "Native SMTP send acknowledged",
+    "Native reply delivered once with UTF-8 text and reply headers",
+    "Native Inbox renders the delivered UTF-8 reply"
+  ],
+  "self_sent_messages": 3,
+  "timing": {
+    "baseline_sync_seconds": 58.39,
+    "batched_sync_seconds": 62.52,
+    "cached_sync_seconds": [
+      5.85,
+      5.57,
+      8.13
+    ]
+  },
+  "final_restart": {
+    "post_restart_sync_seconds": 8.52,
+    "errors": [],
+    "three_distinct_inbox_and_sent_copies_preserved": true,
+    "cli_and_native_receipt_ids_preserved": true
+  },
+  "html_reader": {
+    "native_djinni_styling_button_and_link_labels": true,
+    "native_test_123_mailspring_link_label": true,
+    "plain_text_retained": true,
+    "remote_images_hidden": true,
+    "live_tracking_resources_opened": false,
+    "migration_preserves_three_inbox_sent_pairs_and_cli_native_receipts": true,
+    "final_binary_restart_sync": {
+      "seconds": 4.32,
+      "errors": [],
+      "final_binary": true,
+      "html_examples_preserved": true,
+      "three_inbox_sent_pairs_preserved": true
+    }
+  }
+}

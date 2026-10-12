@@ -1,0 +1,47 @@
+{
+  "tray": {
+    "open": "Alice öffnen",
+    "sync": "Nach neuen E-Mails suchen",
+    "quit": "Alice beenden"
+  },
+  "notice": {
+    "grouped": {
+      "one": "{count} neue Nachricht in Ihrem Posteingang",
+      "other": "{count} neue Nachrichten in Ihrem Posteingang"
+    },
+    "no_subject": "(kein Betreff)",
+    "unknown_sender": "Unbekannter Absender",
+    "open": "Öffnen",
+    "bundle_required": "Für Alice-Benachrichtigungen wird die gebündelte App benötigt (npm run desktop:build)",
+    "permission_denied": "Benachrichtigungen für Alice sind in den Systemeinstellungen ausgeschaltet",
+    "failed": "Eine Benachrichtigung konnte nicht angezeigt werden: {error}"
+  },
+  "download": {
+    "attachment": "Anhang",
+    "reserved_name": "Anhang {name}"
+  },
+  "contacts": {
+    "build_unsupported": "Diese Version von Alice kann keinen Zugriff auf Mac-Kontakte anfordern. Verwenden Sie die Alice-App (npm run desktop oder npm run desktop:build)",
+    "denied": "Alice kann Ihre Kontakte nicht lesen. Erlauben Sie Alice den Zugriff unter Systemeinstellungen → Datenschutz & Sicherheit → Kontakte und schalten Sie Mac-Kontakte dann wieder ein",
+    "read_failed": "Ihre Kontakte konnten nicht gelesen werden",
+    "read_error": "Ihre Kontakte konnten nicht gelesen werden: {error}",
+    "platform_unsupported": "Das Importieren von Systemkontakten wird nur unter macOS unterstützt"
+  },
+  "error": {
+    "sign_in_url": "Ungültige Anmelde-URL",
+    "help_url": "Ungültige Hilfe-URL",
+    "email_url": "Dieser E-Mail-Link kann nicht sicher geöffnet werden",
+    "daemon_runtime": "Die Daemon-Laufzeitumgebung konnte nicht erstellt werden",
+    "start": "Alice konnte nicht gestartet werden",
+    "tray": "Alice konnte nicht zur Menüleiste hinzugefügt werden: {error}",
+    "message_missing": "Diese Nachricht kann nicht gefunden werden",
+    "downloads_folder": "Ihr Downloads-Ordner konnte nicht gefunden werden",
+    "attachment_save": "Der Anhang konnte nicht gespeichert werden: {error}",
+    "download_missing": "Dieser Download ist nicht mehr vorhanden",
+    "saved_only": "Nur gespeicherte Anhänge können angezeigt werden",
+    "cache_folder": "Der Cache-Ordner von Alice konnte nicht gefunden werden",
+    "event_save": "Der Termin konnte nicht gespeichert werden: {error}",
+    "calendar_open": "Keine Kalender-App hat den Termin geöffnet: {error}",
+    "too_many_files": "zu viele Dateien mit diesem Namen"
+  }
+}

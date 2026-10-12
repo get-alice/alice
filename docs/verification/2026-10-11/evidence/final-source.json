@@ -1,0 +1,17 @@
+{
+  "sha256": {
+    "Cargo.lock": "b84d8f2750c6ad4e99f22fda2210ed042005b4832a68c7730e3361d997d4b9cf",
+    "package-lock.json": "5d9bbf696630f1591c944062a223ceea3944f5433a969c77c887811d19560638",
+    "LICENSE": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
+    "crates/alice-core/src/providers.rs": "1234d143721cf76e46df9143aaf0ac0219c34d03b59f5d5d6bb5045fbddc1e86",
+    "crates/alice-core/src/store.rs": "88b1cd16aa7f2534711f2b7cef333d0a7d6a03f12cdc0cce10f6ae8aa4aee316",
+    "apps/desktop/src/HtmlMessage.tsx": "2f0bcf54c67015c91477d5106bb5f6abd10f94e0e590f9be002769d06c15f046",
+    "apps/desktop/src/emailHtml.ts": "09aa53f5f58b1f206a6f4ebb7664ff350c6eac502226c0f7d497f0db505b4bfb",
+    "apps/desktop/src/MessageBody.tsx": "4b46e5d1e929c7456bb69885d3429d03a5fde9808fe02a37dd9f72617ab70573",
+    "apps/desktop/src/App.tsx": "eb86fedfd8ca9e95e92cbc5b6b1676ad1aa8e44a14d5aa933fcb8d389654a088"
+  },
+  "builder_sources_match": {
+    "alice-linux-verify": true,
+    "alice-linux-x64-verify": true
+  }
+}

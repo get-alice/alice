@@ -1,0 +1,3 @@
+npm notice run alice@0.1.0 test:html
+npm notice run node scripts/test-html.mjs
+HTML reader: layout and link labels preserved; active content and unsafe links removed; images require opt-in; restrictive frame policy passed

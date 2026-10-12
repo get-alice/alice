@@ -1,0 +1,70 @@
+{
+  "reply": "Antworten",
+  "newMessage": "Neue Nachricht",
+  "saveAndCloseDraft": "Entwurf speichern und schließen",
+  "saveAndClose": "Speichern und schließen",
+  "close": "Nachrichtenfenster schließen",
+  "from": "Von",
+  "demoAccount": "{email} (Demo)",
+  "to": "An",
+  "subject": "Betreff",
+  "body": "Nachrichtentext",
+  "suggestedRecipients": "Vorgeschlagene Empfänger",
+  "sendDemo": "Demo senden",
+  "sendEmail": "E-Mail senden",
+  "saving": "Wird gespeichert…",
+  "saveDraft": "Entwurf speichern",
+  "discardDraft": "Entwurf verwerfen",
+  "demoNote": "Demo-Antworten bleiben in Alice. Es wird keine E-Mail zugestellt.",
+  "backupUnavailable": "Die Sicherung auf diesem Gerät ist nicht verfügbar. Lassen Sie dieses Fenster geöffnet, bis der Entwurf in Alice gespeichert ist.",
+  "saveFailed": "{error}. Ihre Sicherung auf diesem Gerät wird wieder geöffnet, wenn Sie zurückkehren.",
+  "status": {
+    "saved": "In Alice gespeichert",
+    "unsaved": "Noch nicht gespeichert",
+    "attention": "Beim Speichern ist ein Problem aufgetreten",
+    "backupSaving": "Auf diesem Gerät gespeichert · wird in Alice gespeichert…",
+    "saving": "Wird in Alice gespeichert…",
+    "sending": "Wird gesendet…"
+  },
+  "assistant": {
+    "label": "Alice-Assistent",
+    "close": "Assistenten schließen",
+    "providerNote": "Alice verwendet Ihren eigenen KI-Anbieter und API-Schlüssel.",
+    "connectProvider": "KI-Anbieter verbinden",
+    "privacyNote": "Nur angeforderte E-Mails werden mit Ihrem Anbieter geteilt.",
+    "summarize": "Zusammenfassen",
+    "draftReply": "Antwort entwerfen",
+    "addToCalendar": "Zum Kalender hinzufügen",
+    "attention": "Was erfordert meine Aufmerksamkeit?",
+    "prompts": {
+      "summarize": "Fassen Sie die bereitgestellten E-Mails kurz zusammen und listen Sie alles auf, was meine Aufmerksamkeit erfordert.",
+      "draftReply": "Entwerfen Sie eine freundliche, knappe Antwort auf diese E-Mail. Erfinden Sie keine Zusagen oder Fakten.",
+      "addToCalendar": "Finden Sie die Veranstaltung, das Treffen oder die Frist in dieser E-Mail und schlagen Sie dies als Kalendertermin vor. Verwenden Sie das in der E-Mail angegebene Datum, die Uhrzeit, die Zeitzone und den Ort. Erfinden Sie keine Einzelheiten.",
+      "attention": "Ermitteln Sie meine nächsten Aufgaben. Schlagen Sie vor, rein informative E-Mails als gelesen zu markieren und E-Mails zu markieren, die meine Aufmerksamkeit erfordern. Archivieren Sie nichts."
+    },
+    "thinking": "Alice denkt nach…",
+    "useDraft": "Diesen Entwurf verwenden",
+    "proposedChanges": {
+      "one": "{count} vorgeschlagene Änderung",
+      "other": "{count} vorgeschlagene Änderungen"
+    },
+    "actions": {
+      "archive": "archivieren",
+      "mark_read": "als gelesen markieren",
+      "star": "markieren"
+    },
+    "selectedMessage": "Ausgewählte Nachricht",
+    "applied": "Übernommen",
+    "applying": "Wird übernommen…",
+    "applyChanges": "Diese Änderungen übernehmen",
+    "applyFailed": "Einige Änderungen konnten nicht übernommen werden. {error}",
+    "ask": "Alice fragen",
+    "askEmail": "Fragen zu dieser E-Mail stellen…",
+    "askInbox": "Fragen zu Ihrem Posteingang stellen…",
+    "includeEmail": "Geöffnete E-Mail einbeziehen: {subject}",
+    "removeContext": "Diese E-Mail aus dem Kontext entfernen",
+    "addContext": "Diese E-Mail zum Kontext hinzufügen",
+    "noSubject": "(kein Betreff)",
+    "sendRequest": "Anfrage an Alice senden"
+  }
+}

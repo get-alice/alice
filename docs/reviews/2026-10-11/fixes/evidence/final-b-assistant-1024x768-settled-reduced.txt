@@ -1,0 +1,77 @@
+- complementary:
+  - generic: alice.
+  - button "Compose ⌘ N":
+    - generic: Compose
+    - generic: ⌘ N
+  - navigation "Mail folders":
+    - button "Inbox 12":
+      - generic: Inbox
+      - generic: "12"
+    - button "Starred":
+      - generic: Starred
+    - button "Sent":
+      - generic: Sent
+    - button "Drafts":
+      - generic: Drafts
+    - button "Archive":
+      - generic: Archive
+    - button "Trash":
+      - generic: Trash
+  - generic: Your collections
+  - button "Work":
+    - generic: Work
+  - button "Personal":
+    - generic: Personal
+  - button "Reading list":
+    - generic: Reading list
+  - generic: Sample accounts
+  - button "Add account":
+  - button "Gmail Work alex@form.studio":
+    - generic "Gmail":
+    - strong: Work
+    - generic: alex@form.studio
+  - button "Outlook Personal alex@outlook.com":
+    - generic "Outlook":
+      - generic: O
+    - strong: Personal
+    - generic: alex@outlook.com
+  - button "Ask Alice AI" [pressed]:
+    - generic: Ask Alice
+    - generic: AI
+  - generic: AM
+  - strong: Alex Morgan
+  - generic: Demo workspace
+  - button "Settings":
+- banner:
+  - generic: Mail
+  - generic: All inboxes
+  - generic: Demo inbox
+  - generic: Connected
+  - button "Keyboard shortcuts":
+  - button "Toggle Alice assistant" [expanded]:
+- complementary "Alice assistant":
+  - text: Alice
+  - button "Close assistant":
+  - heading "A little more clarity." [level=2]
+  - paragraph:
+    - text: A second pair of eyes.
+    - text: A first draft. A quieter inbox.
+  - button "This email" [pressed]
+  - button "Your inbox"
+  - generic: This email
+  - generic: A little room for big ideas
+  - strong: Make Alice yours.
+  - paragraph: Connect your AI provider to get started. You choose the model and bring your own key.
+  - button "Connect AI provider" [active]
+  - generic: Only requested mail is shared with your provider.
+  - button "Give me the short version":
+    - generic: Give me the short version
+  - button "Help me find the words":
+    - generic: Help me find the words
+  - button "What needs my attention?":
+    - generic: What needs my attention?
+  - textbox "Ask Alice":
+    - /placeholder: Ask a little, get a little space…
+  - button "Send request to Alice" [disabled]:
+  - paragraph: Your key. Your model. Your call.
+- status: 1Password menu is available. Press down arrow to select.

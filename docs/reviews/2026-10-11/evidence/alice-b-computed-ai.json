@@ -1,0 +1,126 @@
+{
+  "contrast": [
+    {
+      "background": "rgb(254, 252, 254)",
+      "color": "rgb(140, 120, 155)",
+      "fontSize": "11px",
+      "pseudo": null,
+      "ratio": 3.9,
+      "selector": ".settings-content label input"
+    },
+    {
+      "background": "rgb(254, 252, 254)",
+      "color": "rgb(162, 160, 171)",
+      "fontSize": "11px",
+      "pseudo": "::placeholder",
+      "ratio": 2.52,
+      "selector": ".settings-content label input"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "color": "rgb(135, 112, 144)",
+      "fontSize": "11px",
+      "pseudo": null,
+      "ratio": 4.42,
+      "selector": ".settings-section-heading p"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "color": "rgb(135, 112, 144)",
+      "fontSize": "10px",
+      "pseudo": null,
+      "ratio": 4.42,
+      "selector": ".privacy-note"
+    },
+    {
+      "background": "rgb(128, 103, 173)",
+      "color": "rgb(255, 255, 255)",
+      "fontSize": "11px",
+      "pseudo": null,
+      "ratio": 4.71,
+      "selector": ".primary"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "color": "rgb(143, 114, 167)",
+      "fontSize": "11px",
+      "pseudo": null,
+      "ratio": 4.09,
+      "selector": ".settings-tabs .active"
+    }
+  ],
+  "form": {
+    "controls": [
+      {
+        "ariaLabel": null,
+        "bounds": {
+          "height": 38.5,
+          "width": 307
+        },
+        "labels": [
+          "AI providerOpenAIAnthropicOpenAI-compatible / local"
+        ],
+        "required": false,
+        "tag": "SELECT"
+      },
+      {
+        "ariaLabel": null,
+        "bounds": {
+          "height": 36.5,
+          "width": 307
+        },
+        "labels": [
+          "Model ID"
+        ],
+        "required": true,
+        "tag": "INPUT"
+      },
+      {
+        "ariaLabel": null,
+        "bounds": {
+          "height": 36.5,
+          "width": 630
+        },
+        "labels": [
+          "API base URL"
+        ],
+        "required": true,
+        "tag": "INPUT"
+      },
+      {
+        "ariaLabel": null,
+        "bounds": {
+          "height": 34.5,
+          "width": 592
+        },
+        "labels": [
+          "API key"
+        ],
+        "required": false,
+        "tag": "INPUT"
+      }
+    ],
+    "dialog": {
+      "ariaLabel": null,
+      "ariaLabelledby": null,
+      "tag": "DIALOG",
+      "title": null
+    },
+    "tabs": [
+      {
+        "class": "",
+        "pressed": null,
+        "role": null,
+        "selected": null,
+        "text": "Mail accounts"
+      },
+      {
+        "class": "active",
+        "pressed": null,
+        "role": null,
+        "selected": null,
+        "text": "Alice & AI"
+      }
+    ]
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "buttonSizes": [
+    {
+      "disabled": false,
+      "height": 30,
+      "label": "Save and close draft",
+      "width": 30
+    },
+    {
+      "disabled": false,
+      "height": 30,
+      "label": "Close compose",
+      "width": 30
+    },
+    {
+      "disabled": true,
+      "height": 37,
+      "label": "Send demo",
+      "width": 117.0234375
+    },
+    {
+      "disabled": false,
+      "height": 37,
+      "label": "Save draft",
+      "width": 83.859375
+    },
+    {
+      "disabled": false,
+      "height": 26.5,
+      "label": "Discard changes",
+      "width": 96.296875
+    }
+  ],
+  "controls": [
+    {
+      "color": "rgb(140, 122, 155)",
+      "fontSize": "12px",
+      "id": "compose-from",
+      "label": null,
+      "labels": [
+        "From"
+      ],
+      "required": false,
+      "tag": "SELECT"
+    },
+    {
+      "color": "rgb(140, 122, 155)",
+      "fontSize": "12px",
+      "id": "compose-to",
+      "label": null,
+      "labels": [
+        "To"
+      ],
+      "required": false,
+      "tag": "INPUT"
+    },
+    {
+      "color": "rgb(140, 122, 155)",
+      "fontSize": "12px",
+      "id": "compose-subject",
+      "label": null,
+      "labels": [
+        "Subject"
+      ],
+      "required": false,
+      "tag": "INPUT"
+    },
+    {
+      "color": "rgb(140, 122, 155)",
+      "fontSize": "13px",
+      "id": "",
+      "label": "Message body",
+      "labels": [],
+      "required": false,
+      "tag": "TEXTAREA"
+    }
+  ],
+  "dialog": {
+    "clientHeight": 616,
+    "label": null,
+    "labelledby": null,
+    "overflowY": "auto",
+    "scrollHeight": 616
+  }
+}

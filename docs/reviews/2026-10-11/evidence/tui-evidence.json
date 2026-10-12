@@ -1,0 +1,8 @@
+{
+  "editor_left_actual_body": "HelloX",
+  "editor_left_expected_body": "HellXo",
+  "q_ignored_while_patch_pending": true,
+  "exit_delay_seconds": 4.04,
+  "compose_after_external_connect_actual_account": "demo-work",
+  "compose_after_external_connect_expected_account": "new-real"
+}

@@ -1,0 +1,403 @@
+Browser tab: 1076629032, Title: "Alice — A little space for your inbox", URL: "http://127.0.0.1:1420/".
+1 AXWebArea Alice — A little space for your inbox, URL: 127.0.0.1:1420/
+	148 container
+		149 text alice .
+		150 button Compose ⌘ N
+			151 text Compose
+			152 container
+				153 text ⌘  N
+		154 container Mail folders
+			155 button Inbox 12, Help: Inbox
+				156 text Inbox
+				157 text 12
+			158 button Starred
+			159 button Sent
+			160 button Drafts
+			161 button Archive
+			162 button Trash
+		163 text Your collections
+		164 checkbox Work, Value: 0
+		165 checkbox Personal, Value: 0
+		166 checkbox Reading list, Value: 0
+		167 text Sample accounts
+		168 button Add account
+		169 checkbox Gmail Work alex@form.studio, Help: alex@form.studio, Value: 0
+			170 container Gmail
+			171 text Work
+			172 text alex@form.studio
+		173 checkbox Outlook Personal alex@outlook.com, Help: alex@outlook.com, Value: 0
+			174 container Outlook
+				175 text O
+			176 text Personal
+			177 text alex@outlook.com
+		178 checkbox Ask Alice AI, Value: 1
+		179 text AM
+		180 text Alex Morgan
+		181 text Demo workspace
+		182 button Settings
+		183 text Mail All inboxes Demo inbox Connected
+		184 button Description: Keyboard shortcuts, Help: j/k in list or reader · r reply · e archive · ⌘K search · ⌘N compose
+		185 button (expanded) Description: Toggle Alice assistant, Secondary Actions: Collapse
+		186 container Message list
+			187 heading Inbox, Value: 1
+				188 text Inbox
+			189 text A little space for what matters.
+			190 button Sync accounts
+			191 text field (settable) Search mail
+			192 container
+				193 text ⌘  K
+			194 button A little help from Alice Less sorting. More space to think.
+				195 text A little help from Alice
+				196 text Less sorting. More space to think.
+			197 checkbox All mail 12, Value: 1
+			198 checkbox Unread 4, Value: 0
+			199 button Newest, Help: Newest first
+			200 container Messages: j and k navigate
+				201 text Today
+				202 checkbox Description: Sophie Chen: A little room for big ideas, unread, starred, Value: 0
+					203 text SC
+					204 text Sophie Chen
+					205 text 5:35
+					206 text A little room for big ideas
+					207 text Hey Alex, I've been thinking about our conversation yesterday. What if we gave the new collection a little more room to breathe? Less noise, more intention. I p
+					208 text Work
+				209 checkbox Description: Oliver Park: The website is ready for a first look, unread, Value: 0
+					210 text OP
+					211 text Oliver Park
+					212 text 4:52
+					213 text The website is ready for a first look
+					214 text Hi Alex, The first version of the website is ready. All the little details we talked about are in: the quiet transitions, generous spacing, and that unexpected
+					215 text Work
+				216 checkbox Description: Maya Williams: Sunday, somewhere outside?, unread, starred, Value: 0
+					217 text MW
+					218 text Maya Williams
+					219 text 4:09
+					220 text Sunday, somewhere outside?
+					221 text Hey you, The forecast looks lovely for Sunday. Coffee, a long walk, and absolutely no agenda? I'm thinking the little place by the canal. Around 10? Maya
+					222 text Personal
+				223 checkbox Description: Linear: Your weekly workspace, in perspective, read, Value: 0
+					224 text L
+					225 text Linear
+					226 text 3:26
+					227 text Your weekly workspace, in perspective
+					228 text Your team completed 12 issues this week. The studio website is on track for Friday, and the identity refresh is ready for review. Take a moment to appreciate th
+					229 text Updates
+				230 checkbox Description: Daniel Foster: Re: Studio notes — October, read, Value: 1
+					231 text DF
+					232 text Daniel Foster
+					233 text 2:43
+					234 text Re: Studio notes — October
+					235 text Thanks Alex, This feels right. Let's go with the quieter direction and give the typography some space. I'll pull together the production estimates ahead of our
+					236 text Work
+				237 checkbox Description: Are.na: A few things worth keeping, read, Value: 0
+					238 text A
+					239 text Are.na
+					240 text 2:00
+					241 text A few things worth keeping
+					242 text This week's collection: small rituals, independent publishing, and the surprising beauty of everyday objects. A good place to begin: make a little room for some
+					243 text Reading list
+				244 checkbox Description: Emma Laurent: An invitation to collaborate, unread, Value: 0
+					245 text EL
+					246 text Emma Laurent
+					247 text 1:17
+					248 text An invitation to collaborate
+					249 text Hello Alex, We've been following your studio's work and would love to explore a collaboration for our winter exhibition. Would you be open to a short call next
+					250 text Work
+				251 checkbox Description: Noah Kim: That book I was telling you about, read, Value: 0
+					252 text NK
+					253 text Noah Kim
+					254 text 0:34
+					255 text That book I was telling you about
+					256 text Found it! The one about noticing the things we usually walk past. I've left a copy for you at the studio. Page 42 is a good place to start. Noah
+					257 text Personal
+				258 text Yesterday
+				259 checkbox Description: Figma: The details make the difference, read, Value: 0
+					260 text F
+					261 text Figma
+					262 text 10 Oct
+					263 text The details make the difference
+					264 text A handful of new tools for your next idea. Explore the latest updates to components and prototyping in your workspace.
+					265 text Updates
+				266 checkbox Description: The Modern House: Spaces that make you feel something, read, Value: 0
+					267 text TM
+					268 text The Modern House
+					269 text 10 Oct
+					270 text Spaces that make you feel something
+					271 text This weekend's journal explores a home built around a courtyard, a painter's quiet studio, and the art of living with less.
+					272 text Reading list
+				273 checkbox Description: Sophie Chen: Thursday's studio session, read, Value: 0
+					274 text SC
+					275 text Sophie Chen
+					276 text 10 Oct
+					277 text Thursday's studio session
+					278 text Hi everyone, A quick reminder: we'll meet at the studio on Thursday at 2 pm to review the new identity directions. Bring your questions and something you found
+					279 text Work
+				280 checkbox Description: Goodhood: A slower kind of weekend, read, Value: 0
+					281 text G
+					282 text Goodhood
+					283 text 10 Oct
+					284 text A slower kind of weekend
+					285 text New arrivals for slower mornings and longer walks. Visit the store this weekend to explore the autumn selection.
+					286 text Reading list
+			287 text 1–12 of 12
+			288 button (disabled) Previous page
+			289 button (disabled) Next page
+		290 container Message reader
+			291 button Description: Archive message, Help: Archive · e
+			292 button Description: Trash message, Help: Move to Trash
+			293 button Mark unread
+			294 checkbox Description: Star message, Help: Star, Value: 0
+			295 button (collapsed) Description: More message actions, Secondary Actions: Expand
+			296 button Previous message
+			297 button Next message
+			298 container
+				299 text Work alex@form.studio  · Demo
+				300 heading Re: Studio notes — October, Value: 2
+					301 text Re: Studio notes — October
+				302 text DF Daniel Foster
+				303 button (collapsed) to alex@form.studio, Secondary Actions: Expand
+					304 text to 
+					305 text alex@form.studio
+				306 text 2:43 Sun 11 Oct Thanks Alex, This feels right. Let's go with the quieter direction and give the typography some space. I'll pull together the production estimates ahead of our call. Daniel Keep the conversation going.
+				307 button Reply to Daniel
+				308 button A first draft, with Alice
+				309 text Your words. A little less work.
+			310 text Made for a calmer kind of email.
+		311 container Description: Alice assistant, ID: alice-assistant
+			312 text Alice
+			313 button Close assistant
+			314 container
+				315 heading A little more clarity., Value: 2
+					316 text A little more clarity.
+				317 text A second pair of eyes.
+				318 text A first draft. A quieter inbox.
+				319 checkbox This email, Value: 1
+				320 checkbox Your inbox, Value: 0
+				321 text This email Re: Studio notes — October Make Alice yours. Connect your AI provider to get started. You choose the model and bring your own key.
+				322 button Connect AI provider
+				323 text Only requested mail is shared with your provider.
+				324 button Give me the short version
+				325 button Help me find the words
+				326 button What needs my attention?
+			327 container
+				328 text entry area (settable) Ask Alice
+				329 button (disabled) Send request to Alice
+			330 text Your key. Your model. Your call.
+	147 text 1Password menu is available. Press down arrow to select.
+
+The focused UI element is 322 button Connect AI provider
+
+Browser tab: 1076629032, Title: "Alice — A little space for your inbox", URL: "http://127.0.0.1:1420/".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 4-35, 37-39, 153-167
+~	2 container
+~		3 text alice .
++		4 button Compose ⌘ N
++			5 text Compose
++			6 container
++				7 text ⌘  N
++		8 container Mail folders
++			9 button Inbox 12, Help: Inbox
++				10 text Inbox
++				11 text 12
++			12 button Starred
++			13 button Sent
++			14 button Drafts
++			15 button Archive
++			16 button Trash
++		17 text Your collections
++		18 checkbox Work, Value: 0
++		19 checkbox Personal, Value: 0
++		20 checkbox Reading list, Value: 0
++		21 text Sample accounts
++		22 button Add account
++		23 checkbox Gmail Work alex@form.studio, Help: alex@form.studio, Value: 0
++			24 container Gmail
++			25 text Work
++			26 text alex@form.studio
++		27 checkbox Outlook Personal alex@outlook.com, Help: alex@outlook.com, Value: 0
++			28 container Outlook
++				29 text O
++			30 text Personal
++			31 text alex@outlook.com
++		32 checkbox Ask Alice AI, Value: 1
++		33 text AM
++		34 text Alex Morgan
++		35 text Demo workspace
+~		36 button Settings
++		37 text Mail All inboxes Demo inbox Connected
++		38 button Description: Keyboard shortcuts, Help: j/k in list or reader · r reply · e archive · ⌘K search · ⌘N compose
++		39 button (expanded) Description: Toggle Alice assistant, Secondary Actions: Collapse
+~			150 button Previous message
+~			151 button Next message
+~			152 container
++				153 text Work alex@form.studio  · Demo
++				154 heading Re: Studio notes — October, Value: 2
++					155 text Re: Studio notes — October
++				156 text DF
++				157 text Daniel Foster
++				158 button (collapsed) to alex@form.studio, Secondary Actions: Expand
++					159 text to 
++					160 text alex@form.studio
++				161 text 2:43
++				162 text Sun 11 Oct
++				163 text Thanks Alex,
++				164 text This feels right. Let's go with the quieter direction and give the typography some space.
++				165 text I'll pull together the production estimates ahead of our call.
++				166 text Daniel
++				167 text Keep the conversation going.
++				168 button Reply to Daniel
++				169 button A first draft, with Alice
++				170 text Your words. A little less work.
++				171 text Made for a calmer kind of email.
++		172 container Description: Alice assistant, ID: alice-assistant
++			173 text Alice
++			174 button Close assistant
++			175 container
++				176 heading A little more clarity., Value: 2
++					177 text A little more clarity.
++				178 text A second pair of eyes.
++				179 text A first draft. A quieter inbox.
++				180 checkbox This email, Value: 1
++				181 checkbox Your inbox, Value: 0
++				182 text This email Re: Studio notes — October Make Alice yours. Connect your AI provider to get started. You choose the model and bring your own key.
++				183 button Connect AI provider
++				184 text Only requested mail is shared with your provider.
++				185 button Give me the short version
++				186 button Help me find the words
++				187 button What needs my attention?
++			188 container
++				189 text entry area (settable) Ask Alice
++				190 button (disabled) Send request to Alice
++			191 text Your key. Your model. Your call.
++	192 text 1Password menu is available. Press down arrow to select.
+The focused UI element is 183 button Connect AI provider
+
+Browser tab: 1076629032, Title: "Alice — A little space for your inbox", URL: "http://127.0.0.1:1420/".
+1 AXWebArea Alice — A little space for your inbox, URL: 127.0.0.1:1420/
+	2 container
+		3 text alice .
+		4 button Compose ⌘ N
+			5 text Compose
+			6 container
+				7 text ⌘  N
+		8 container Mail folders
+			9 button Inbox 12, Help: Inbox
+				10 text Inbox
+				11 text 12
+			12 button Starred
+			13 button Sent
+			14 button Drafts
+			15 button Archive
+			16 button Trash
+		17 text Your collections
+		18 checkbox Work, Value: 0
+		19 checkbox Personal, Value: 0
+		20 checkbox Reading list, Value: 0
+		21 text Sample accounts
+		22 button Add account
+		23 checkbox Gmail Work alex@form.studio, Help: alex@form.studio, Value: 0
+			24 container Gmail
+			25 text Work
+			26 text alex@form.studio
+		27 checkbox Outlook Personal alex@outlook.com, Help: alex@outlook.com, Value: 0
+			28 container Outlook
+				29 text O
+			30 text Personal
+			31 text alex@outlook.com
+		32 checkbox Ask Alice AI, Value: 1
+		33 text AM
+		34 text Alex Morgan
+		35 text Demo workspace
+		36 button Settings
+		37 text Mail All inboxes Demo inbox Connected
+		38 button Description: Keyboard shortcuts, Help: j/k in list or reader · r reply · e archive · ⌘K search · ⌘N compose
+		39 button (expanded) Description: Toggle Alice assistant, Secondary Actions: Collapse
+		40 container Description: Alice assistant, ID: alice-assistant
+			41 text Alice
+			42 button Close assistant
+			43 container
+				44 heading A little more clarity., Value: 2
+					45 text A little more clarity.
+				46 text A second pair of eyes.
+				47 text A first draft. A quieter inbox.
+				48 checkbox This email, Value: 1
+				49 checkbox Your inbox, Value: 0
+				50 text This email Re: Studio notes — October Make Alice yours. Connect your AI provider to get started. You choose the model and bring your own key.
+				51 button Connect AI provider
+				52 text Only requested mail is shared with your provider.
+				53 button Give me the short version
+				54 button Help me find the words
+				55 button What needs my attention?
+			56 container
+				57 text entry area (settable) Ask Alice
+				58 button (disabled) Send request to Alice
+			59 text Your key. Your model. Your call.
+	60 text 1Password menu is available. Press down arrow to select.
+
+The focused UI element is 51 button Connect AI provider
+
+Browser tab: 1076629032, Title: "Alice — A little space for your inbox", URL: "http://127.0.0.1:1420/".
+1 AXWebArea Alice — A little space for your inbox, URL: 127.0.0.1:1420/
+	2 container
+		3 text alice .
+		4 button Compose ⌘ N
+			5 text Compose
+			6 container
+				7 text ⌘  N
+		40 container
+			41 container Mail folders
+				42 button Inbox 12, Help: Inbox
+					43 text Inbox
+					44 text 12
+				45 button Starred
+				46 button Sent
+				47 button Drafts
+				48 button Archive
+				49 button Trash
+			50 text Your collections
+			51 checkbox Work, Value: 0
+			52 checkbox Personal, Value: 0
+			53 checkbox Reading list, Value: 0
+			54 text Sample accounts
+			55 button Add account
+			56 checkbox Gmail Work alex@form.studio, Help: alex@form.studio, Value: 0
+				57 container Gmail
+				58 text Work
+				59 text alex@form.studio
+			60 checkbox Outlook Personal alex@outlook.com, Help: alex@outlook.com, Value: 0
+				61 container Outlook
+					62 text O
+				63 text Personal
+				64 text alex@outlook.com
+		32 checkbox Ask Alice AI, Value: 1
+		33 text AM
+		34 text Alex Morgan
+		35 text Demo workspace
+		36 button Settings
+		37 text Mail All inboxes Demo inbox Connected
+		38 button Description: Keyboard shortcuts, Help: j/k in list or reader · r reply · e archive · ⌘K search · ⌘N compose
+		39 button (expanded) Description: Toggle Alice assistant, Secondary Actions: Collapse
+		65 container Description: Alice assistant, ID: alice-assistant
+			66 text Alice
+			67 button Close assistant
+			68 container
+				69 heading A little more clarity., Value: 2
+					70 text A little more clarity.
+				71 text A second pair of eyes.
+				72 text A first draft. A quieter inbox.
+				73 checkbox This email, Value: 1
+				74 checkbox Your inbox, Value: 0
+				75 text This email Re: Studio notes — October Make Alice yours. Connect your AI provider to get started. You choose the model and bring your own key.
+				76 button Connect AI provider
+				77 text Only requested mail is shared with your provider.
+				78 button Give me the short version
+				79 button Help me find the words
+				80 button What needs my attention?
+			81 container
+				82 text entry area (settable) Ask Alice
+				83 button (disabled) Send request to Alice
+			84 text Your key. Your model. Your call.
+	85 text 1Password menu is available. Press down arrow to select.
+
+The focused UI element is 76 button Connect AI provider

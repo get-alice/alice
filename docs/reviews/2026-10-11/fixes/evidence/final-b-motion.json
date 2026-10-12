@@ -1,0 +1,13 @@
+{
+  "motionDefault": {
+    "buttonTransition": "background-color 0.15s, color 0.15s, border-color 0.15s, box-shadow 0.15s",
+    "dialogAnimation": "0.16s ease-out modal-in",
+    "reduced": false
+  },
+  "motionReduce": {
+    "buttonTransition": "none",
+    "dialogAnimation": "none",
+    "reduced": true,
+    "status": "Not saved yet"
+  }
+}

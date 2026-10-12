@@ -1,0 +1,26 @@
+   Compiling alice-core v0.1.0 (/Users/amruth/Documents/Codex/2026-10-11-create-a-new-project-called-alice/crates/alice-core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.17s
+warning: the following packages contain code that will be rejected by a future version of Rust: imap-proto v0.10.2
+note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 1`
+     Running unittests src/lib.rs (target/debug/deps/alice_core-ade2f5370935abb2)
+
+running 1 test
+test providers::tests::multipart_mail_uses_text_and_preserves_reply_identity ... FAILED
+
+failures:
+
+---- providers::tests::multipart_mail_uses_text_and_preserves_reply_identity stdout ----
+
+thread 'providers::tests::multipart_mail_uses_text_and_preserves_reply_identity' (22608236) panicked at crates/alice-core/src/providers.rs:534:9:
+assertion `left == right` failed
+  left: Null
+ right: "<img src='https://tracker.invalid'><p>HTML version</p>"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    providers::tests::multipart_mail_uses_text_and_preserves_reply_identity
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 12 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `-p alice-core --lib`

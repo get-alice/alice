@@ -1,0 +1,10 @@
+/target/
+/node_modules/
+/dist/
+/.alice/
+/.env
+*.log
+.DS_Store
+playwright-report/
+test-results/
+/apps/desktop/src-tauri/gen/

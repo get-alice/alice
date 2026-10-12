@@ -1,0 +1,20 @@
+{
+  "status": [
+    {
+      "live": null,
+      "role": null,
+      "text": "Connected"
+    },
+    {
+      "live": null,
+      "role": "status",
+      "text": "Demo inbox is up to date"
+    },
+    {
+      "live": "polite",
+      "role": "status",
+      "text": "1Password menu is available. Press down arrow to select."
+    }
+  ],
+  "syncButton": false
+}

@@ -1,0 +1,10 @@
+{
+  "folder": {
+    "inbox": "Posteingang",
+    "starred": "Markiert",
+    "sent": "Gesendet",
+    "drafts": "Entwürfe",
+    "archive": "Archiv",
+    "trash": "Papierkorb"
+  }
+}

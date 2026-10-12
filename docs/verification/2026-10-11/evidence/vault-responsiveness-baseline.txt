@@ -1,0 +1,24 @@
+   Compiling alice-core v0.1.0 (/Users/amruth/Documents/Codex/2026-10-11-create-a-new-project-called-alice/crates/alice-core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.89s
+warning: the following packages contain code that will be rejected by a future version of Rust: imap-proto v0.10.2
+note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 1`
+     Running tests/vault_responsiveness.rs (target/debug/deps/vault_responsiveness-0ec526d65e99c698)
+
+running 1 test
+test credential_prompt_does_not_stall_the_local_api ... FAILED
+
+failures:
+
+---- credential_prompt_does_not_stall_the_local_api stdout ----
+
+thread 'credential_prompt_does_not_stall_the_local_api' (22547100) panicked at crates/alice-core/tests/vault_responsiveness.rs:62:5:
+Credential access stalled the authenticated health API
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    credential_prompt_does_not_stall_the_local_api
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.52s
+
+error: test failed, to rerun pass `-p alice-core --test vault_responsiveness`

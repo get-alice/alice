@@ -1,0 +1,222 @@
+[
+  {
+    "open": {
+      "focus": "Connect AI provider",
+      "mailPanels": [
+        {
+          "box": {
+            "bottom": 900,
+            "height": 838,
+            "left": 190,
+            "right": 480,
+            "top": 62,
+            "width": 290,
+            "x": 190,
+            "y": 62
+          },
+          "class": "mailbox",
+          "display": "flex"
+        },
+        {
+          "box": {
+            "bottom": 900,
+            "height": 838,
+            "left": 480,
+            "right": 1120,
+            "top": 62,
+            "width": 640,
+            "x": 480,
+            "y": 62
+          },
+          "class": "reader",
+          "display": "flex"
+        }
+      ],
+      "overflowX": false,
+      "panel": {
+        "bottom": 900,
+        "height": 838,
+        "left": 1121.029541015625,
+        "right": 1441.029541015625,
+        "top": 62,
+        "width": 320,
+        "x": 1121.029541015625,
+        "y": 62
+      },
+      "viewport": [
+        1440,
+        900
+      ]
+    },
+    "closed": {
+      "assistant": false,
+      "focus": "Toggle Alice assistant",
+      "subject": "Re: Studio notes — October"
+    }
+  },
+  {
+    "open": {
+      "focus": "Connect AI provider",
+      "mailPanels": [
+        {
+          "box": {
+            "bottom": 768,
+            "height": 706,
+            "left": 190,
+            "right": 480,
+            "top": 62,
+            "width": 290,
+            "x": 190,
+            "y": 62
+          },
+          "class": "mailbox",
+          "display": "flex"
+        },
+        {
+          "box": {
+            "bottom": 768,
+            "height": 706,
+            "left": 480,
+            "right": 1046,
+            "top": 62,
+            "width": 566,
+            "x": 480,
+            "y": 62
+          },
+          "class": "reader",
+          "display": "flex"
+        }
+      ],
+      "overflowX": false,
+      "panel": {
+        "bottom": 768,
+        "height": 706,
+        "left": 1046.2669677734375,
+        "right": 1366.2669677734375,
+        "top": 62,
+        "width": 320,
+        "x": 1046.2669677734375,
+        "y": 62
+      },
+      "viewport": [
+        1366,
+        768
+      ]
+    },
+    "closed": {
+      "assistant": false,
+      "focus": "Toggle Alice assistant",
+      "subject": "Re: Studio notes — October"
+    }
+  },
+  {
+    "open": {
+      "focus": "Connect AI provider",
+      "mailPanels": [
+        {
+          "box": {
+            "bottom": 0,
+            "height": 0,
+            "left": 0,
+            "right": 0,
+            "top": 0,
+            "width": 0,
+            "x": 0,
+            "y": 0
+          },
+          "class": "mailbox",
+          "display": "none"
+        },
+        {
+          "box": {
+            "bottom": 0,
+            "height": 0,
+            "left": 0,
+            "right": 0,
+            "top": 0,
+            "width": 0,
+            "x": 0,
+            "y": 0
+          },
+          "class": "reader",
+          "display": "none"
+        }
+      ],
+      "overflowX": false,
+      "panel": {
+        "bottom": 768,
+        "height": 706,
+        "left": 192.46343994140625,
+        "right": 1026.46337890625,
+        "top": 62,
+        "width": 833.9999389648438,
+        "x": 192.46343994140625,
+        "y": 62
+      },
+      "viewport": [
+        1024,
+        768
+      ]
+    },
+    "closed": {
+      "assistant": false,
+      "focus": "Toggle Alice assistant",
+      "subject": "Re: Studio notes — October"
+    }
+  },
+  {
+    "open": {
+      "focus": "Connect AI provider",
+      "mailPanels": [
+        {
+          "box": {
+            "bottom": 0,
+            "height": 0,
+            "left": 0,
+            "right": 0,
+            "top": 0,
+            "width": 0,
+            "x": 0,
+            "y": 0
+          },
+          "class": "mailbox",
+          "display": "none"
+        },
+        {
+          "box": {
+            "bottom": 0,
+            "height": 0,
+            "left": 0,
+            "right": 0,
+            "top": 0,
+            "width": 0,
+            "x": 0,
+            "y": 0
+          },
+          "class": "reader",
+          "display": "none"
+        }
+      ],
+      "overflowX": false,
+      "panel": {
+        "bottom": 640,
+        "height": 578,
+        "left": 191.28158569335935,
+        "right": 851.2815856933594,
+        "top": 62,
+        "width": 660,
+        "x": 191.28158569335935,
+        "y": 62
+      },
+      "viewport": [
+        850,
+        640
+      ]
+    },
+    "closed": {
+      "assistant": false,
+      "focus": "Toggle Alice assistant",
+      "subject": "Re: Studio notes — October"
+    }
+  }
+]

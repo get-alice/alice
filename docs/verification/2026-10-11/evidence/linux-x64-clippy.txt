@@ -1,0 +1,6 @@
+    Checking alice-core v0.1.0 (/work/crates/alice-core)
+   Compiling alice-desktop v0.1.0 (/work/apps/desktop/src-tauri)
+    Checking alice v0.1.0 (/work/crates/alice)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 11.65s
+warning: the following packages contain code that will be rejected by a future version of Rust: imap-proto v0.10.2
+note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 1`

@@ -1,0 +1,77 @@
+{
+  "source": {
+    "apps/desktop/src/App.tsx": {
+      "sha256": "4b224bb8f23759a4107320e10b32ac1cded715016e57d1f55d81db98f85012e0",
+      "bytes": 25071
+    },
+    "apps/desktop/src/Compose.tsx": {
+      "sha256": "ff464f6b94029d8823189f4b09802f24f228e7a9eded6910068d2b903b7542a5",
+      "bytes": 7175
+    },
+    "apps/desktop/src/Settings.tsx": {
+      "sha256": "211c478395468663fba85be440f59de4ded6d113525f9264747b2b2dffeb9796",
+      "bytes": 14493
+    },
+    "apps/desktop/src/Assistant.tsx": {
+      "sha256": "73d0c346f605f8f667b4d2d5291c8928006d3f9ccc985a16dab91001ef797115",
+      "bytes": 6335
+    },
+    "apps/desktop/src/styles.css": {
+      "sha256": "8c2130cede78dc54daa3731a6f16f1636f41a610bd5fb620f41e0f7df86b3ea9",
+      "bytes": 36385
+    }
+  },
+  "engine": "0.1.14",
+  "rootTokens": [
+    "--violet: #8067ad",
+    "--violet-dark: #68518e",
+    "--violet-light: #eeebf6",
+    "--ink: #34333b",
+    "--muted: #68616f",
+    "--accent-text: #644582",
+    "--success-text: #426347",
+    "--warm-text: #745532",
+    "--info-text: #405d7d",
+    "--error-text: #923f37",
+    "--line: #e9e8ed",
+    "--paper: #fff"
+  ],
+  "literalHexRgbOccurrences": 117,
+  "existingBuildAssets": [
+    {
+      "file": "dist/assets/dm-sans-latin-wght-normal-Xz1IZZA0.woff2",
+      "bytes": 36932,
+      "gzipBytes": null
+    },
+    {
+      "file": "dist/assets/index-C22mrKQ4.css",
+      "bytes": 33761,
+      "gzipBytes": 7513
+    },
+    {
+      "file": "dist/assets/index-DzWqZjTL.js",
+      "bytes": 273966,
+      "gzipBytes": 85323
+    },
+    {
+      "file": "dist/assets/dm-sans-latin-ext-wght-normal-BOFOeGcA.woff2",
+      "bytes": 18228,
+      "gzipBytes": null
+    },
+    {
+      "file": "dist/assets/newsreader-latin-ext-wght-normal-C-3rgBeH.woff2",
+      "bytes": 36244,
+      "gzipBytes": null
+    },
+    {
+      "file": "dist/assets/newsreader-vietnamese-wght-normal-Czsa-EzN.woff2",
+      "bytes": 11932,
+      "gzipBytes": null
+    },
+    {
+      "file": "dist/assets/newsreader-latin-wght-normal-CCVVNp6i.woff2",
+      "bytes": 58084,
+      "gzipBytes": null
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+name: Alice
+on: [push, pull_request]
+
+jobs:
+  desktop-and-cli:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            bundles: app
+          - os: windows-latest
+            bundles: nsis
+          - os: ubuntu-24.04
+            bundles: deb
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+      - name: Linux prerequisites
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential libssl-dev libayatana-appindicator3-dev librsvg2-dev libdbus-1-dev
+      - run: npm ci
+      - run: npm run lint
+      - run: cargo test --workspace --locked
+      - run: cargo build -p alice --locked
+      - run: npm run build
+      - run: npm run test:reader
+      - run: npm run test:html
+      - run: npm run test:smoke
+      - run: python3 scripts/test-tui.py
+        if: runner.os != 'Windows'
+      - run: cargo build -p alice --release --locked
+      - run: npm run desktop:build -- --bundles ${{ matrix.bundles }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: alice-${{ runner.os }}
+          path: |
+            target/release/bundle/
+            target/release/alice
+            target/release/alice.exe
+
+  mail-protocol:
+    runs-on: ubuntu-24.04
+    container: rust:1.95-bookworm
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install isolated mail server prerequisites
+        run: |
+          apt-get update -qq
+          DEBIAN_FRONTEND=noninteractive apt-get install -y -qq libdbus-1-dev python3 openssl dovecot-imapd postfix gnome-keyring dbus-x11
+      - run: cargo build -p alice --locked
+      - run: bash scripts/mail-fixture.sh
+      - run: cargo test -p alice-core --test mail_provider -- --ignored
+      - name: Mail delivery and mailbox lifecycle
+        run: |
+          dbus-run-session -- bash -c 'printf alice-fixture-vault-password | gnome-keyring-daemon --unlock --components=secrets; python3 scripts/test-mail.py'

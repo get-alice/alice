@@ -1,0 +1,27 @@
+{
+  "initial": {
+    "dialogLabelledBy": "settings-title",
+    "initialFocus": "Close settings"
+  },
+  "guide": {
+    "checkboxLabel": "Use a Gmail app password",
+    "dialog": {
+      "bottom": 601.59375,
+      "height": 563.1953125,
+      "left": 75,
+      "right": 775,
+      "top": 38.3984375,
+      "width": 700,
+      "x": 75,
+      "y": 38.3984375
+    },
+    "fieldFocusVisible": true,
+    "fieldOutline": {
+      "color": "rgb(104, 81, 142)",
+      "offset": "2px",
+      "width": "2px"
+    },
+    "guide": "Set up sign-in firstAlice currently needs your own Google app registration for browser sign-in.Create a Google Cloud project and configure its OAuth consent screen. Add your email as a test user while the app is in testing.Create an OAuth client with the Desktop app type. Paste its client ID below and its client secret if supplied.Alice requests Gmail mail access and receives sign-in at http://127.0.0.1:4816/callback. Public distribution of your registration may require Google's verification.Google desktop sign-in guide For a personal account, select “Use a Gmail app password” below for a quicker setup."
+  },
+  "correctDirection": true
+}

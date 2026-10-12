@@ -1,0 +1,51 @@
+[workspace]
+members = ["crates/alice-core", "crates/alice", "apps/desktop/src-tauri"]
+default-members = ["crates/alice-core", "crates/alice"]
+exclude = ["vendor/imap-proto"]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "AGPL-3.0-only"
+homepage = "https://getalice.email"
+rust-version = "1.95"
+
+# Lint policy for every crate (each opts in with `[lints] workspace = true`). Clippy's default groups stay on;
+# these add checks for bugs the defaults miss. CI runs clippy with `-D warnings`, so each is enforced.
+[workspace.lints.rust]
+rust_2018_idioms = { level = "warn", priority = -1 }
+unused_lifetimes = "warn"
+unused_qualifications = "warn"
+
+[workspace.lints.clippy]
+# Leftovers from debugging or unfinished work.
+dbg_macro = "warn"
+todo = "warn"
+unimplemented = "warn"
+# `Instant::now() - duration` panics when the clock is younger than the duration (e.g. just after boot).
+unchecked_time_subtraction = "warn"
+# `.ends_with(".pdf")` misses `REPORT.PDF`.
+case_sensitive_file_extension_comparisons = "warn"
+# A `_` arm standing in for one variant silently swallows variants added later.
+match_wildcard_for_single_variants = "warn"
+
+[workspace.dependencies]
+anyhow = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["raw_value"] }
+tokio = { version = "1", features = ["full"] }
+uuid = { version = "1", features = ["v4", "v5", "serde"] }
+chrono = { version = "0.4", features = ["serde", "unstable-locales"] }
+reqwest = { version = "0.13", default-features = false, features = ["json", "form", "rustls"] }
+
+# imap 2.4.1 (latest stable) requires imap-proto 0.10, whose macros end in trailing semicolons that
+# rustc will reject (rust-lang/rust#79813). The vendored copy is 0.10.2 with only those three
+# semicolons removed in src/macros.rs. Drop this patch when moving to an imap release on imap-proto 0.16+.
+[patch.crates-io]
+imap-proto = { path = "vendor/imap-proto" }
+
+[profile.release]
+lto = "thin"
+strip = true
+codegen-units = 1

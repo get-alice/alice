@@ -1,0 +1,5 @@
+
+> alice@0.1.0 test:reader
+> node scripts/test-reader.mjs
+
+Reader: clickable URLs, query strings, punctuation, paragraph layout and inert unsafe content passed

@@ -1,0 +1,26 @@
+{
+  "desktop": {
+    "documentScrollWidth": 1280,
+    "emptyText": "Nothing by that name.Try another sender, subject, or phrase.",
+    "inputWidth": 247,
+    "mailboxClientWidth": 369,
+    "mailboxScrollWidth": 369,
+    "queryLength": 1124,
+    "viewport": [
+      1280,
+      720
+    ]
+  },
+  "minimum": {
+    "documentScrollWidth": 850,
+    "mailboxClientWidth": 659,
+    "mailboxScrollWidth": 659,
+    "queryLength": 1124,
+    "sidebarClientHeight": 640,
+    "sidebarScrollHeight": 713,
+    "viewport": [
+      850,
+      640
+    ]
+  }
+}

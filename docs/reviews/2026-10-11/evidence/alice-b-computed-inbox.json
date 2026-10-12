@@ -1,0 +1,252 @@
+{
+  "contrast": [
+    {
+      "background": "rgb(247, 247, 249)",
+      "color": "rgb(126, 116, 134)",
+      "disabled": false,
+      "fontSize": "10px",
+      "fontWeight": "500",
+      "pseudo": null,
+      "ratio": 4.15,
+      "selector": ".section-label",
+      "text": "Your collections"
+    },
+    {
+      "background": "rgb(247, 247, 249)",
+      "color": "rgb(130, 128, 141)",
+      "disabled": false,
+      "fontSize": "12px",
+      "fontWeight": "400",
+      "pseudo": null,
+      "ratio": 3.62,
+      "selector": ".collection",
+      "text": "Work"
+    },
+    {
+      "background": "rgb(247, 247, 249)",
+      "color": "rgb(181, 166, 198)",
+      "disabled": false,
+      "fontSize": "8px",
+      "fontWeight": "400",
+      "pseudo": null,
+      "ratio": 2.13,
+      "selector": ".new-badge",
+      "text": "AI"
+    },
+    {
+      "background": "rgb(240, 237, 247)",
+      "color": "rgb(87, 80, 96)",
+      "disabled": false,
+      "fontSize": "10px",
+      "fontWeight": "600",
+      "pseudo": null,
+      "ratio": 6.67,
+      "selector": ".email-from strong",
+      "text": "Sophie Chen"
+    },
+    {
+      "background": "rgb(240, 237, 247)",
+      "color": "rgb(126, 116, 134)",
+      "disabled": false,
+      "fontSize": "10px",
+      "fontWeight": "400",
+      "pseudo": null,
+      "ratio": 3.84,
+      "selector": ".email-summary > p",
+      "text": "Hey Alex, I've been thinking about our conversation yesterday. What if"
+    },
+    {
+      "background": "rgb(238, 231, 246)",
+      "color": "rgb(122, 92, 153)",
+      "disabled": false,
+      "fontSize": "7px",
+      "fontWeight": "400",
+      "pseudo": null,
+      "ratio": 4.56,
+      "selector": ".category-label.work",
+      "text": "Work"
+    },
+    {
+      "background": "rgb(237, 242, 235)",
+      "color": "rgb(101, 126, 101)",
+      "disabled": false,
+      "fontSize": "7px",
+      "fontWeight": "400",
+      "pseudo": null,
+      "ratio": 3.92,
+      "selector": ".category-label.personal",
+      "text": "Personal"
+    },
+    {
+      "missing": true,
+      "selector": ".reader-empty h2"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "color": "rgb(112, 98, 118)",
+      "disabled": false,
+      "fontSize": "13px",
+      "fontWeight": "400",
+      "pseudo": null,
+      "ratio": 5.68,
+      "selector": ".message-body",
+      "text": "Hey Alex,I've been thinking about our conversation yesterday. What if "
+    },
+    {
+      "background": "rgb(240, 237, 247)",
+      "color": "rgb(137, 116, 149)",
+      "disabled": false,
+      "fontSize": "9px",
+      "fontWeight": "400",
+      "pseudo": null,
+      "ratio": 3.64,
+      "selector": ".assistant-invitation small",
+      "text": "Less sorting. More space to think."
+    },
+    {
+      "background": "rgb(250, 249, 252)",
+      "color": "rgb(162, 160, 171)",
+      "disabled": false,
+      "fontSize": "10px",
+      "fontWeight": "400",
+      "pseudo": "::placeholder",
+      "ratio": 2.46,
+      "selector": ".search-box input",
+      "text": ""
+    },
+    {
+      "background": "rgb(252, 252, 253)",
+      "color": "rgb(156, 151, 165)",
+      "disabled": false,
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "pseudo": null,
+      "ratio": 2.77,
+      "selector": ".workspace-header .icon-button",
+      "text": ""
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "color": "rgb(171, 162, 182)",
+      "disabled": false,
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "pseudo": null,
+      "ratio": 2.45,
+      "selector": ".reader-toolbar .icon-button:not(:disabled)",
+      "text": ""
+    },
+    {
+      "background": "rgb(253, 253, 254)",
+      "color": "rgb(112, 92, 136)",
+      "disabled": false,
+      "fontSize": "10px",
+      "fontWeight": "600",
+      "pseudo": null,
+      "ratio": 5.78,
+      "selector": ".mail-tabs .active",
+      "text": "All mail 12"
+    }
+  ],
+  "semantics": [
+    {
+      "current": null,
+      "expanded": null,
+      "pressed": null,
+      "role": null,
+      "selected": null,
+      "tag": "BUTTON",
+      "text": "Inbox12"
+    },
+    {
+      "current": null,
+      "expanded": null,
+      "pressed": null,
+      "role": null,
+      "selected": null,
+      "tag": "BUTTON",
+      "text": "Work"
+    },
+    {
+      "current": null,
+      "expanded": null,
+      "pressed": null,
+      "role": null,
+      "selected": null,
+      "tag": "BUTTON",
+      "text": "Personal"
+    },
+    {
+      "current": null,
+      "expanded": null,
+      "pressed": null,
+      "role": null,
+      "selected": null,
+      "tag": "BUTTON",
+      "text": "Reading list"
+    },
+    {
+      "current": null,
+      "expanded": null,
+      "pressed": null,
+      "role": null,
+      "selected": null,
+      "tag": "BUTTON",
+      "text": "Workalex@form.studio"
+    },
+    {
+      "current": null,
+      "expanded": null,
+      "pressed": null,
+      "role": null,
+      "selected": null,
+      "tag": "BUTTON",
+      "text": "OPersonalalex@outlook.com"
+    },
+    {
+      "current": null,
+      "expanded": null,
+      "pressed": null,
+      "role": null,
+      "selected": null,
+      "tag": "BUTTON",
+      "text": ""
+    },
+    {
+      "current": null,
+      "expanded": null,
+      "pressed": null,
+      "role": null,
+      "selected": null,
+      "tag": "BUTTON",
+      "text": "All mail 12"
+    },
+    {
+      "current": null,
+      "expanded": null,
+      "pressed": null,
+      "role": null,
+      "selected": null,
+      "tag": "BUTTON",
+      "text": "Unread 4"
+    },
+    {
+      "current": null,
+      "expanded": null,
+      "pressed": null,
+      "role": null,
+      "selected": null,
+      "tag": "BUTTON",
+      "text": "Newest"
+    },
+    {
+      "current": null,
+      "expanded": null,
+      "pressed": null,
+      "role": null,
+      "selected": null,
+      "tag": "BUTTON",
+      "text": "SCSophie Chen5:35A little room for big ideasHey Al"
+    }
+  ]
+}

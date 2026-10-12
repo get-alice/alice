@@ -1,0 +1,30 @@
+{
+  "closedOwnTabIds": [
+    "1076629046",
+    "1076629052"
+  ],
+  "identityChecked": {
+    "id": "1076629052",
+    "url": "http://127.0.0.1:1420/"
+  },
+  "viewportReset": true,
+  "reducedMotionReset": true,
+  "zoomOrTextScalingAppliedInFinalPass": false,
+  "browserStateBeforeClose": {
+    "openDialogs": 0,
+    "reduced": false,
+    "rootFont": "16px",
+    "viewport": {
+      "dpr": 2,
+      "height": 673,
+      "width": 1231
+    }
+  },
+  "existingUserTabsLeftOpen": true,
+  "developmentServerLeftRunning": true,
+  "sourceEdits": false,
+  "providerConnections": false,
+  "credentialEntry": false,
+  "mailDelivery": false,
+  "draftTextModifiedByB": false
+}

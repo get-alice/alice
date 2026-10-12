@@ -1,0 +1,18 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Email URLs must render as links
+
+0 !== 2
+
+    at file:///Users/amruth/Documents/Codex/2026-10-11-create-a-new-project-called-alice/scripts/test-reader.mjs:18:10 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 0,
+  expected: 2,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.21.0

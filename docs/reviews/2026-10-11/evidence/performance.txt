@@ -1,0 +1,19 @@
+optimized_three_poll_scans_10000_8k_ms=188
+        0.50 real         0.10 user         0.07 sys
+           111837184  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+                7021  page reclaims
+                   0  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                  11  voluntary context switches
+                  79  involuntary context switches
+          1649492321  instructions retired
+           524307104  cycles elapsed
+           106676752  peak memory footprint

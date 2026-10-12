@@ -1,0 +1,9 @@
+{
+  "bodyMatches": true,
+  "dialogLabelledBy": "compose-title",
+  "dialogScroll": 0,
+  "focus": "Message body",
+  "status": "Saved to Alice",
+  "subject": "Alice final A — recovery confirmation",
+  "to": "alice-final-a@example.invalid"
+}

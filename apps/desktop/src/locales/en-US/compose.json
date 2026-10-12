@@ -1,0 +1,70 @@
+{
+  "reply": "Reply",
+  "newMessage": "New message",
+  "saveAndCloseDraft": "Save and close draft",
+  "saveAndClose": "Save and close",
+  "close": "Close compose",
+  "from": "From",
+  "demoAccount": "{email} (demo)",
+  "to": "To",
+  "subject": "Subject",
+  "body": "Message body",
+  "suggestedRecipients": "Suggested recipients",
+  "sendDemo": "Send demo",
+  "sendEmail": "Send email",
+  "saving": "Saving…",
+  "saveDraft": "Save draft",
+  "discardDraft": "Discard draft",
+  "demoNote": "Demo replies stay in Alice. No email is delivered.",
+  "backupUnavailable": "Device backup is unavailable. Keep this window open until the draft is saved to Alice.",
+  "saveFailed": "{error}. Your device backup will reopen when you return.",
+  "status": {
+    "saved": "Saved to Alice",
+    "unsaved": "Not saved yet",
+    "attention": "Save needs attention",
+    "backupSaving": "Saved on device · saving to Alice…",
+    "saving": "Saving to Alice…",
+    "sending": "Sending…"
+  },
+  "assistant": {
+    "label": "Alice assistant",
+    "close": "Close assistant",
+    "providerNote": "Alice uses your own AI provider and API key.",
+    "connectProvider": "Connect AI provider",
+    "privacyNote": "Only requested mail is shared with your provider.",
+    "summarize": "Summarize",
+    "draftReply": "Draft a reply",
+    "addToCalendar": "Add to calendar",
+    "attention": "What needs my attention?",
+    "prompts": {
+      "summarize": "Summarize the supplied emails briefly and list anything that needs my attention.",
+      "draftReply": "Draft a warm, concise reply to this email. Do not invent commitments or facts.",
+      "addToCalendar": "Find the event, meeting or deadline in this email and propose it as a calendar event. Use the date, time, time zone and place the email states, and do not invent details.",
+      "attention": "Find the next actions I should take. Propose marking informational emails read and starring emails that need my attention. Do not archive anything."
+    },
+    "thinking": "Alice is thinking…",
+    "useDraft": "Use this draft",
+    "proposedChanges": {
+      "one": "{count} proposed change",
+      "other": "{count} proposed changes"
+    },
+    "actions": {
+      "archive": "archive",
+      "mark_read": "mark read",
+      "star": "star"
+    },
+    "selectedMessage": "Selected message",
+    "applied": "Applied",
+    "applying": "Applying…",
+    "applyChanges": "Apply these changes",
+    "applyFailed": "Some changes could not be applied. {error}",
+    "ask": "Ask Alice",
+    "askEmail": "Ask about this email…",
+    "askInbox": "Ask about your inbox…",
+    "includeEmail": "Include open email: {subject}",
+    "removeContext": "Remove this email from context",
+    "addContext": "Add this email to context",
+    "noSubject": "(no subject)",
+    "sendRequest": "Send request to Alice"
+  }
+}

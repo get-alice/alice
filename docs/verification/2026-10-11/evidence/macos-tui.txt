@@ -1,0 +1,7 @@
+{
+  "cursor_edit": "HellXo",
+  "reply_to": "support@example.invalid",
+  "quit_during_request_seconds": 0.0,
+  "new_account_from": "new-real",
+  "second_page": "51\u2013100 of 125"
+}

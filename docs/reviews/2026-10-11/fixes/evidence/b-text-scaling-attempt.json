@@ -1,0 +1,33 @@
+{
+  "command": "Emulation.setEmulatedOSTextScale",
+  "scale": 2,
+  "response": {},
+  "before": {
+    "dialog": {
+      "h": 563.1953125,
+      "w": 700
+    },
+    "dpr": 1,
+    "fieldFont": "11px",
+    "headingFont": "30px",
+    "rootFont": "16px",
+    "viewport": [
+      850,
+      640
+    ]
+  },
+  "after": {
+    "dialog": {
+      "h": 563.1953125,
+      "w": 700
+    },
+    "dpr": 1,
+    "fieldFont": "11px",
+    "headingFont": "30px",
+    "rootFont": "16px",
+    "viewport": [
+      850,
+      640
+    ]
+  }
+}

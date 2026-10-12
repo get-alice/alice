@@ -1,0 +1,10 @@
+{
+  "method": "Final stylesheet rule and independent WCAG luminance calculation on the browser-measured surfaces; no third browser inspection round",
+  "focus_rule": "border-color: var(--violet-dark); outline: 2px solid var(--violet-dark); outline-offset: 2px;",
+  "resolved_color": "#68518e",
+  "contrast_against_white": 6.654,
+  "contrast_against_assistant_panel": 6.47,
+  "minimum_required": 3.0,
+  "geometry_basis": "Existing 18px form margins leave room for the 2px outline and 2px offset; outline does not change layout",
+  "post_change_browser_measurement": false
+}

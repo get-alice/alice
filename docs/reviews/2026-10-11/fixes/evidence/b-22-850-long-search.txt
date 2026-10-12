@@ -1,0 +1,74 @@
+- complementary:
+  - generic: alice.
+  - button "Compose ⌘ N":
+    - generic: Compose
+    - generic: ⌘ N
+  - navigation "Mail folders":
+    - button "Inbox 12":
+      - generic: Inbox
+      - generic: "12"
+    - button "Starred":
+      - generic: Starred
+    - button "Sent":
+      - generic: Sent
+    - button "Drafts":
+      - generic: Drafts
+    - button "Archive":
+      - generic: Archive
+    - button "Trash":
+      - generic: Trash
+  - generic: Your collections
+  - button "Work":
+    - generic: Work
+  - button "Personal":
+    - generic: Personal
+  - button "Reading list":
+    - generic: Reading list
+  - generic: Sample accounts
+  - button "Add account":
+  - button "Gmail Work alex@form.studio":
+    - generic "Gmail":
+    - strong: Work
+    - generic: alex@form.studio
+  - button "Outlook Personal alex@outlook.com":
+    - generic "Outlook":
+      - generic: O
+    - strong: Personal
+    - generic: alex@outlook.com
+  - button "Ask Alice AI":
+    - generic: Ask Alice
+    - generic: AI
+  - generic: AM
+  - strong: Alex Morgan
+  - generic: Demo workspace
+  - button "Settings":
+- banner:
+  - generic: Mail
+  - generic: All inboxes
+  - generic: Demo inbox
+  - generic: Connected
+  - button "Keyboard shortcuts":
+  - button "Toggle Alice assistant":
+- region "Message list":
+  - heading "Inbox" [level=1]
+  - paragraph: A little space for what matters.
+  - button "Sync accounts":
+  - textbox "Search mail" [active]:
+    - /placeholder: Search your mail
+    - text: A very long review-only search phrase A very long review-only search phrase A very long review-only search phrase A very long review-only search phrase A very long review-only search phrase A very long review-only search phrase A very long review-only search phrase A very long review-only search phrase A very long review-only search phrase A very long review-only search phrase A very long review-only search phrase A very long review-only search phrase A very long review-only search phrase A very long review-only search phrase A very long review-only search phrase A very long review-only search phrase A very long review-only search phrase A very long review-only search phrase A very long review-only search phrase A very long review-only search phrase A very long review-only search phrase A very long review-only search phrase A very long review-only search phrase A very long review-only search phrase A very long review-only search phrase A very long review-only search phrase A very long review-only search phrase A very long review-only search phrase A very long review-only search phrase A very long review-only search phrase A very long review-only search phrase A very long review-only search phrase A very long review-only search phrase A very long review-only search phrase A very long review-only search phrase A very long review-only search phrase A very long review-only search phrase A very long review-only search phrase A very long review-only search phrase A very long review-only search phrase
+  - button "Clear search":
+  - button "All mail 0" [pressed]:
+    - text: All mail
+    - generic: "0"
+  - button "Unread 0":
+    - text: Unread
+    - generic: "0"
+  - button "Newest":
+    - generic: Newest
+  - 'generic "Messages: j and k navigate"':
+    - heading "Nothing by that name." [level=3]
+    - paragraph: Try another sender, subject, or phrase.
+  - generic: 0 messages
+  - button "Previous page" [disabled]:
+  - button "Next page" [disabled]:
+- status: 1Password menu is available. Press down arrow to select.

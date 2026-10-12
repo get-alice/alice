@@ -1,0 +1,19 @@
+{
+  "button": {
+    "controls": null,
+    "expanded": null,
+    "haspopup": null,
+    "role": null
+  },
+  "focus": "More message actions",
+  "popup": {
+    "id": "",
+    "rect": {
+      "height": 113,
+      "width": 180,
+      "x": 397,
+      "y": 114.5
+    },
+    "role": null
+  }
+}

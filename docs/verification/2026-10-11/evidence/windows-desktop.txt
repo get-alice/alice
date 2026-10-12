@@ -1,0 +1,324 @@
+
+> alice@0.1.0 desktop:build
+> cd apps/desktop && tauri build --runner cargo-xwin --target x86_64-pc-windows-msvc --bundles nsis
+
+        Info Looking up installed tauri packages to check mismatched versions...
+     Running beforeBuildCommand `npm --prefix ../.. run build`
+
+> alice@0.1.0 build
+> tsc --noEmit && vite build
+
+[36mvite v7.3.7 [32mbuilding client environment for production...[36m[39m
+transforming...
+[32m✓[39m 1753 modules transformed.
+rendering chunks...
+computing gzip size...
+[2mdist/[22m[32mindex.html                                               [39m[1m[2m  0.54 kB[22m[1m[22m[2m │ gzip:  0.34 kB[22m
+[2mdist/[22m[2massets/[22m[32mnewsreader-vietnamese-wght-normal-Czsa-EzN.woff2  [39m[1m[2m 11.93 kB[22m[1m[22m
+[2mdist/[22m[2massets/[22m[32mdm-sans-latin-ext-wght-normal-BOFOeGcA.woff2      [39m[1m[2m 18.23 kB[22m[1m[22m
+[2mdist/[22m[2massets/[22m[32mnewsreader-latin-ext-wght-normal-C-3rgBeH.woff2   [39m[1m[2m 36.24 kB[22m[1m[22m
+[2mdist/[22m[2massets/[22m[32mdm-sans-latin-wght-normal-Xz1IZZA0.woff2          [39m[1m[2m 36.93 kB[22m[1m[22m
+[2mdist/[22m[2massets/[22m[32mnewsreader-latin-wght-normal-CCVVNp6i.woff2       [39m[1m[2m 58.08 kB[22m[1m[22m
+[2mdist/[22m[2massets/[22m[35mindex-BRC5ep3C.css                                [39m[1m[2m 34.36 kB[22m[1m[22m[2m │ gzip:  7.58 kB[22m
+[2mdist/[22m[2massets/[22m[36mindex-CpVe4qjU.js                                 [39m[1m[2m307.58 kB[22m[1m[22m[2m │ gzip: 98.75 kB[22m
+[32m✓ built in 3.44s[39m
+⏬ Downloading MSVC CRT...
+Retrying MSVC CRT setup (attempt 2/4)
+⏬ Downloading MSVC CRT...
+Retrying MSVC CRT setup (attempt 3/4)
+⏬ Downloading MSVC CRT...
+✅ Downloaded MSVC CRT in 2m 34s.
+ Downloading crates ...
+  Downloaded async-recursion v1.2.0
+  Downloaded cpufeatures v0.3.1
+  Downloaded windows-interface v0.59.3
+  Downloaded windows-link v0.2.1
+  Downloaded vswhom v0.1.0
+  Downloaded windows-collections v0.3.2
+  Downloaded windows-implement v0.60.2
+  Downloaded jiff-tzdb-platform v0.1.3
+  Downloaded windows-threading v0.2.1
+  Downloaded vswhom-sys v0.1.3
+  Downloaded windows-targets v0.52.6
+  Downloaded winapi-util v0.1.11
+  Downloaded windows-future v0.3.2
+  Downloaded windows-version v0.1.7
+  Downloaded webview2-com-macros v0.8.1
+  Downloaded windows-numerics v0.3.1
+  Downloaded webview2-com v0.39.1
+  Downloaded uds_windows v1.2.1
+  Downloaded windows-targets v0.53.5
+  Downloaded windows-result v0.4.1
+  Downloaded core_detect v1.0.0
+  Downloaded windows-core v0.62.2
+  Downloaded softbuffer v0.4.8
+  Downloaded windows-strings v0.5.1
+  Downloaded schannel v0.1.29
+  Downloaded winreg v0.56.0
+  Downloaded jiff-tzdb v0.1.9
+  Downloaded windows_x86_64_msvc v0.52.6
+  Downloaded windows_x86_64_msvc v0.53.1
+  Downloaded winapi v0.3.9
+  Downloaded window-vibrancy v0.8.1
+  Downloaded windows-sys v0.59.0
+  Downloaded windows-sys v0.60.2
+  Downloaded windows-sys v0.61.2
+  Downloaded windows-sys v0.52.0
+  Downloaded webview2-com-sys v0.39.1
+  Downloaded windows v0.62.2
+   Compiling windows-link v0.2.1
+   Compiling serde_core v1.0.229
+   Compiling cfg-if v1.0.5
+   Compiling smallvec v1.16.3
+   Compiling windows-sys v0.61.2
+   Compiling memchr v2.8.3
+   Compiling serde v1.0.229
+   Compiling zerofrom v0.1.8
+   Compiling stable_deref_trait v1.2.1
+   Compiling scopeguard v1.2.0
+   Compiling yoke v0.8.3
+   Compiling itoa v1.0.18
+   Compiling zerovec v0.11.8
+   Compiling parking_lot_core v0.9.12
+   Compiling log v0.4.34
+   Compiling lock_api v0.4.14
+   Compiling bytes v1.12.1
+   Compiling parking_lot v0.12.5
+   Compiling pin-project-lite v0.2.17
+   Compiling once_cell v1.21.4
+   Compiling tinystr v0.8.4
+   Compiling writeable v0.6.4
+   Compiling litemap v0.8.3
+   Compiling potential_utf v0.1.6
+   Compiling zerotrie v0.2.5
+   Compiling icu_locale_core v2.3.0
+   Compiling percent-encoding v2.3.2
+   Compiling utf8_iter v1.0.4
+   Compiling icu_collections v2.3.0
+   Compiling http v1.5.0
+   Compiling icu_properties_data v2.3.0
+   Compiling icu_normalizer_data v2.3.0
+   Compiling futures-core v0.3.34
+   Compiling form_urlencoded v1.2.2
+   Compiling tracing-core v0.1.36
+   Compiling icu_provider v2.3.1
+   Compiling zmij v1.0.23
+   Compiling windows-strings v0.5.1
+   Compiling windows-result v0.4.1
+   Compiling windows-implement v0.60.2
+   Compiling icu_properties v2.3.0
+   Compiling icu_normalizer v2.3.0
+   Compiling idna_adapter v1.2.2
+   Compiling windows-interface v0.59.3
+   Compiling base64 v0.23.1
+   Compiling siphasher v1.0.4
+   Compiling phf_shared v0.13.1
+   Compiling serde_json v1.0.152
+   Compiling idna v1.1.0
+   Compiling windows-core v0.62.2
+   Compiling tracing v0.1.44
+   Compiling aws-lc-sys v0.45.0
+   Compiling url v2.5.8
+   Compiling socket2 v0.6.5
+   Compiling mio v1.2.4
+   Compiling thiserror v2.0.21
+   Compiling zeroize v1.9.1
+   Compiling phf v0.13.1
+   Compiling tokio v1.53.2
+   Compiling http-body v1.1.0
+   Compiling bitflags v2.13.2
+   Compiling aho-corasick v1.1.5
+   Compiling getrandom v0.4.3
+   Compiling windows-threading v0.2.1
+   Compiling libc v0.2.190
+   Compiling slab v0.4.12
+   Compiling futures-io v0.3.34
+   Compiling regex-syntax v0.8.11
+   Compiling futures-task v0.3.34
+   Compiling futures-util v0.3.34
+   Compiling regex-automata v0.4.18
+   Compiling windows-future v0.3.2
+   Compiling windows-numerics v0.3.1
+   Compiling windows-collections v0.3.2
+   Compiling deranged v0.5.8
+   Compiling sha1_smol v1.0.1
+   Compiling powerfmt v0.2.1
+   Compiling num-conv v0.2.2
+   Compiling tower-service v0.3.3
+   Compiling time-core v0.1.9
+   Compiling ryu v1.0.23
+   Compiling time v0.3.55
+   Compiling uuid v1.28.0
+   Compiling httparse v1.10.1
+   Compiling windows v0.62.2
+   Compiling regex v1.13.1
+   Compiling rustls-pki-types v1.15.1
+   Compiling webview2-com-sys v0.39.1
+   Compiling typeid v1.0.3
+   Compiling try-lock v0.2.5
+   Compiling alloc-no-stdlib v3.0.0
+   Compiling untrusted v0.9.0
+   Compiling httpdate v1.0.3
+   Compiling raw-window-handle v0.6.2
+   Compiling new_debug_unreachable v1.0.6
+   Compiling alloc-stdlib v0.3.0
+   Compiling want v0.3.2
+   Compiling crossbeam-utils v0.8.23
+   Compiling winapi-util v0.1.11
+   Compiling sync_wrapper v1.0.2
+   Compiling dpi v0.1.2
+   Compiling generic-array v0.14.7
+   Compiling anyhow v1.0.104
+   Compiling erased-serde v0.4.10
+   Compiling winnow v1.0.4
+   Compiling precomputed-hash v0.1.1
+   Compiling fnv v1.0.7
+   Compiling atomic-waker v1.1.2
+   Compiling windows_x86_64_msvc v0.53.1
+   Compiling web-time v1.1.0
+   Compiling equivalent v1.0.2
+   Compiling tower-layer v0.3.3
+   Compiling hashbrown v0.17.1
+   Compiling subtle v2.6.1
+   Compiling typenum v1.20.1
+   Compiling indexmap v2.14.2
+   Compiling lexical-core v0.7.6
+   Compiling cfb v0.14.0
+   Compiling hyper v1.12.0
+   Compiling string_cache v0.9.0
+   Compiling toml_parser v1.1.5+spec-1.1.0
+   Compiling cookie v0.18.2
+   Compiling same-file v1.0.6
+   Compiling brotli-decompressor v6.0.1
+   Compiling jsonptr v0.7.1
+   Compiling futures-channel v0.3.34
+   Compiling toml_datetime v1.1.2+spec-1.1.0
+   Compiling serde_spanned v1.1.2
+   Compiling num-traits v0.2.19
+   Compiling web_atoms v0.2.6
+   Compiling quick-xml v0.42.0
+   Compiling windows-version v0.1.7
+   Compiling webview2-com-macros v0.8.1
+   Compiling option-ext v0.2.0
+   Compiling dunce v1.0.5
+   Compiling toml_writer v1.1.3+spec-1.1.0
+   Compiling bitflags v1.3.2
+   Compiling ipnet v2.12.2
+   Compiling mime v0.3.17
+   Compiling static_assertions v1.1.0
+   Compiling arrayvec v0.5.2
+   Compiling hyper-util v0.1.21
+   Compiling toml v1.1.8+spec-1.1.0
+   Compiling native-tls v0.2.18
+   Compiling dirs-sys v0.5.0
+   Compiling plist v1.10.1
+   Compiling nom v5.1.3
+   Compiling json-patch v4.2.0
+   Compiling brotli v9.0.0
+   Compiling crossbeam-channel v0.5.17
+   Compiling encoding_rs v0.8.42
+   Compiling walkdir v2.5.0
+   Compiling serde-untagged v0.1.9
+   Compiling infer v0.22.0
+   Compiling tower v0.5.3
+   Compiling tendril v0.5.1
+   Compiling urlpattern v0.6.0
+   Compiling http-body-util v0.1.5
+   Compiling schannel v0.1.29
+   Compiling serde_with v3.24.0
+   Compiling glob v0.3.4
+   Compiling semver v1.0.28
+   Compiling winapi v0.3.9
+   Compiling ctor v1.0.13
+   Compiling core_detect v1.0.0
+   Compiling foldhash v0.2.0
+   Compiling simdutf8 v0.1.5
+   Compiling hashbrown v0.16.1
+   Compiling tauri-utils v2.10.1
+   Compiling tauri-runtime v2.12.1
+   Compiling wry v0.57.0
+   Compiling markup5ever v0.38.0
+   Compiling windows-targets v0.53.5
+   Compiling webview2-com v0.39.1
+   Compiling libsqlite3-sys v0.36.0
+   Compiling crypto-common v0.1.7
+   Compiling block-buffer v0.10.4
+   Compiling serde_urlencoded v0.7.1
+   Compiling base64 v0.22.1
+   Compiling unicode-segmentation v1.13.3
+   Compiling quoted_printable v0.5.2
+   Compiling tao v0.37.1
+   Compiling tauri-runtime-wry v2.12.1
+   Compiling muda v0.20.0
+   Compiling getrandom v0.3.4
+   Compiling charset v0.1.5
+   Compiling digest v0.10.7
+   Compiling tauri v2.12.3
+   Compiling imap-proto v0.10.2
+   Compiling chrono v0.4.45
+   Compiling windows-sys v0.60.2
+   Compiling html5ever v0.38.0
+   Compiling hashlink v0.11.1
+   Compiling axum-core v0.5.6
+   Compiling tower-http v0.6.11
+   Compiling softbuffer v0.4.8
+   Compiling keyboard-types v0.8.3
+   Compiling email-encoding v0.4.2
+   Compiling serde_path_to_error v0.1.20
+   Compiling nom v8.0.0
+   Compiling hostname v0.4.2
+   Compiling fallible-iterator v0.3.0
+   Compiling unicode-width v0.2.2
+   Compiling fastrand v2.5.0
+   Compiling cpufeatures v0.2.17
+   Compiling bufstream v0.1.4
+   Compiling data-encoding v2.11.1
+   Compiling byteorder v1.5.0
+   Compiling lazy_static v1.5.1
+   Compiling matchit v0.8.4
+   Compiling fallible-streaming-iterator v0.1.9
+   Compiling base64 v0.13.1
+   Compiling email_address v0.2.9
+   Compiling lettre v0.11.23
+   Compiling imap v2.4.1
+   Compiling axum v0.8.9
+   Compiling keyring v3.6.3
+   Compiling mailparse v0.16.1
+   Compiling sha2 v0.10.9
+   Compiling html2text v0.16.7
+   Compiling serialize-to-javascript v0.1.2
+   Compiling fs2 v0.4.3
+   Compiling dirs v7.0.0
+   Compiling dirs v6.0.0
+   Compiling window-vibrancy v0.8.1
+   Compiling heck v0.5.0
+   Compiling alice-desktop v0.1.0 (/work/apps/desktop/src-tauri)
+warning: alice-desktop@0.1.0: Compiler family detection failed due to error: ToolExecError: command did not execute successfully (status code exit status: 1): "clang-cl" "-E" "/work/target/x86_64-pc-windows-msvc/release/build/alice-desktop-2ceb5a6b588863a5/out/9096694747145938625detect_compiler_family.c"
+warning: alice-desktop@0.1.0: Compiler family detection failed due to error: ToolExecError: command did not execute successfully (status code exit status: 1): "clang-cl" "-E" "/work/target/x86_64-pc-windows-msvc/release/build/alice-desktop-2ceb5a6b588863a5/out/5916540993785211053detect_compiler_family.c"
+   Compiling open v5.4.4
+   Compiling rusqlite v0.38.0
+   Compiling aws-lc-rs v1.18.1
+   Compiling rustls v0.23.45
+   Compiling rustls-webpki v0.103.15
+   Compiling tokio-rustls v0.26.6
+   Compiling rustls-platform-verifier v0.7.1
+   Compiling hyper-rustls v0.27.10
+   Compiling reqwest v0.13.5
+   Compiling alice-core v0.1.0 (/work/crates/alice-core)
+    Finished `release` profile [optimized] target(s) in 3m 31s
+warning: the following packages contain code that will be rejected by a future version of Rust: imap-proto v0.10.2
+note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 1`
+       Built application at: /work/target/x86_64-pc-windows-msvc/release/alice-desktop.exe
+        Warn Cross-platform compilation is experimental and does not support all features. Please use a matching host system for full compatibility.
+        Warn Signing, by default, is only supported on Windows hosts, but you can specify a custom signing command in `bundler > windows > sign_command`, for now, skipping signing the installer...
+        Info Patching /work/target/x86_64-pc-windows-msvc/release/alice-desktop.exe with bundle type information: nsis
+        Info Verifying NSIS package
+ Downloading https://github.com/tauri-apps/nsis-tauri-utils/releases/download/nsis_tauri_utils-v0.5.3/nsis_tauri_utils.dll
+        Info validating hash
+        Info Target: x64
+     Running makensis to produce /work/target/x86_64-pc-windows-msvc/release/bundle/nsis/Alice_0.1.0_x64-setup.exe
+warning 5202: -OUTPUTCHARSET is disabled for non Win32 platforms.
+        Warn Signing, by default, is only supported on Windows hosts, but you can specify a custom signing command in `bundler > windows > sign_command`, for now, skipping signing the installer...
+    Finished 1 bundle at:
+        /work/target/x86_64-pc-windows-msvc/release/bundle/nsis/Alice_0.1.0_x64-setup.exe (5.40 MiB)
+

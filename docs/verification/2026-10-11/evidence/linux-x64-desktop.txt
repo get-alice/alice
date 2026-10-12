@@ -1,0 +1,34 @@
+
+> alice@0.1.0 desktop:build
+> cd apps/desktop && tauri build --bundles deb
+
+        Info Looking up installed tauri packages to check mismatched versions...
+     Running beforeBuildCommand `npm --prefix ../.. run build`
+
+> alice@0.1.0 build
+> tsc --noEmit && vite build
+
+[36mvite v7.3.7 [32mbuilding client environment for production...[36m[39m
+transforming...
+[32m✓[39m 1753 modules transformed.
+rendering chunks...
+computing gzip size...
+[2mdist/[22m[32mindex.html                                               [39m[1m[2m  0.54 kB[22m[1m[22m[2m │ gzip:  0.34 kB[22m
+[2mdist/[22m[2massets/[22m[32mnewsreader-vietnamese-wght-normal-Czsa-EzN.woff2  [39m[1m[2m 11.93 kB[22m[1m[22m
+[2mdist/[22m[2massets/[22m[32mdm-sans-latin-ext-wght-normal-BOFOeGcA.woff2      [39m[1m[2m 18.23 kB[22m[1m[22m
+[2mdist/[22m[2massets/[22m[32mnewsreader-latin-ext-wght-normal-C-3rgBeH.woff2   [39m[1m[2m 36.24 kB[22m[1m[22m
+[2mdist/[22m[2massets/[22m[32mdm-sans-latin-wght-normal-Xz1IZZA0.woff2          [39m[1m[2m 36.93 kB[22m[1m[22m
+[2mdist/[22m[2massets/[22m[32mnewsreader-latin-wght-normal-CCVVNp6i.woff2       [39m[1m[2m 58.08 kB[22m[1m[22m
+[2mdist/[22m[2massets/[22m[35mindex-BRC5ep3C.css                                [39m[1m[2m 34.36 kB[22m[1m[22m[2m │ gzip:  7.58 kB[22m
+[2mdist/[22m[2massets/[22m[36mindex-CpVe4qjU.js                                 [39m[1m[2m307.58 kB[22m[1m[22m[2m │ gzip: 98.75 kB[22m
+[32m✓ built in 2.54s[39m
+   Compiling alice-desktop v0.1.0 (/work/apps/desktop/src-tauri)
+    Finished `release` profile [optimized] target(s) in 1m 25s
+warning: the following packages contain code that will be rejected by a future version of Rust: imap-proto v0.10.2
+note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 1`
+       Built application at: /work/target/release/alice-desktop
+        Info Patching /work/target/release/alice-desktop with bundle type information: deb
+    Bundling Alice_0.1.0_amd64.deb (/work/target/release/bundle/deb/Alice_0.1.0_amd64.deb)
+    Finished 1 bundle at:
+        /work/target/release/bundle/deb/Alice_0.1.0_amd64.deb (7.40 MiB)
+

@@ -1,0 +1,1 @@
+Packaged Linux desktop passed: extracted DEB launches WebView, auto-starts embedded daemon, loads inbox, shares CLI state. Headless container only; WebKit sandbox disabled for this isolated process.

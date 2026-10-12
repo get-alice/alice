@@ -1,0 +1,180 @@
+- complementary:
+  - generic: alice.
+  - button "Compose ⌘ N":
+    - generic: Compose
+    - generic: ⌘ N
+  - navigation "Mail folders":
+    - button "Inbox 12":
+      - generic: Inbox
+      - generic: "12"
+    - button "Starred":
+      - generic: Starred
+    - button "Sent":
+      - generic: Sent
+    - button "Drafts":
+      - generic: Drafts
+    - button "Archive":
+      - generic: Archive
+    - button "Trash":
+      - generic: Trash
+  - generic: Your collections
+  - button "Work" [pressed]:
+    - generic: Work
+  - button "Personal":
+    - generic: Personal
+  - button "Reading list":
+    - generic: Reading list
+  - generic: Sample accounts
+  - button "Add account":
+  - button "Gmail Work alex@form.studio":
+    - generic "Gmail":
+    - strong: Work
+    - generic: alex@form.studio
+  - button "Outlook Personal alex@outlook.com":
+    - generic "Outlook":
+      - generic: O
+    - strong: Personal
+    - generic: alex@outlook.com
+  - button "Ask Alice AI":
+    - generic: Ask Alice
+    - generic: AI
+  - generic: AM
+  - strong: Alex Morgan
+  - generic: Demo workspace
+  - button "Settings":
+- banner:
+  - generic: Mail
+  - generic: All inboxes
+  - generic: Demo inbox
+  - generic: Connected
+  - button "Keyboard shortcuts":
+  - button "Toggle Alice assistant":
+- region "Message list":
+  - heading "Work" [level=1]
+  - paragraph: A little space for what matters.
+  - button "Sync accounts":
+  - textbox "Search mail":
+    - /placeholder: Search your mail
+  - generic: ⌘ K
+  - button "A little help from Alice Less sorting. More space to think.":
+    - strong: A little help from Alice
+    - generic: Less sorting. More space to think.
+  - button "All mail 5":
+    - text: All mail
+    - generic: "5"
+  - button "Unread 3" [pressed]:
+    - text: Unread
+    - generic: "3"
+  - button "Newest":
+    - generic: Newest
+  - 'generic "Messages: j and k navigate"':
+    - generic: Today
+    - 'button "Sophie Chen: A little room for big ideas, unread, starred" [pressed]':
+      - generic: SC
+      - strong: Sophie Chen
+      - time: 5:35
+      - generic: A little room for big ideas
+      - paragraph: Hey Alex, I've been thinking about our conversation yesterday. What if we gave the new collection a little more room to breathe? Less noise, more intention. I p
+      - generic: Work
+    - 'button "Oliver Park: The website is ready for a first look, unread"':
+      - generic: OP
+      - strong: Oliver Park
+      - time: 4:52
+      - generic: The website is ready for a first look
+      - paragraph: "Hi Alex, The first version of the website is ready. All the little details we talked about are in: the quiet transitions, generous spacing, and that unexpected"
+      - generic: Work
+    - 'button "Emma Laurent: An invitation to collaborate, unread"':
+      - generic: EL
+      - strong: Emma Laurent
+      - time: 1:17
+      - generic: An invitation to collaborate
+      - paragraph: Hello Alex, We've been following your studio's work and would love to explore a collaboration for our winter exhibition. Would you be open to a short call next
+      - generic: Work
+  - generic: 1–3 of 3
+  - button "Previous page" [disabled]:
+  - button "Next page" [disabled]:
+- main "Message reader":
+  - button "Archive message":
+  - button "Trash message":
+  - button "Mark unread":
+  - button "Unstar message" [pressed]:
+  - button "More message actions":
+  - generic: 1 of 3
+  - button "Previous message" [disabled]:
+  - button "Next message":
+  - article:
+    - generic: Work
+    - generic: alex@form.studio · Demo
+    - heading "A little room for big ideas" [level=2]
+    - generic: SC
+    - strong: Sophie Chen
+    - generic "to alex@form.studio":
+      - text: to alex@form.studio
+    - time: 5:35
+    - generic: Sun 11 Oct
+    - paragraph: Hey Alex,
+    - paragraph: I've been thinking about our conversation yesterday. What if we gave the new collection a little more room to breathe? Less noise, more intention.
+    - paragraph: I put together a few directions for the studio identity. The first explores softer shapes and a warmer palette; the second is a little more unexpected.
+    - paragraph: Would love your thoughts before we share these with the team on Thursday. No rush — good ideas need a little space.
+    - paragraph: Talk soon, Sophie
+    - generic: Keep the conversation going.
+    - button "Reply to Sophie":
+      - text: Reply to Sophie
+    - button "A first draft, with Alice":
+      - text: A first draft, with Alice
+    - paragraph: Your words. A little less work.
+  - generic: Made for a calmer kind of email.
+- dialog "Make yourself at home.":
+  - heading "Make yourself at home." [level=2]
+  - paragraph: Alice works the way you do.
+  - button "Close settings":
+  - button "Mail accounts" [pressed]:
+    - text: Mail accounts
+  - button "Alice & AI":
+    - text: Alice & AI
+  - button "Back to accounts"
+  - heading "One more inbox. A little less switching." [level=3]
+  - button "Gmail Gmail":
+    - generic "Gmail":
+    - text: Gmail
+  - button "Outlook Outlook" [active] [pressed]:
+    - generic "Outlook":
+      - generic: O
+    - text: Outlook
+  - button "IMAP IMAP / SMTP":
+    - generic "IMAP":
+    - text: IMAP / SMTP
+  - generic "Set up sign-in first"
+  - paragraph: Alice currently needs your own Microsoft app registration for browser sign-in.
+  - list:
+    - listitem: Register a public-client app in Microsoft Entra. Include personal Microsoft accounts if you use Outlook.com.
+    - text: Add the Mobile and desktop redirect
+    - code: http://127.0.0.1:4816/callback
+    - text: . Enable public-client flows.
+    - text: Add delegated Exchange Online permissions
+    - code: IMAP.AccessAsUser.All
+    - text: and
+    - code: SMTP.Send
+    - text: . Alice also requests
+    - code: offline_access
+    - text: . Your organization may require admin consent and enabling IMAP / SMTP AUTH.
+    - listitem: Copy the Application (client) ID below.
+  - link "Microsoft mail sign-in guide":
+    - /url: https://learn.microsoft.com/en-us/exchange/client-developer/legacy-protocols/how-to-authenticate-an-imap-pop-smtp-application-by-using-oauth
+    - text: Microsoft mail sign-in guide
+  - text: Account name
+  - textbox "Account name":
+    - /placeholder: Work, personal, something else…
+  - text: Email address
+  - textbox "Email address":
+    - /placeholder: you@example.com
+  - text: OAuth client ID
+  - textbox "OAuth client ID":
+    - /placeholder: Your app registration's client ID
+  - paragraph:
+    - text: Create a Microsoft public-client app with delegated IMAP and SMTP permissions. Alice listens at
+    - code: http://127.0.0.1:4816/callback
+    - text: during sign-in. Client IDs can also be set through the daemon environment.
+  - button "Connect account":
+    - text: Connect account
+- status: 1Password menu is available. Press down arrow to select.

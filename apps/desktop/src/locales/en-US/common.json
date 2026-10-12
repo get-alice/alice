@@ -1,0 +1,10 @@
+{
+  "folder": {
+    "inbox": "Inbox",
+    "starred": "Starred",
+    "sent": "Sent",
+    "drafts": "Drafts",
+    "archive": "Archive",
+    "trash": "Trash"
+  }
+}

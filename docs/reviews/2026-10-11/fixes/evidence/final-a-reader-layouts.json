@@ -1,0 +1,174 @@
+[
+  {
+    "chipFont": "10px",
+    "overflowX": false,
+    "panels": [
+      {
+        "box": {
+          "bottom": 900,
+          "height": 838,
+          "left": 214,
+          "right": 584,
+          "top": 62,
+          "width": 370,
+          "x": 214,
+          "y": 62
+        },
+        "class": "mailbox",
+        "clientWidth": 369,
+        "display": "flex",
+        "scrollWidth": 369
+      },
+      {
+        "box": {
+          "bottom": 900,
+          "height": 838,
+          "left": 584,
+          "right": 1440,
+          "top": 62,
+          "width": 856,
+          "x": 584,
+          "y": 62
+        },
+        "class": "reader",
+        "clientWidth": 856,
+        "display": "flex",
+        "scrollWidth": 856
+      }
+    ],
+    "subject": "Re: Studio notes — October",
+    "viewport": [
+      1440,
+      900
+    ]
+  },
+  {
+    "chipFont": "10px",
+    "overflowX": false,
+    "panels": [
+      {
+        "box": {
+          "bottom": 768,
+          "height": 706,
+          "left": 214,
+          "right": 584,
+          "top": 62,
+          "width": 370,
+          "x": 214,
+          "y": 62
+        },
+        "class": "mailbox",
+        "clientWidth": 369,
+        "display": "flex",
+        "scrollWidth": 369
+      },
+      {
+        "box": {
+          "bottom": 768,
+          "height": 706,
+          "left": 584,
+          "right": 1366,
+          "top": 62,
+          "width": 782,
+          "x": 584,
+          "y": 62
+        },
+        "class": "reader",
+        "clientWidth": 782,
+        "display": "flex",
+        "scrollWidth": 782
+      }
+    ],
+    "subject": "Re: Studio notes — October",
+    "viewport": [
+      1366,
+      768
+    ]
+  },
+  {
+    "chipFont": "10px",
+    "overflowX": false,
+    "panels": [
+      {
+        "box": {
+          "bottom": 0,
+          "height": 0,
+          "left": 0,
+          "right": 0,
+          "top": 0,
+          "width": 0,
+          "x": 0,
+          "y": 0
+        },
+        "class": "mailbox",
+        "clientWidth": 0,
+        "display": "none",
+        "scrollWidth": 0
+      },
+      {
+        "box": {
+          "bottom": 768,
+          "height": 706,
+          "left": 190,
+          "right": 1024,
+          "top": 62,
+          "width": 834,
+          "x": 190,
+          "y": 62
+        },
+        "class": "reader",
+        "clientWidth": 834,
+        "display": "flex",
+        "scrollWidth": 834
+      }
+    ],
+    "subject": "Re: Studio notes — October",
+    "viewport": [
+      1024,
+      768
+    ]
+  },
+  {
+    "chipFont": "10px",
+    "overflowX": false,
+    "panels": [
+      {
+        "box": {
+          "bottom": 0,
+          "height": 0,
+          "left": 0,
+          "right": 0,
+          "top": 0,
+          "width": 0,
+          "x": 0,
+          "y": 0
+        },
+        "class": "mailbox",
+        "clientWidth": 0,
+        "display": "none",
+        "scrollWidth": 0
+      },
+      {
+        "box": {
+          "bottom": 640,
+          "height": 578,
+          "left": 190,
+          "right": 850,
+          "top": 62,
+          "width": 660,
+          "x": 190,
+          "y": 62
+        },
+        "class": "reader",
+        "clientWidth": 660,
+        "display": "flex",
+        "scrollWidth": 660
+      }
+    ],
+    "subject": "Re: Studio notes — October",
+    "viewport": [
+      850,
+      640
+    ]
+  }
+]

@@ -1,0 +1,83 @@
+- complementary:
+  - generic: alice.
+  - button "Compose ⌘ N":
+    - generic: Compose
+    - generic: ⌘ N
+  - navigation "Mail folders":
+    - button "Inbox 12":
+      - generic: Inbox
+      - generic: "12"
+    - button "Starred":
+      - generic: Starred
+    - button "Sent":
+      - generic: Sent
+    - button "Drafts":
+      - generic: Drafts
+    - button "Archive":
+      - generic: Archive
+    - button "Trash":
+      - generic: Trash
+  - generic: Your collections
+  - button "Work":
+    - generic: Work
+  - button "Personal":
+    - generic: Personal
+  - button "Reading list":
+    - generic: Reading list
+  - generic: Sample accounts
+  - button "Add account":
+  - button "Gmail Work alex@form.studio":
+    - generic "Gmail":
+    - strong: Work
+    - generic: alex@form.studio
+  - button "Outlook Personal alex@outlook.com":
+    - generic "Outlook":
+      - generic: O
+    - strong: Personal
+    - generic: alex@outlook.com
+  - button "Ask Alice AI":
+    - generic: Ask Alice
+    - generic: AI
+  - generic: AM
+  - strong: Alex Morgan
+  - generic: Demo workspace
+  - button "Settings":
+- banner:
+  - generic: Mail
+  - generic: All inboxes
+  - generic: Demo inbox
+  - generic: Connected
+  - button "Keyboard shortcuts":
+  - button "Toggle Alice assistant" [active]:
+- main "Message reader":
+  - button "Back to message list":
+  - button "Archive message":
+  - button "Trash message":
+  - button "Mark unread":
+  - button "Unstar message" [pressed]:
+  - button "More message actions":
+  - button "Previous message" [disabled]:
+  - button "Next message":
+  - article:
+    - generic: Work
+    - generic: alex@form.studio · Demo
+    - heading "A little room for big ideas" [level=2]
+    - generic: SC
+    - strong: Sophie Chen
+    - generic "to alex@form.studio":
+      - text: to alex@form.studio
+    - time: 5:35
+    - generic: Sun 11 Oct
+    - paragraph: Hey Alex,
+    - paragraph: I've been thinking about our conversation yesterday. What if we gave the new collection a little more room to breathe? Less noise, more intention.
+    - paragraph: I put together a few directions for the studio identity. The first explores softer shapes and a warmer palette; the second is a little more unexpected.
+    - paragraph: Would love your thoughts before we share these with the team on Thursday. No rush — good ideas need a little space.
+    - paragraph: Talk soon, Sophie
+    - generic: Keep the conversation going.
+    - button "Reply to Sophie":
+      - text: Reply to Sophie
+    - button "A first draft, with Alice":
+      - text: A first draft, with Alice
+    - paragraph: Your words. A little less work.
+  - generic: Made for a calmer kind of email.
+- status: 1Password menu is available. Press down arrow to select.

@@ -1,0 +1,15 @@
+{
+  "command": "CI=true npm run desktop:build",
+  "result": "passed",
+  "release_compile_seconds": 59.23,
+  "bundles": [
+    "Alice.app",
+    "Alice_0.1.0_aarch64.dmg"
+  ],
+  "frontend_chunk": "index-CpVe4qjU.js",
+  "native_html_examples_verified": [
+    "Djinni statistics for the week",
+    "Test 123"
+  ],
+  "remote_images_loaded_from_live_mail": false
+}

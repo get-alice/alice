@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/work/scripts/test-mail.py", line 151, in <module>
+    assert not api("GET", f'/v1/messages/{archived["id"]}')["is_starred"], \
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Sent copy suppressed remote updates to the archived received copy

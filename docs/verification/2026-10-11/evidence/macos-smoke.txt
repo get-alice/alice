@@ -1,0 +1,3 @@
+npm notice run alice@0.1.0 test:smoke
+npm notice run node scripts/smoke.mjs
+Alice smoke passed: auth, draft validation, shared CLI/API state, reply drafts, send idempotency, terminal control sanitization, restart persistence, terminal isolation, and graceful shutdown.

@@ -1,0 +1,43 @@
+npm notice run alice@0.1.0 desktop:build
+npm notice run cd apps/desktop && tauri build
+        Info Looking up installed tauri packages to check mismatched versions...
+     Running beforeBuildCommand `npm --prefix ../.. run build`
+npm notice run alice@0.1.0 build
+npm notice run tsc --noEmit && vite build
+vite v7.3.7 building client environment for production...
+transforming...
+✓ 1753 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                                 0.54 kB │ gzip:  0.34 kB
+dist/assets/newsreader-vietnamese-wght-normal-Czsa-EzN.woff2   11.93 kB
+dist/assets/dm-sans-latin-ext-wght-normal-BOFOeGcA.woff2       18.23 kB
+dist/assets/newsreader-latin-ext-wght-normal-C-3rgBeH.woff2    36.24 kB
+dist/assets/dm-sans-latin-wght-normal-Xz1IZZA0.woff2           36.93 kB
+dist/assets/newsreader-latin-wght-normal-CCVVNp6i.woff2        58.08 kB
+dist/assets/index-BRC5ep3C.css                                 34.36 kB │ gzip:  7.58 kB
+dist/assets/index-CpVe4qjU.js                                 307.58 kB │ gzip: 98.75 kB
+✓ built in 4.14s
+   Compiling aws-lc-sys v0.45.0
+   Compiling libsqlite3-sys v0.36.0
+   Compiling aws-lc-rs v1.18.1
+   Compiling rustls v0.23.45
+   Compiling rustls-webpki v0.103.15
+   Compiling tokio-rustls v0.26.6
+   Compiling rustls-platform-verifier v0.7.1
+   Compiling hyper-rustls v0.27.10
+   Compiling reqwest v0.13.5
+   Compiling rusqlite v0.38.0
+   Compiling alice-core v0.1.0 (/Users/amruth/Documents/Codex/2026-10-11-create-a-new-project-called-alice/crates/alice-core)
+   Compiling alice-desktop v0.1.0 (/Users/amruth/Documents/Codex/2026-10-11-create-a-new-project-called-alice/apps/desktop/src-tauri)
+    Finished `release` profile [optimized] target(s) in 9m 13s
+warning: the following packages contain code that will be rejected by a future version of Rust: imap-proto v0.10.2
+note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 1`
+       Built application at: /Users/amruth/Documents/Codex/2026-10-11-create-a-new-project-called-alice/target/release/alice-desktop
+    Bundling Alice.app (/Users/amruth/Documents/Codex/2026-10-11-create-a-new-project-called-alice/target/release/bundle/macos/Alice.app)
+    Bundling Alice_0.1.0_aarch64.dmg (/Users/amruth/Documents/Codex/2026-10-11-create-a-new-project-called-alice/target/release/bundle/dmg/Alice_0.1.0_aarch64.dmg)
+     Running bundle_dmg.sh
+    Finished 2 bundles at:
+        /Users/amruth/Documents/Codex/2026-10-11-create-a-new-project-called-alice/target/release/bundle/macos/Alice.app (14.48 MiB)
+        /Users/amruth/Documents/Codex/2026-10-11-create-a-new-project-called-alice/target/release/bundle/dmg/Alice_0.1.0_aarch64.dmg (6.67 MiB)
+

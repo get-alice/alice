@@ -1,0 +1,47 @@
+{
+  "tray": {
+    "open": "Open Alice",
+    "sync": "Check for New Mail",
+    "quit": "Quit Alice"
+  },
+  "notice": {
+    "grouped": {
+      "one": "{count} new message in your Inbox",
+      "other": "{count} new messages in your Inbox"
+    },
+    "no_subject": "(no subject)",
+    "unknown_sender": "Unknown sender",
+    "open": "Open",
+    "bundle_required": "Alice notifications need the bundled app (npm run desktop:build)",
+    "permission_denied": "Notifications are turned off for Alice in System Settings",
+    "failed": "Could not show a notification: {error}"
+  },
+  "download": {
+    "attachment": "attachment",
+    "reserved_name": "attachment {name}"
+  },
+  "contacts": {
+    "build_unsupported": "This build of Alice can't ask for access to Mac Contacts. Use the Alice app (npm run desktop or npm run desktop:build)",
+    "denied": "Alice can't read your contacts. Allow Alice in System Settings → Privacy & Security → Contacts, then turn Mac Contacts on again",
+    "read_failed": "Your contacts could not be read",
+    "read_error": "Your contacts could not be read: {error}",
+    "platform_unsupported": "Importing system contacts is only supported on macOS"
+  },
+  "error": {
+    "sign_in_url": "Invalid sign-in URL",
+    "help_url": "Invalid help URL",
+    "email_url": "This email link cannot be opened safely",
+    "daemon_runtime": "Could not create daemon runtime",
+    "start": "Could not start Alice",
+    "tray": "Could not add Alice to the menu bar: {error}",
+    "message_missing": "This message cannot be found",
+    "downloads_folder": "Your Downloads folder could not be found",
+    "attachment_save": "The attachment could not be saved: {error}",
+    "download_missing": "This download is no longer there",
+    "saved_only": "Only saved attachments can be shown",
+    "cache_folder": "Alice's cache folder could not be found",
+    "event_save": "The event could not be saved: {error}",
+    "calendar_open": "No calendar app opened the event: {error}",
+    "too_many_files": "too many files with this name"
+  }
+}

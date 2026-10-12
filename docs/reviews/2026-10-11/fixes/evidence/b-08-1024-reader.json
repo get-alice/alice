@@ -1,0 +1,1879 @@
+{
+  "controls": [
+    {
+      "covered": false,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "Compose⌘ N",
+      "pressed": null,
+      "rect": {
+        "bottom": 129,
+        "height": 39,
+        "right": 177,
+        "width": 165,
+        "x": 12,
+        "y": 90
+      },
+      "top": ""
+    },
+    {
+      "covered": false,
+      "current": "page",
+      "disabled": false,
+      "expanded": null,
+      "name": "Inbox12",
+      "pressed": null,
+      "rect": {
+        "bottom": 177,
+        "height": 32,
+        "right": 177,
+        "width": 165,
+        "x": 12,
+        "y": 145
+      },
+      "top": "nav-item active"
+    },
+    {
+      "covered": false,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "Starred",
+      "pressed": null,
+      "rect": {
+        "bottom": 212,
+        "height": 32,
+        "right": 177,
+        "width": 165,
+        "x": 12,
+        "y": 180
+      },
+      "top": ""
+    },
+    {
+      "covered": false,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "Sent",
+      "pressed": null,
+      "rect": {
+        "bottom": 247,
+        "height": 32,
+        "right": 177,
+        "width": 165,
+        "x": 12,
+        "y": 215
+      },
+      "top": "nav-item "
+    },
+    {
+      "covered": false,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "Drafts",
+      "pressed": null,
+      "rect": {
+        "bottom": 282,
+        "height": 32,
+        "right": 177,
+        "width": 165,
+        "x": 12,
+        "y": 250
+      },
+      "top": "nav-item "
+    },
+    {
+      "covered": false,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "Archive",
+      "pressed": null,
+      "rect": {
+        "bottom": 317,
+        "height": 32,
+        "right": 177,
+        "width": 165,
+        "x": 12,
+        "y": 285
+      },
+      "top": ""
+    },
+    {
+      "covered": false,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "Trash",
+      "pressed": null,
+      "rect": {
+        "bottom": 352,
+        "height": 32,
+        "right": 177,
+        "width": 165,
+        "x": 12,
+        "y": 320
+      },
+      "top": "nav-item "
+    },
+    {
+      "covered": false,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "Work",
+      "pressed": "false",
+      "rect": {
+        "bottom": 420.5,
+        "height": 27.5,
+        "right": 172,
+        "width": 155,
+        "x": 17,
+        "y": 393
+      },
+      "top": "collection "
+    },
+    {
+      "covered": false,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "Personal",
+      "pressed": "false",
+      "rect": {
+        "bottom": 453,
+        "height": 27.5,
+        "right": 172,
+        "width": 155,
+        "x": 17,
+        "y": 425.5
+      },
+      "top": ""
+    },
+    {
+      "covered": false,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "Reading list",
+      "pressed": "false",
+      "rect": {
+        "bottom": 485.5,
+        "height": 27.5,
+        "right": 172,
+        "width": 155,
+        "x": 17,
+        "y": 458
+      },
+      "top": ""
+    },
+    {
+      "covered": false,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "Add account",
+      "pressed": null,
+      "rect": {
+        "bottom": 518.5,
+        "height": 18,
+        "right": 170,
+        "width": 18,
+        "x": 152,
+        "y": 500.5
+      },
+      "top": ""
+    },
+    {
+      "covered": false,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "Workalex@form.studio",
+      "pressed": "false",
+      "rect": {
+        "bottom": 568,
+        "height": 43.5,
+        "right": 172,
+        "width": 155,
+        "x": 17,
+        "y": 524.5
+      },
+      "top": ""
+    },
+    {
+      "covered": false,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "OPersonalalex@outlook.com",
+      "pressed": "false",
+      "rect": {
+        "bottom": 614.5,
+        "height": 43.5,
+        "right": 172,
+        "width": 155,
+        "x": 17,
+        "y": 571
+      },
+      "top": ""
+    },
+    {
+      "covered": false,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "Ask AliceAI",
+      "pressed": "false",
+      "rect": {
+        "bottom": 708,
+        "height": 40,
+        "right": 177,
+        "width": 165,
+        "x": 12,
+        "y": 668
+      },
+      "top": ""
+    },
+    {
+      "covered": false,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "Settings",
+      "pressed": null,
+      "rect": {
+        "bottom": 753.5,
+        "height": 30,
+        "right": 175,
+        "width": 24,
+        "x": 151,
+        "y": 723.5
+      },
+      "top": "lucide lucide-settings"
+    },
+    {
+      "covered": false,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "Keyboard shortcuts",
+      "pressed": null,
+      "rect": {
+        "bottom": 45.5,
+        "height": 30,
+        "right": 951,
+        "width": 30,
+        "x": 921,
+        "y": 15.5
+      },
+      "top": "lucide lucide-circle-question-mark"
+    },
+    {
+      "covered": false,
+      "current": null,
+      "disabled": false,
+      "expanded": "false",
+      "name": "Toggle Alice assistant",
+      "pressed": null,
+      "rect": {
+        "bottom": 45.5,
+        "height": 30,
+        "right": 998,
+        "width": 30,
+        "x": 968,
+        "y": 15.5
+      },
+      "top": "lucide lucide-panel-right"
+    },
+    {
+      "covered": false,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "Back to message list",
+      "pressed": null,
+      "rect": {
+        "bottom": 109.5,
+        "height": 30,
+        "right": 238,
+        "width": 30,
+        "x": 208,
+        "y": 79.5
+      },
+      "top": ""
+    },
+    {
+      "covered": false,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "Archive message",
+      "pressed": null,
+      "rect": {
+        "bottom": 109.5,
+        "height": 30,
+        "right": 278,
+        "width": 30,
+        "x": 248,
+        "y": 79.5
+      },
+      "top": ""
+    },
+    {
+      "covered": false,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "Trash message",
+      "pressed": null,
+      "rect": {
+        "bottom": 109.5,
+        "height": 30,
+        "right": 312,
+        "width": 30,
+        "x": 282,
+        "y": 79.5
+      },
+      "top": "lucide lucide-trash2 lucide-trash-2"
+    },
+    {
+      "covered": false,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "Mark unread",
+      "pressed": null,
+      "rect": {
+        "bottom": 109.5,
+        "height": 30,
+        "right": 359,
+        "width": 30,
+        "x": 329,
+        "y": 79.5
+      },
+      "top": "lucide lucide-mail"
+    },
+    {
+      "covered": false,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "Unstar message",
+      "pressed": "true",
+      "rect": {
+        "bottom": 109.5,
+        "height": 30,
+        "right": 393,
+        "width": 30,
+        "x": 363,
+        "y": 79.5
+      },
+      "top": ""
+    },
+    {
+      "covered": false,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "More message actions",
+      "pressed": null,
+      "rect": {
+        "bottom": 109.5,
+        "height": 30,
+        "right": 427,
+        "width": 30,
+        "x": 397,
+        "y": 79.5
+      },
+      "top": "lucide lucide-ellipsis"
+    },
+    {
+      "covered": false,
+      "current": null,
+      "disabled": true,
+      "expanded": null,
+      "name": "Previous message",
+      "pressed": null,
+      "rect": {
+        "bottom": 109.5,
+        "height": 30,
+        "right": 971,
+        "width": 30,
+        "x": 941,
+        "y": 79.5
+      },
+      "top": "lucide lucide-chevron-left"
+    },
+    {
+      "covered": false,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "Next message",
+      "pressed": null,
+      "rect": {
+        "bottom": 109.5,
+        "height": 30,
+        "right": 1006,
+        "width": 30,
+        "x": 976,
+        "y": 79.5
+      },
+      "top": "lucide lucide-chevron-right"
+    }
+  ],
+  "devicePixelRatio": 1,
+  "dialogs": [],
+  "document": [
+    1024,
+    1024,
+    768,
+    768
+  ],
+  "fields": [],
+  "focus": {
+    "class": "icon-button ",
+    "id": "",
+    "tag": "BUTTON"
+  },
+  "icons": [
+    {
+      "bg": [
+        235,
+        229,
+        243,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(100, 69, 130)",
+      "label": "Compose⌘ N",
+      "ratio": 6.273
+    },
+    {
+      "bg": [
+        234,
+        230,
+        241,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(100, 69, 130)",
+      "label": "Inbox12",
+      "ratio": 6.293
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "label": "Starred",
+      "ratio": 5.563
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "label": "Sent",
+      "ratio": 5.563
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "label": "Drafts",
+      "ratio": 5.563
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "label": "Archive",
+      "ratio": 5.563
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "label": "Trash",
+      "ratio": 5.563
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "label": "Add account",
+      "ratio": 5.563
+    },
+    {
+      "bg": [
+        255,
+        255,
+        255,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "label": "Workalex@form.studio",
+      "ratio": 5.952
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(100, 69, 130)",
+      "label": "Ask AliceAI",
+      "ratio": 7.228
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "label": "Settings",
+      "ratio": 5.563
+    },
+    {
+      "bg": [
+        252,
+        252,
+        253,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "label": "Keyboard shortcuts",
+      "ratio": 5.805
+    },
+    {
+      "bg": [
+        252,
+        252,
+        253,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "label": "Toggle Alice assistant",
+      "ratio": 5.805
+    },
+    {
+      "bg": [
+        255,
+        255,
+        255,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "label": "Back to message list",
+      "ratio": 5.952
+    },
+    {
+      "bg": [
+        255,
+        255,
+        255,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "label": "Archive message",
+      "ratio": 5.952
+    },
+    {
+      "bg": [
+        255,
+        255,
+        255,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "label": "Trash message",
+      "ratio": 5.952
+    },
+    {
+      "bg": [
+        255,
+        255,
+        255,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "label": "Mark unread",
+      "ratio": 5.952
+    },
+    {
+      "bg": [
+        255,
+        255,
+        255,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(116, 85, 50)",
+      "label": "Unstar message",
+      "ratio": 6.8
+    },
+    {
+      "bg": [
+        255,
+        255,
+        255,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "label": "More message actions",
+      "ratio": 5.952
+    },
+    {
+      "bg": [
+        240,
+        237,
+        245,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "label": "Next message",
+      "ratio": 5.141
+    }
+  ],
+  "layout": [
+    {
+      "class": "app-shell has-selection ",
+      "client": [
+        1024,
+        768
+      ],
+      "display": "grid",
+      "rect": {
+        "bottom": 768,
+        "height": 768,
+        "right": 1024,
+        "width": 1024,
+        "x": 0,
+        "y": 0
+      },
+      "scroll": [
+        1024,
+        768
+      ],
+      "scrollTop": 0
+    },
+    {
+      "class": "sidebar",
+      "client": [
+        189,
+        768
+      ],
+      "display": "flex",
+      "rect": {
+        "bottom": 768,
+        "height": 768,
+        "right": 190,
+        "width": 190,
+        "x": 0,
+        "y": 0
+      },
+      "scroll": [
+        189,
+        768
+      ],
+      "scrollTop": 0
+    },
+    {
+      "class": "sidebar-scroll",
+      "client": [
+        165,
+        523
+      ],
+      "display": "block",
+      "rect": {
+        "bottom": 668,
+        "height": 523,
+        "right": 177,
+        "width": 165,
+        "x": 12,
+        "y": 145
+      },
+      "scroll": [
+        165,
+        523
+      ],
+      "scrollTop": 0
+    },
+    {
+      "class": "sidebar-footer",
+      "client": [
+        165,
+        59
+      ],
+      "display": "flex",
+      "rect": {
+        "bottom": 768,
+        "height": 60,
+        "right": 177,
+        "width": 165,
+        "x": 12,
+        "y": 708
+      },
+      "scroll": [
+        165,
+        59
+      ],
+      "scrollTop": 0
+    },
+    {
+      "class": "workspace-header",
+      "client": [
+        834,
+        61
+      ],
+      "display": "flex",
+      "rect": {
+        "bottom": 62,
+        "height": 62,
+        "right": 1024,
+        "width": 834,
+        "x": 190,
+        "y": 0
+      },
+      "scroll": [
+        834,
+        61
+      ],
+      "scrollTop": 0
+    },
+    {
+      "class": "mailbox",
+      "client": [
+        0,
+        0
+      ],
+      "display": "none",
+      "rect": {
+        "bottom": 0,
+        "height": 0,
+        "right": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "scroll": [
+        0,
+        0
+      ],
+      "scrollTop": 0
+    },
+    {
+      "class": "reader",
+      "client": [
+        834,
+        706
+      ],
+      "display": "flex",
+      "rect": {
+        "bottom": 768,
+        "height": 706,
+        "right": 1024,
+        "width": 834,
+        "x": 190,
+        "y": 62
+      },
+      "scroll": [
+        834,
+        706
+      ],
+      "scrollTop": 0
+    },
+    {
+      "class": "reader-toolbar",
+      "client": [
+        834,
+        65
+      ],
+      "display": "flex",
+      "rect": {
+        "bottom": 128,
+        "height": 66,
+        "right": 1024,
+        "width": 834,
+        "x": 190,
+        "y": 62
+      },
+      "scroll": [
+        834,
+        65
+      ],
+      "scrollTop": 0
+    },
+    {
+      "class": "toolbar-actions",
+      "client": [
+        179,
+        30
+      ],
+      "display": "flex",
+      "rect": {
+        "bottom": 109.5,
+        "height": 30,
+        "right": 427,
+        "width": 179,
+        "x": 248,
+        "y": 79.5
+      },
+      "scroll": [
+        179,
+        30
+      ],
+      "scrollTop": 0
+    },
+    {
+      "class": "reader-pagination",
+      "client": [
+        65,
+        30
+      ],
+      "display": "flex",
+      "rect": {
+        "bottom": 109.5,
+        "height": 30,
+        "right": 1006,
+        "width": 65,
+        "x": 941,
+        "y": 79.5
+      },
+      "scroll": [
+        65,
+        30
+      ],
+      "scrollTop": 0
+    }
+  ],
+  "name": "b-08-1024-reader",
+  "status": [
+    {
+      "live": null,
+      "role": null,
+      "text": "Connected"
+    }
+  ],
+  "text": [
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(52, 51, 59)",
+      "font": "32px",
+      "ratio": 11.664,
+      "rect": {
+        "bottom": 66.75,
+        "height": 41.5,
+        "right": 140.671875,
+        "width": 72.671875,
+        "x": 68,
+        "y": 25.25
+      },
+      "tag": "SPAN",
+      "text": "alice"
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "brand-dot",
+      "fg": "rgb(128, 103, 173)",
+      "font": "32px",
+      "ratio": 4.399,
+      "rect": {
+        "bottom": 66.75,
+        "height": 41.5,
+        "right": 140.671875,
+        "width": 6.3125,
+        "x": 134.359375,
+        "y": 25.25
+      },
+      "tag": "SPAN",
+      "text": "."
+    },
+    {
+      "bg": [
+        235,
+        229,
+        243,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(100, 69, 130)",
+      "font": "12px",
+      "ratio": 6.273,
+      "rect": {
+        "bottom": 117.25,
+        "height": 15.5,
+        "right": 109.5390625,
+        "width": 55.5390625,
+        "x": 54,
+        "y": 101.75
+      },
+      "tag": "SPAN",
+      "text": "Compose"
+    },
+    {
+      "bg": [
+        235,
+        229,
+        243,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(100, 69, 130)",
+      "font": "10px",
+      "ratio": 6.273,
+      "rect": {
+        "bottom": 116,
+        "height": 13,
+        "right": 162,
+        "width": 19.5703125,
+        "x": 142.4296875,
+        "y": 103
+      },
+      "tag": "KBD",
+      "text": "⌘  N"
+    },
+    {
+      "bg": [
+        234,
+        230,
+        241,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(100, 69, 130)",
+      "font": "12px",
+      "ratio": 6.293,
+      "rect": {
+        "bottom": 168.75,
+        "height": 15.5,
+        "right": 87.703125,
+        "width": 31.703125,
+        "x": 56,
+        "y": 153.25
+      },
+      "tag": "SPAN",
+      "text": "Inbox"
+    },
+    {
+      "bg": [
+        221,
+        212,
+        235,
+        1
+      ],
+      "class": "nav-count",
+      "fg": "rgb(100, 69, 130)",
+      "font": "10px",
+      "ratio": 5.41,
+      "rect": {
+        "bottom": 169.5,
+        "height": 17,
+        "right": 163,
+        "width": 21,
+        "x": 142,
+        "y": 152.5
+      },
+      "tag": "SPAN",
+      "text": "12"
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "12px",
+      "ratio": 5.563,
+      "rect": {
+        "bottom": 203.75,
+        "height": 15.5,
+        "right": 97.1875,
+        "width": 41.1875,
+        "x": 56,
+        "y": 188.25
+      },
+      "tag": "SPAN",
+      "text": "Starred"
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "12px",
+      "ratio": 5.563,
+      "rect": {
+        "bottom": 238.75,
+        "height": 15.5,
+        "right": 81.375,
+        "width": 25.375,
+        "x": 56,
+        "y": 223.25
+      },
+      "tag": "SPAN",
+      "text": "Sent"
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "12px",
+      "ratio": 5.563,
+      "rect": {
+        "bottom": 273.75,
+        "height": 15.5,
+        "right": 90.0390625,
+        "width": 34.0390625,
+        "x": 56,
+        "y": 258.25
+      },
+      "tag": "SPAN",
+      "text": "Drafts"
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "12px",
+      "ratio": 5.563,
+      "rect": {
+        "bottom": 308.75,
+        "height": 15.5,
+        "right": 97.6640625,
+        "width": 41.6640625,
+        "x": 56,
+        "y": 293.25
+      },
+      "tag": "SPAN",
+      "text": "Archive"
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "12px",
+      "ratio": 5.563,
+      "rect": {
+        "bottom": 343.75,
+        "height": 15.5,
+        "right": 85.9453125,
+        "width": 29.9453125,
+        "x": 56,
+        "y": 328.25
+      },
+      "tag": "SPAN",
+      "text": "Trash"
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "section-label",
+      "fg": "rgb(104, 97, 111)",
+      "font": "10px",
+      "ratio": 5.563,
+      "rect": {
+        "bottom": 388,
+        "height": 18,
+        "right": 147,
+        "width": 130,
+        "x": 17,
+        "y": 370
+      },
+      "tag": "SPAN",
+      "text": "Your collections"
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "12px",
+      "ratio": 5.563,
+      "rect": {
+        "bottom": 414.5,
+        "height": 15.5,
+        "right": 82.609375,
+        "width": 28.609375,
+        "x": 54,
+        "y": 399
+      },
+      "tag": "SPAN",
+      "text": "Work"
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "12px",
+      "ratio": 5.563,
+      "rect": {
+        "bottom": 447,
+        "height": 15.5,
+        "right": 101.1015625,
+        "width": 47.1015625,
+        "x": 54,
+        "y": 431.5
+      },
+      "tag": "SPAN",
+      "text": "Personal"
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "12px",
+      "ratio": 5.563,
+      "rect": {
+        "bottom": 479.5,
+        "height": 15.5,
+        "right": 117.3125,
+        "width": 63.3125,
+        "x": 54,
+        "y": 464
+      },
+      "tag": "SPAN",
+      "text": "Reading list"
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "section-label",
+      "fg": "rgb(104, 97, 111)",
+      "font": "10px",
+      "ratio": 5.563,
+      "rect": {
+        "bottom": 521.5,
+        "height": 18,
+        "right": 149,
+        "width": 132,
+        "x": 17,
+        "y": 503.5
+      },
+      "tag": "SPAN",
+      "text": "Sample accounts"
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "11px",
+      "ratio": 5.563,
+      "rect": {
+        "bottom": 545,
+        "height": 14.5,
+        "right": 141.90625,
+        "width": 80.90625,
+        "x": 61,
+        "y": 530.5
+      },
+      "tag": "STRONG",
+      "text": "Work"
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "10px",
+      "ratio": 5.563,
+      "rect": {
+        "bottom": 562,
+        "height": 13,
+        "right": 141.90625,
+        "width": 80.90625,
+        "x": 61,
+        "y": 549
+      },
+      "tag": "SMALL",
+      "text": "alex@form.studio"
+    },
+    {
+      "bg": [
+        61,
+        140,
+        203,
+        1
+      ],
+      "class": "outlook-mark",
+      "fg": "rgb(104, 97, 111)",
+      "font": "12px",
+      "ratio": 1.647,
+      "rect": {
+        "bottom": 601.25,
+        "height": 17,
+        "right": 45.703125,
+        "width": 15.40625,
+        "x": 30.296875,
+        "y": 584.25
+      },
+      "tag": "SPAN",
+      "text": "O"
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "11px",
+      "ratio": 5.563,
+      "rect": {
+        "bottom": 591.5,
+        "height": 14.5,
+        "right": 146.3828125,
+        "width": 85.3828125,
+        "x": 61,
+        "y": 577
+      },
+      "tag": "STRONG",
+      "text": "Personal"
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "10px",
+      "ratio": 5.563,
+      "rect": {
+        "bottom": 608.5,
+        "height": 13,
+        "right": 146.3828125,
+        "width": 85.3828125,
+        "x": 61,
+        "y": 595.5
+      },
+      "tag": "SMALL",
+      "text": "alex@outlook.com"
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(100, 69, 130)",
+      "font": "12px",
+      "ratio": 7.228,
+      "rect": {
+        "bottom": 695.75,
+        "height": 15.5,
+        "right": 102.4375,
+        "width": 50.4375,
+        "x": 52,
+        "y": 680.25
+      },
+      "tag": "SPAN",
+      "text": "Ask Alice"
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "new-badge",
+      "fg": "rgb(100, 69, 130)",
+      "font": "10px",
+      "ratio": 7.228,
+      "rect": {
+        "bottom": 696.5,
+        "height": 17,
+        "right": 165,
+        "width": 18.984375,
+        "x": 146.015625,
+        "y": 679.5
+      },
+      "tag": "SPAN",
+      "text": "AI"
+    },
+    {
+      "bg": [
+        234,
+        227,
+        243,
+        1
+      ],
+      "class": "avatar violet",
+      "fg": "rgb(100, 69, 130)",
+      "font": "10px",
+      "ratio": 6.18,
+      "rect": {
+        "bottom": 754,
+        "height": 31,
+        "right": 45,
+        "width": 31,
+        "x": 14,
+        "y": 723
+      },
+      "tag": "DIV",
+      "text": "AM"
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(52, 51, 59)",
+      "font": "10px",
+      "ratio": 11.664,
+      "rect": {
+        "bottom": 736.5,
+        "height": 13,
+        "right": 142,
+        "width": 88,
+        "x": 54,
+        "y": 723.5
+      },
+      "tag": "STRONG",
+      "text": "Alex Morgan"
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "10px",
+      "ratio": 5.563,
+      "rect": {
+        "bottom": 753.5,
+        "height": 13,
+        "right": 142,
+        "width": 88,
+        "x": 54,
+        "y": 740.5
+      },
+      "tag": "SMALL",
+      "text": "Demo workspace"
+    },
+    {
+      "bg": [
+        252,
+        252,
+        253,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "10px",
+      "ratio": 5.805,
+      "rect": {
+        "bottom": 37,
+        "height": 13,
+        "right": 261.484375,
+        "width": 18.484375,
+        "x": 243,
+        "y": 24
+      },
+      "tag": "SPAN",
+      "text": "Mail"
+    },
+    {
+      "bg": [
+        252,
+        252,
+        253,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "10px",
+      "ratio": 5.805,
+      "rect": {
+        "bottom": 37,
+        "height": 13,
+        "right": 345.8203125,
+        "width": 49.3359375,
+        "x": 296.484375,
+        "y": 24
+      },
+      "tag": "SPAN",
+      "text": "All inboxes"
+    },
+    {
+      "bg": [
+        245,
+        242,
+        249,
+        1
+      ],
+      "class": "demo-badge",
+      "fg": "rgb(100, 69, 130)",
+      "font": "10px",
+      "ratio": 6.979,
+      "rect": {
+        "bottom": 42,
+        "height": 23,
+        "right": 824.4296875,
+        "width": 71.140625,
+        "x": 753.2890625,
+        "y": 19
+      },
+      "tag": "SPAN",
+      "text": "Demo inbox"
+    },
+    {
+      "bg": [
+        252,
+        252,
+        253,
+        1
+      ],
+      "class": "connection-status ",
+      "fg": "rgb(104, 97, 111)",
+      "font": "10px",
+      "ratio": 5.805,
+      "rect": {
+        "bottom": 37,
+        "height": 13,
+        "right": 904,
+        "width": 62.5703125,
+        "x": 841.4296875,
+        "y": 24
+      },
+      "tag": "SPAN",
+      "text": "Connected"
+    },
+    {
+      "bg": [
+        238,
+        231,
+        246,
+        1
+      ],
+      "class": "category-label work",
+      "fg": "rgb(100, 69, 130)",
+      "font": "10px",
+      "ratio": 6.406,
+      "rect": {
+        "bottom": 184,
+        "height": 21,
+        "right": 293.84375,
+        "width": 41.84375,
+        "x": 252,
+        "y": 163
+      },
+      "tag": "SPAN",
+      "text": "Work"
+    },
+    {
+      "bg": [
+        255,
+        255,
+        255,
+        1
+      ],
+      "class": "message-account",
+      "fg": "rgb(104, 97, 111)",
+      "font": "10px",
+      "ratio": 5.952,
+      "rect": {
+        "bottom": 180,
+        "height": 13,
+        "right": 419.453125,
+        "width": 115.609375,
+        "x": 303.84375,
+        "y": 167
+      },
+      "tag": "SPAN",
+      "text": "alex@form.studio  · Demo"
+    },
+    {
+      "bg": [
+        255,
+        255,
+        255,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(100, 69, 130)",
+      "font": "31px",
+      "ratio": 7.734,
+      "rect": {
+        "bottom": 245.1953125,
+        "height": 37.1953125,
+        "right": 872,
+        "width": 620,
+        "x": 252,
+        "y": 208
+      },
+      "tag": "H2",
+      "text": "A little room for big ideas"
+    },
+    {
+      "bg": [
+        242,
+        236,
+        226,
+        1
+      ],
+      "class": "avatar large sand",
+      "fg": "rgb(116, 85, 50)",
+      "font": "12px",
+      "ratio": 5.787,
+      "rect": {
+        "bottom": 317.1953125,
+        "height": 42,
+        "right": 294,
+        "width": 42,
+        "x": 252,
+        "y": 275.1953125
+      },
+      "tag": "DIV",
+      "text": "SC"
+    },
+    {
+      "bg": [
+        255,
+        255,
+        255,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(100, 69, 130)",
+      "font": "11px",
+      "ratio": 7.734,
+      "rect": {
+        "bottom": 296.1953125,
+        "height": 14.5,
+        "right": 372.46875,
+        "width": 66.46875,
+        "x": 306,
+        "y": 281.6953125
+      },
+      "tag": "STRONG",
+      "text": "Sophie Chen"
+    },
+    {
+      "bg": [
+        255,
+        255,
+        255,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "10px",
+      "ratio": 5.952,
+      "rect": {
+        "bottom": 315.6953125,
+        "height": 13,
+        "right": 903.9296875,
+        "width": 597.9296875,
+        "x": 306,
+        "y": 302.6953125
+      },
+      "tag": "SUMMARY",
+      "text": "to  alex@form.studio"
+    },
+    {
+      "bg": [
+        255,
+        255,
+        255,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "10px",
+      "ratio": 5.952,
+      "rect": {
+        "bottom": 292.6953125,
+        "height": 13,
+        "right": 962,
+        "width": 20.1328125,
+        "x": 941.8671875,
+        "y": 279.6953125
+      },
+      "tag": "TIME",
+      "text": "5:35"
+    },
+    {
+      "bg": [
+        255,
+        255,
+        255,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "10px",
+      "ratio": 5.952,
+      "rect": {
+        "bottom": 312.6953125,
+        "height": 13,
+        "right": 962,
+        "width": 46.0703125,
+        "x": 915.9296875,
+        "y": 299.6953125
+      },
+      "tag": "SPAN",
+      "text": "Sun 11 Oct"
+    },
+    {
+      "bg": [
+        255,
+        255,
+        255,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(100, 69, 130)",
+      "font": "13px",
+      "ratio": 7.734,
+      "rect": {
+        "bottom": 402.5390625,
+        "height": 25.34375,
+        "right": 902,
+        "width": 650,
+        "x": 252,
+        "y": 377.1953125
+      },
+      "tag": "P",
+      "text": "Hey Alex,"
+    },
+    {
+      "bg": [
+        255,
+        255,
+        255,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(100, 69, 130)",
+      "font": "13px",
+      "ratio": 7.734,
+      "rect": {
+        "bottom": 474.2265625,
+        "height": 50.6875,
+        "right": 902,
+        "width": 650,
+        "x": 252,
+        "y": 423.5390625
+      },
+      "tag": "P",
+      "text": "I've been thinking about our conversation yesterday. What if we gave the new collection a little mor"
+    },
+    {
+      "bg": [
+        255,
+        255,
+        255,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(100, 69, 130)",
+      "font": "13px",
+      "ratio": 7.734,
+      "rect": {
+        "bottom": 545.9140625,
+        "height": 50.6875,
+        "right": 902,
+        "width": 650,
+        "x": 252,
+        "y": 495.2265625
+      },
+      "tag": "P",
+      "text": "I put together a few directions for the studio identity. The first explores softer shapes and a warm"
+    },
+    {
+      "bg": [
+        255,
+        255,
+        255,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(100, 69, 130)",
+      "font": "13px",
+      "ratio": 7.734,
+      "rect": {
+        "bottom": 617.6015625,
+        "height": 50.6875,
+        "right": 902,
+        "width": 650,
+        "x": 252,
+        "y": 566.9140625
+      },
+      "tag": "P",
+      "text": "Would love your thoughts before we share these with the team on Thursday. No rush — good ideas need "
+    },
+    {
+      "bg": [
+        255,
+        255,
+        255,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(100, 69, 130)",
+      "font": "13px",
+      "ratio": 7.734,
+      "rect": {
+        "bottom": 689.2890625,
+        "height": 50.6875,
+        "right": 902,
+        "width": 650,
+        "x": 252,
+        "y": 638.6015625
+      },
+      "tag": "P",
+      "text": "Talk soon,\nSophie"
+    },
+    {
+      "bg": [
+        255,
+        255,
+        255,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "10px",
+      "ratio": 5.952,
+      "rect": {
+        "bottom": 772.2890625,
+        "height": 13,
+        "right": 385.4765625,
+        "width": 133.4765625,
+        "x": 252,
+        "y": 759.2890625
+      },
+      "tag": "SPAN",
+      "text": "Keep the conversation going."
+    }
+  ],
+  "viewport": [
+    1024,
+    768
+  ]
+}

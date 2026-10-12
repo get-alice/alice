@@ -1,0 +1,10 @@
+{
+  "apps/desktop/src/App.tsx": "dad3f8283facc504d99185b06f1a10495bb2c90dff60df89619736a110ae5254",
+  "apps/desktop/src/Assistant.tsx": "73d0c346f605f8f667b4d2d5291c8928006d3f9ccc985a16dab91001ef797115",
+  "apps/desktop/src/Compose.tsx": "4d572d2dada9fd94d35550f2e10e48fade67f566321923f4205cfcd21f0be0fb",
+  "apps/desktop/src/Settings.tsx": "bae23866ef0f2adc9e3c41f5a25d6e9e09a22cf83ec1dabbffcbaee461ca9413",
+  "apps/desktop/src/api.ts": "280d5fd553a1c3a534c0a1f3bfbc47dbacede9f2eba6b4db738d518fb807ca81",
+  "apps/desktop/src/drafts.ts": "de7965fa7c8eae498a0d8d8a92818f70da5bcceca95edb79be089b2ba0894f5e",
+  "apps/desktop/src/main.tsx": "e81aec37c1befe991a35934ed8b90b73e7262a01e4dffae60e1ce87967ff09b4",
+  "apps/desktop/src/styles.css": "a1a1a2eb1719238c664778671d5497a44338862466f7d409dc8d557a4a1f4574"
+}

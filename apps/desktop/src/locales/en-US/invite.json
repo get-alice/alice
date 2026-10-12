@@ -1,0 +1,54 @@
+{
+  "allDay": "All day",
+  "untitledEvent": "(untitled event)",
+  "untitledEventLabel": "untitled event",
+  "invitation": "Invitation: {title}",
+  "proposedEvent": "Proposed event: {title}",
+  "organizedBy": "Organized by {organizer}",
+  "guests": { "one": "{count} guest", "other": "{count} guests" },
+  "cancelledBy": "{organizer} cancelled this event",
+  "cancelled": "This event was cancelled",
+  "sendingReply": "Sending your reply…",
+  "going": "Going?",
+  "answers": {
+    "accepted": { "label": "Accept", "done": "You accepted" },
+    "tentative": { "label": "Maybe", "done": "You said maybe" },
+    "declined": { "label": "Decline", "done": "You declined" }
+  },
+  "addedTo": "Added to {calendar}",
+  "viewEvent": "View event",
+  "calendar": "Calendar",
+  "addTo": "Add to {calendar}",
+  "adding": "Adding…",
+  "add": "Add",
+  "addToCalendar": "Add to calendar",
+  "openCalendarApp": "Open in calendar app",
+  "downloadIcs": "Download .ics",
+  "repeat": {
+    "unknown": "Repeats",
+    "daily": {
+      "simple": "Repeats daily",
+      "interval": "Repeats every {interval} days",
+      "count": { "one": "Repeats daily, {count} time", "other": "Repeats daily, {count} times" },
+      "intervalCount": { "one": "Repeats every {interval} days, {count} time", "other": "Repeats every {interval} days, {count} times" }
+    },
+    "weekly": {
+      "simple": "Repeats weekly",
+      "interval": "Repeats every {interval} weeks",
+      "count": { "one": "Repeats weekly, {count} time", "other": "Repeats weekly, {count} times" },
+      "intervalCount": { "one": "Repeats every {interval} weeks, {count} time", "other": "Repeats every {interval} weeks, {count} times" }
+    },
+    "monthly": {
+      "simple": "Repeats monthly",
+      "interval": "Repeats every {interval} months",
+      "count": { "one": "Repeats monthly, {count} time", "other": "Repeats monthly, {count} times" },
+      "intervalCount": { "one": "Repeats every {interval} months, {count} time", "other": "Repeats every {interval} months, {count} times" }
+    },
+    "yearly": {
+      "simple": "Repeats yearly",
+      "interval": "Repeats every {interval} years",
+      "count": { "one": "Repeats yearly, {count} time", "other": "Repeats yearly, {count} times" },
+      "intervalCount": { "one": "Repeats every {interval} years, {count} time", "other": "Repeats every {interval} years, {count} times" }
+    }
+  }
+}

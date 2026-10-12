@@ -1,0 +1,20 @@
+{
+  "formatted_table_and_button_label": true,
+  "unsafe_content_removed": true,
+  "parent_unchanged": true,
+  "remote_images_blocked_initially": true,
+  "public_fixture_image_loaded_after_opt_in": true,
+  "image_natural_width": 544,
+  "initial_frame_height": 340,
+  "expanded_frame_height": 417,
+  "plain_text_toggle_and_return": true,
+  "safe_link_opened_external_tab": true,
+  "live_email_tracking_resources_opened": false,
+  "viewport_css_baseline_frame_growth": [
+    460,
+    10660
+  ],
+  "viewport_css_fixed_height": 380,
+  "long_email_frame_height": 12000,
+  "long_email_scroll_height": 20000
+}

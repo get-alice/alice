@@ -1,0 +1,7 @@
+{
+  "background": "rgb(255, 255, 255)",
+  "focusVisible": true,
+  "label": "Message body",
+  "outline": "rgb(222, 210, 237) solid 2px",
+  "outlineOffset": "-3px"
+}

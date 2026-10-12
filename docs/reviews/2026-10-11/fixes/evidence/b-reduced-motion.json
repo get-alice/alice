@@ -1,0 +1,119 @@
+{
+  "elements": [
+    {
+      "animation": "none",
+      "class": "icon-button",
+      "duration": "0s",
+      "transition": "0s"
+    },
+    {
+      "animation": "none",
+      "class": "icon-button",
+      "duration": "0s",
+      "transition": "0s"
+    },
+    {
+      "animation": "none",
+      "class": "icon-button",
+      "duration": "0s",
+      "transition": "0s"
+    },
+    {
+      "animation": "none",
+      "class": "icon-button selected",
+      "duration": "0s",
+      "transition": "0s"
+    },
+    {
+      "animation": "none",
+      "class": "icon-button ",
+      "duration": "0s",
+      "transition": "0s"
+    },
+    {
+      "animation": "none",
+      "class": "icon-button",
+      "duration": "0s",
+      "transition": "0s"
+    },
+    {
+      "animation": "none",
+      "class": "icon-button",
+      "duration": "0s",
+      "transition": "0s"
+    },
+    {
+      "animation": "none",
+      "class": "icon-button mobile-back",
+      "duration": "0s",
+      "transition": "0s"
+    },
+    {
+      "animation": "none",
+      "class": "icon-button",
+      "duration": "0s",
+      "transition": "0s"
+    },
+    {
+      "animation": "none",
+      "class": "icon-button",
+      "duration": "0s",
+      "transition": "0s"
+    },
+    {
+      "animation": "none",
+      "class": "icon-button",
+      "duration": "0s",
+      "transition": "0s"
+    },
+    {
+      "animation": "none",
+      "class": "icon-button ",
+      "duration": "0s",
+      "transition": "0s"
+    },
+    {
+      "animation": "none",
+      "class": "icon-button",
+      "duration": "0s",
+      "transition": "0s"
+    },
+    {
+      "animation": "none",
+      "class": "icon-button",
+      "duration": "0s",
+      "transition": "0s"
+    },
+    {
+      "animation": "none",
+      "class": "icon-button",
+      "duration": "0s",
+      "transition": "0s"
+    },
+    {
+      "animation": "none",
+      "class": "assistant-panel",
+      "duration": "0s",
+      "transition": "0s"
+    },
+    {
+      "animation": "none",
+      "class": "icon-button",
+      "duration": "0s",
+      "transition": "0s"
+    },
+    {
+      "animation": "none",
+      "class": "primary",
+      "duration": "0s",
+      "transition": "0s"
+    },
+    {
+      "animation": "none",
+      "class": "icon-button",
+      "duration": "0s",
+      "transition": "0s"
+    }
+  ],
+  "reduce": true
+}

@@ -1,0 +1,12 @@
+{
+  "background": "rgb(255, 255, 255)",
+  "focusTag": "TEXTAREA",
+  "focusVisible": true,
+  "focused": true,
+  "outline": {
+    "color": "rgb(222, 210, 237)",
+    "offset": "-3px",
+    "style": "solid",
+    "width": "2px"
+  }
+}

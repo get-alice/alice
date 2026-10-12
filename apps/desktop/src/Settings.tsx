@@ -1,0 +1,153 @@
+import { t, rich, applyLanguage, languages, type LanguagePreference } from './i18n';
+import { Fragment, useEffect, useEffectEvent, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
+import { ArrowLeft, ArrowUpRight, Bell, BookOpen, BookUser, Check, ChevronRight, CodeXml, FileText, Info, Keyboard, KeyRound, LoaderCircle, Mail, Moon, Palette, PenLine, Plus, RefreshCw, Rows3, Rows4, ShieldCheck, Sparkles, Sun } from 'lucide-react';
+import { api, errorMessage, get, isDesktop, openHelp, openEmailLink, post, defaultPreferences, type Account, type AiSettings, type Health, type Preferences, type Snapshot, type UpdateCheck } from './api';
+import { ProviderIcon } from './App';
+import AddAccount from './AddAccount';
+import MailStorage from './MailStorage';
+import ContactsSettings from './ContactsSettings';
+import { version } from '../../../package.json';
+import { motion } from 'motion/react';
+import { Glide, prefersReducedMotion, rise } from './motion';
+import { goTo, keyLabel, shortcuts, type Shortcut } from './shortcuts';
+import { isMac, isWindows } from './platform';
+
+export type SettingsSection = 'appearance' | 'reading' | 'writing' | 'notifications' | 'accounts' | 'contacts' | 'ai' | 'shortcuts' | 'about';
+// Notifications and the menu bar icon belong to the native app, not the development browser.
+const sections = () => ([{ id: 'appearance', label: t('settings.appearance'), icon: Palette }, { id: 'reading', label: t('settings.reading'), icon: BookOpen }, { id: 'writing', label: t('settings.writing'), icon: PenLine }, { id: 'notifications', label: t('settings.notifications'), icon: Bell }, { id: 'accounts', label: t('settings.mail_accounts'), icon: Mail }, { id: 'contacts', label: t('settings.contacts_calendars'), icon: BookUser }, { id: 'ai', label: t('settings.alice_ai'), icon: Sparkles }, { id: 'shortcuts', label: t('settings.keyboard_shortcuts'), icon: Keyboard }, { id: 'about', label: t('settings.about_alice'), icon: Info }] as const).filter(section => isDesktop || section.id !== 'notifications');
+const densities = () => [{ id: 'comfortable', name: t('settings.comfortable'), detail: t('settings.more_padding'), icon: Rows3 }, { id: 'compact', name: t('settings.compact'), detail: t('settings.less_padding_more_on_screen'), icon: Rows4 }] as const;
+const formats = () => [{ id: 'html', name: t('settings.html'), detail: t('settings.original_formatting'), icon: CodeXml }, { id: 'plain', name: t('settings.plain_text'), detail: t('settings.text_only'), icon: FileText }] as const;
+// Built from the definitions App and Compose match key presses against, so the list cannot drift from them.
+const shortcutGroups = (): { title: string; items: Shortcut[] }[] => [
+  { title: t('settings.anywhere_in_mail'), items: [shortcuts.compose, shortcuts.search, shortcuts.sync, shortcuts.assistant, shortcuts.settings, shortcuts.help, ...Object.values(goTo)] },
+  { title: t('settings.conversations'), items: [shortcuts.next, shortcuts.previous, shortcuts.open, shortcuts.reply, shortcuts.archive, shortcuts.trash, shortcuts.inbox, shortcuts.read, shortcuts.star, shortcuts.menu, shortcuts.back] },
+  { title: t('settings.writing'), items: [shortcuts.send, shortcuts.saveDraft, shortcuts.closeCompose] },
+  { title: t('settings.controls'), items: [{ keys: ['Tab', 'Shift+Tab'], description: t('settings.move_between_controls') }, { keys: ['Enter', 'Space'], description: t('settings.activate_the_focused_control') }, { keys: ['ArrowDown', 'ArrowUp'], description: t('settings.move_through_an_open_menu') }] },
+];
+const trayPlatform = isMac ? 'mac' : isWindows ? 'windows' : 'linux';
+
+export default function SettingsPage({ initialTab, snapshot, onClose, onChanged, onPreferences }: { initialTab: SettingsSection; snapshot: Snapshot; onClose: () => void; onChanged: () => void; onPreferences: (preferences: Preferences) => void }) {
+  const page = useRef<HTMLDivElement>(null);
+  const [preferences, setPreferences] = useState(snapshot.preferences || defaultPreferences);
+  const [saveStatus, setSaveStatus] = useState<'settings.all_changes_saved' | 'settings.changes_need_attention' | 'settings.saving'>('settings.all_changes_saved');
+  const [preferencesError, setPreferencesError] = useState('');
+  const pending = useRef<Partial<Preferences>>({});
+  const queue = useRef<Promise<unknown>>(Promise.resolve());
+  const revision = useRef(0);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [health, setHealth] = useState<Health | null>(null);
+  const [healthError, setHealthError] = useState('');
+  const [checking, setChecking] = useState(initialTab === 'about');
+  const [update, setUpdate] = useState<UpdateCheck | null>(null);
+  const [checkingUpdates, setCheckingUpdates] = useState(false);
+  const flush = () => {
+    if (timer.current) clearTimeout(timer.current);
+    queue.current = queue.current.catch(() => {}).then(async () => {
+      const patch = { ...pending.current };
+      if (!Object.keys(patch).length) return;
+      const current = revision.current;
+      try {
+        const saved = await api<Preferences>('PATCH', '/v1/preferences', patch);
+        // Changes made while this save was in flight stay pending for the next one.
+        pending.current = Object.fromEntries(Object.entries(pending.current).filter(([key, value]) => patch[key as keyof Preferences] !== value));
+        onPreferences({ ...saved, ...pending.current });
+        if (current === revision.current) { setSaveStatus('settings.all_changes_saved'); setPreferencesError(''); }
+      } catch (error) {
+        setSaveStatus('settings.changes_need_attention'); setPreferencesError(errorMessage(error));
+        throw error;
+      }
+    });
+    return queue.current;
+  };
+  const changePreferences = (patch: Partial<Preferences>) => {
+    if (patch.language !== undefined) applyLanguage(patch.language);
+    setPreferences(current => ({ ...current, ...patch }));
+    pending.current = { ...pending.current, ...patch }; revision.current++;
+    setSaveStatus('settings.saving');
+    if (timer.current) clearTimeout(timer.current);
+    timer.current = setTimeout(() => { void flush().catch(() => {}); }, 350);
+  };
+  // A theme change cross-fades the whole window once (View Transitions) instead of every surface repainting at once.
+  const chooseTheme = (theme: Preferences['theme']) => {
+    if (theme === preferences.theme) return;
+    // The view transition snapshots the DOM when `apply` returns, so the new theme must be rendered by then.
+    // eslint-disable-next-line @eslint-react/dom-no-flush-sync
+    const apply = () => { document.documentElement.dataset.theme = theme; flushSync(() => changePreferences({ theme })); };
+    if (document.startViewTransition && !prefersReducedMotion()) document.startViewTransition(apply); else apply();
+  };
+  const close = async () => { try { await flush(); onClose(); } catch { /* Keep unsaved settings visible for retry. */ } };
+  const loadHealth = async () => {
+    try { setHealth(await get<Health>('/v1/health')); }
+    catch (error) { setHealth(null); setHealthError(errorMessage(error)); }
+    finally { setChecking(false); }
+  };
+  const checkConnection = () => { setChecking(true); setHealthError(''); return loadHealth(); };
+  const checkUpdates = async () => {
+    setCheckingUpdates(true); setUpdate(null);
+    try { setUpdate(await get<UpdateCheck>('/v1/updates')); }
+    catch (error) { setUpdate({ status: 'error', message: errorMessage(error) }); }
+    finally { setCheckingUpdates(false); }
+  };
+  const [tab, setTab] = useState(initialTab);
+  const [adding, setAdding] = useState(false);
+  const [ai, setAi] = useState<AiSettings>(snapshot.ai); const [apiKey, setApiKey] = useState('');
+  const [busy, setBusy] = useState(false); const [error, setError] = useState(''); const [success, setSuccess] = useState<string | (() => string)>('');
+  const [removing, setRemoving] = useState('');
+  // Leaving by any route saves pending changes; `close` has usually saved them already.
+  const leave = useEffectEvent(() => { void flush().catch(() => {}); });
+  const openAbout = useEffectEvent(() => { if (initialTab === 'about') void loadHealth(); });
+  // Opening on About loads the daemon's health; the compiler reads the async load's state updates as synchronous.
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- see above
+  useEffect(() => { const previous = document.activeElement as HTMLElement | null; page.current?.querySelector<HTMLElement>('h1')?.focus(); openAbout(); return () => { leave(); if (previous?.isConnected) previous.focus(); }; }, []);
+  useEffect(() => { document.documentElement.dataset.theme = preferences.theme; }, [preferences.theme]);
+  useEffect(() => { document.documentElement.dataset.density = preferences.density; }, [preferences.density]);
+  useEffect(() => { const keydown = (event: KeyboardEvent) => { if (event.key === 'Escape' && !event.isComposing) { event.preventDefault(); void close(); } }; window.addEventListener('keydown', keydown); return () => window.removeEventListener('keydown', keydown); });
+  const removeAccount = async (account: Account) => {
+    setBusy(true); setError(''); setSuccess('');
+    try {
+      const result = await api<{ credentials_removed: boolean; message: string | null }>('DELETE', `/v1/accounts/${encodeURIComponent(account.id)}`);
+      setRemoving('');
+      // The daemon clears a removed default sending account; mirror it so the Writing tab stays accurate.
+      setPreferences(current => current.default_account_id === account.id ? { ...current, default_account_id: '' } : current);
+      setSuccess(() => () => result.credentials_removed ? t('settings.account_removed', { email: account.email }) : t('settings.account_removed_credentials', { email: account.email }));
+      onChanged();
+      requestAnimationFrame(() => page.current?.querySelector<HTMLElement>('.add-account-button')?.focus());
+    } catch (e) { setError(errorMessage(e)); }
+    finally { setBusy(false); }
+  };
+  const saveAi = async () => {
+    setBusy(true); setError(''); setSuccess('');
+    try { const saved = await post<AiSettings>('/v1/ai/settings', { provider: ai.provider, model: ai.model, base_url: ai.base_url, api_key: apiKey || null }); setAi(saved); setApiKey(''); setSuccess(() => () => t('settings.alice_is_connected_to_your_ai_provider')); onChanged(); }
+    catch (e) { setError(errorMessage(e)); }
+    finally { setBusy(false); }
+  };
+  let requiresKey = true;
+  try { requiresKey = !snapshot.ai.configured || ai.provider !== snapshot.ai.provider || new URL(ai.base_url).origin !== new URL(snapshot.ai.base_url).origin; } catch { /* Incomplete endpoints cannot reuse a key. */ }
+  const help = (url: string, label: string) => <a href={url} target="_blank" rel="noreferrer" onClick={event => { event.preventDefault(); void openHelp(url).catch((e: unknown) => setError(errorMessage(e))); }}>{label} <ArrowUpRight size={12} aria-hidden="true" /></a>;
+  return <motion.div ref={page} className="settings-shell" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+    <header className="settings-page-header" data-tauri-drag-region><button className="text-button settings-back" onClick={() => void close()}><ArrowLeft size={17} />{t('settings.back_to_mail')}</button><span className="settings-save-status" role="status">{saveStatus === 'settings.all_changes_saved' && <Check size={14} />}{t(saveStatus)}</span></header>
+    <div className="settings-page-body"><aside className="settings-navigation"><h1 tabIndex={-1}>{t('settings.settings')}</h1><nav aria-label={t('settings.settings_sections')}>{sections().map(section => <button key={section.id} aria-current={tab === section.id ? 'page' : undefined} className={tab === section.id ? 'active' : ''} onClick={() => { setTab(section.id); setError(''); setSuccess(''); if (section.id === 'about') void checkConnection(); }}>{tab === section.id && <Glide group="settings-section" />}<section.icon size={19} />{section.label}</button>)}</nav><div className="settings-brand"><img src="/alice.svg" alt="" /><span>alice <small>{version}</small></span></div></aside>
+    {/* Each section rises in after a deliberate click on the navigation. */}
+    <motion.main key={tab} className="settings-content settings-page-content" aria-label={sections().find(section => section.id === tab)?.label} {...rise}>
+    {preferencesError && <motion.div className="form-error" role="alert" {...rise}>{preferencesError}<button className="text-button" onClick={() => void flush().catch(() => {})}>{t('settings.retry_saving')}</button></motion.div>}
+    {tab === 'appearance' ? <><div className="settings-section-heading"><h2>{t('settings.appearance')}</h2><p>{t('settings.changes_save_automatically')}</p></div>
+      <section className="preference-section"><label className="preference-field" htmlFor="language">{t('settings.language')}<select id="language" value={preferences.language} onChange={event => changePreferences({ language: event.target.value as LanguagePreference })}><option value="system">{t('settings.system_default')}</option>{languages.map(language => <option key={language.tag} value={language.tag}>{language.name}</option>)}</select></label></section>
+      <section className="preference-section"><h3>{t('settings.theme')}</h3><div className="theme-options" role="group" aria-label={t('settings.theme')}>{(['light', 'dark'] as const).map(theme => <button key={theme} aria-pressed={preferences.theme === theme} className={preferences.theme === theme ? 'selected' : ''} onClick={() => chooseTheme(theme)}>{theme === 'light' ? <Sun size={19} /> : <Moon size={19} />}<span>{theme === 'light' ? t('settings.light_mode') : t('settings.dark_mode')}</span>{preferences.theme === theme && <Check size={17} />}</button>)}</div></section>
+      <section className="preference-section"><h3>{t('settings.email_layout')}</h3><div className="layout-options" role="group" aria-label={t('settings.email_layout')}>{([{ id: 'single', name: t('settings.single_pane'), detail: t('settings.gmail_style_open_a_message') }, { id: 'horizontal', name: t('settings.horizontal_split'), detail: t('settings.list_above_the_reader') }, { id: 'vertical', name: t('settings.vertical_split'), detail: t('settings.list_beside_the_reader') }] as const).map(layout => <button key={layout.id} aria-pressed={preferences.mail_layout === layout.id} className={preferences.mail_layout === layout.id ? 'selected' : ''} onClick={() => changePreferences({ mail_layout: layout.id })}><span className={`layout-preview ${layout.id}`} aria-hidden="true"><span className="preview-sidebar" /><span className="preview-list"><i /><i /><i /></span>{layout.id !== 'single' && <span className="preview-reader"><i /><i /></span>}</span><span className="choice-title">{layout.name}{preferences.mail_layout === layout.id && <Check size={15} />}</span><small>{layout.detail}</small></button>)}</div><p className="preference-note">{t('settings.smaller_windows_use_a_single_pane')}</p></section>
+      <section className="preference-section"><h3>{t('settings.density')}</h3><div className="theme-options" role="group" aria-label={t('settings.density')}>{densities().map(density => <button key={density.id} aria-pressed={preferences.density === density.id} className={preferences.density === density.id ? 'selected' : ''} onClick={() => changePreferences({ density: density.id })}><density.icon size={19} /><span>{density.name}<small>{density.detail}</small></span>{preferences.density === density.id && <Check size={17} />}</button>)}</div></section>
+      <section className="preference-section"><h3>{t('settings.inbox_details')}</h3><div className="preference-row"><div><label htmlFor="show-avatars">{t('settings.show_avatars')}</label><p>{t('settings.sender_initials_in_the_list_and_conversation')}</p></div><input id="show-avatars" type="checkbox" role="switch" checked={preferences.show_avatars} onChange={event => changePreferences({ show_avatars: event.target.checked })} /></div></section>
+    </> : tab === 'reading' ? <><div className="settings-section-heading"><h2>{t('settings.reading')}</h2></div>
+      <section className="preference-section"><h3>{t('settings.show_email_as')}</h3><p>{t('settings.messages_sent_only_as_plain_text')}</p><div className="theme-options" role="group" aria-label={t('settings.show_email_as')}>{formats().map(format => <button key={format.id} aria-pressed={preferences.message_format === format.id} className={preferences.message_format === format.id ? 'selected' : ''} onClick={() => changePreferences({ message_format: format.id })}><format.icon size={19} /><span>{format.name}<small>{format.detail}</small></span>{preferences.message_format === format.id && <Check size={17} />}</button>)}</div></section>
+      {preferences.message_format === 'html' && <motion.section className="preference-section" {...rise}><h3>{t('settings.remote_images')}</h3><div className="preference-row"><div><span className="preference-label">{t('settings.load_images_in_html_email')}</span><p>{t('settings.images_hosted_by_the_sender_can')}</p></div><div className="segmented-control" role="group" aria-label={t('settings.load_remote_images')}>{([['ask', t('settings.always_ask')], ['always', t('settings.always_load')]] as const).map(([id, label]) => <button key={id} aria-pressed={preferences.remote_images === id} className={preferences.remote_images === id ? 'selected' : ''} onClick={() => changePreferences({ remote_images: id })}>{preferences.remote_images === id && <Glide group="remote-images" />}{label}</button>)}</div></div></motion.section>}
+      <section className="preference-section"><h3>{t('settings.conversations')}</h3><p>{t('settings.replies_with_the_same_subject_are')}</p><div className="preference-row"><div><span className="preference-label">{t('settings.message_order')}</span><p>{t('settings.where_the_newest_reply_appears_when')}</p></div><div className="segmented-control" role="group" aria-label={t('settings.conversation_message_order')}>{([['newest_first', t('settings.newest_first')], ['oldest_first', t('settings.oldest_first')]] as const).map(([id, label]) => <button key={id} aria-pressed={preferences.thread_order === id} className={preferences.thread_order === id ? 'selected' : ''} onClick={() => changePreferences({ thread_order: id })}>{preferences.thread_order === id && <Glide group="thread-order" />}{label}</button>)}</div></div></section>
+    </> : tab === 'notifications' ? <><div className="settings-section-heading"><h2>{t('settings.notifications')}</h2></div>
+      <section className="preference-section"><h3>{t('settings.new_mail')}</h3><div className="preference-row"><div><label htmlFor="notifications">{t('settings.notify_me_about_new_mail')}</label><p>{t('settings.shows_the_sender_and_subject_when')}</p></div><input id="notifications" type="checkbox" role="switch" checked={preferences.notifications} onChange={event => changePreferences({ notifications: event.target.checked })} /></div><p className="preference-note">{t('settings.if_no_notifications_appear_allow_them')}</p></section>
+      <section className="preference-section"><h3>{t(`settings.tray_${trayPlatform}`)}</h3><div className="preference-row"><div><label htmlFor="menu-bar">{t(`settings.show_tray_${trayPlatform}`)}</label><p>{isMac ? t('settings.open_alice_check_for_new_mail') : t('settings.closing_the_window_keeps_alice_running')}</p></div><input id="menu-bar" type="checkbox" role="switch" checked={preferences.menu_bar} onChange={event => changePreferences({ menu_bar: event.target.checked })} /></div></section>
+    </> : tab === 'writing' ? <><div className="settings-section-heading"><h2>{t('settings.writing')}</h2><p>{t('settings.defaults_for_new_messages_and_replies')}</p></div><section className="preference-section"><h3>{t('settings.default_sending_account')}</h3><label className="preference-field">{t('settings.send_new_mail_from')}<select value={preferences.default_account_id} onChange={event => changePreferences({ default_account_id: event.target.value })}><option value="">{t('settings.first_connected_account')}</option>{snapshot.accounts.filter(a => !a.is_demo).map(account => <option key={account.id} value={account.id}>{account.email}</option>)}</select></label><p className="preference-note">{t('settings.replies_use_the_account_that_received_the_email')}</p></section><section className="preference-section"><h3>{t('settings.email_signature')}</h3><label className="preference-field">{t('settings.signature')}<textarea value={preferences.signature} onChange={event => changePreferences({ signature: event.target.value })} maxLength={10000} rows={6} /></label><p className="preference-note">{t('settings.added_to_new_messages_and_replies')}</p></section></> : tab === 'shortcuts' ? <><div className="settings-section-heading"><h2>{t('settings.keyboard_shortcuts')}</h2><p>{t('settings.right_click_a_conversation_message_link')}</p></div>{shortcutGroups().map(group => <section className="preference-section" key={group.title}><h3>{group.title}</h3><div className="shortcut-list">{group.items.map(item => <div key={item.description}><span>{item.description}</span><span className="shortcut-keys">{item.keys.map(key => <kbd key={key}>{keyLabel(key)}</kbd>)}</span></div>)}</div></section>)}<p className="preference-note">{t('settings.single_keys_work_in_the_message')}</p><section className="preference-section"><h3>{t('settings.searching')}</h3><p>{t('settings.the_app_tui_and_cli_share')}</p><div className="shortcut-list">{[['from:sophie', t('settings.sender_name_or_address')], ['to: · subject: · body:', t('settings.one_part_of_the_email')], ['"studio notes"', t('settings.an_exact_phrase')], ['-newsletter', t('settings.leave_out_a_word')], ['invoice OR receipt', t('settings.either_word')], ['is:unread · is:starred', t('settings.read_state_or_star')], ['has:attachment', t('settings.mail_with_attachments')], ['after:7d · before:2026-10 · date:today', t('settings.when_it_arrived')]].map(([key, label]) => <div key={key}><span>{label}</span><kbd>{key}</kbd></div>)}</div></section><section className="preference-section"><h3>{t('settings.in_the_terminal')}</h3><p>{rich('settings.terminal_shortcuts', { command: <code>alice</code>, compose: <kbd>c</kbd>, reply: <kbd>r</kbd>, save: <kbd>Ctrl S</kbd>, review: <kbd>!</kbd> })}</p></section></> : tab === 'about' ? <><div className="settings-section-heading"><h2>Alice {version}</h2><p>{t('settings.open_source_licensed_under_agpl_3_0')}</p></div><section className="preference-section"><h3>{t('settings.connection_to_daemon')}</h3><p>{t('settings.your_app_and_cli_share_the_same_local_mail_daemon')}</p><div className="daemon-status" role="status"><span className={`status-dot ${health && !healthError ? 'connected' : ''}`} /><span>{checking ? t('settings.checking_connection') : health ? t('settings.daemon_connected', { version: health.version }) : t('settings.connection_needs_attention')}</span><button className="secondary-button" disabled={checking} onClick={() => void checkConnection()}><RefreshCw size={15} className={checking ? 'spinning-icon' : ''} />{t('settings.check_connection')}</button></div>{healthError && <p className="form-error" role="alert">{healthError}</p>}{health && health.version !== version && <p className="field-note">{t('settings.the_app_and_daemon_versions_differ')}</p>}</section><section className="preference-section"><h3>{t('settings.updates')}</h3><p>{t('settings.check_the_release_channel_for_a_newer_version_of_alice')}</p><button className="secondary-button update-button" disabled={checkingUpdates} onClick={() => void checkUpdates()}>{checkingUpdates ? <LoaderCircle size={16} className="spinning-icon" /> : <RefreshCw size={16} />}{checkingUpdates ? t('settings.checking_for_updates') : t('settings.check_for_updates')}</button>{update && <div className="update-result" role={update.status === 'error' ? 'alert' : 'status'}><p>{update.status === 'available' ? t('settings.update_available', { version: update.version ?? "" }) : update.status === 'current' ? t('settings.you_re_using_the_latest_published_version') : update.message}</p>{update.status === 'available' && update.url && <button className="text-button" onClick={() => { if (update.url) void openEmailLink(update.url).catch((e: unknown) => setError(errorMessage(e))); }}>{t('settings.view_release')}<ArrowUpRight size={14} /></button>}</div>}</section><div className="privacy-note"><ShieldCheck size={18} /><p>{t('settings.mail_stays_on_this_device_account')}</p></div></> : tab === 'contacts' ? <ContactsSettings accounts={snapshot.accounts} preferences={preferences} onPreferences={changePreferences} onChanged={onChanged} /> : tab === 'accounts' ? <>
+      {!adding ? <><div className="settings-section-heading"><h2>{t('settings.mail_accounts')}</h2><p>{t('settings.gmail_outlook_and_any_account_with_imap_and_smtp')}</p></div><div className="connected-accounts">{snapshot.accounts.map(account => <Fragment key={account.id}><div><ProviderIcon provider={account.provider} /><span><strong>{account.name}</strong><small>{account.email}</small></span><span className={`account-status ${account.sync_error ? 'has-error' : ''}`}>{account.is_demo ? t('settings.demo') : account.sync_error ? t('settings.needs_attention') : t('settings.connected')}</span>{(!account.is_demo || snapshot.accounts.some(a => !a.is_demo)) && <button className="text-button muted" aria-label={t('settings.remove_named', { name: account.email })} aria-expanded={removing === account.id} disabled={busy} onClick={() => { setRemoving(removing === account.id ? '' : account.id); setError(''); setSuccess(''); }}>{t('settings.remove')}</button>}</div>
+        {removing === account.id && <motion.div className="account-remove-confirm" role="group" aria-label={t('settings.remove_named', { name: account.email })} {...rise}><p>{rich('settings.remove_account_confirmation', { email: <strong>{account.email}</strong> })}</p><div><button className="text-button muted" autoFocus disabled={busy} onClick={() => setRemoving('')}>{t('settings.keep_account')}</button><button className="danger-button" disabled={busy} onClick={() => void removeAccount(account)}>{busy ? t('settings.removing') : t('settings.remove_account')}</button></div></motion.div>}</Fragment>)}</div><button className="add-account-button" onClick={() => { setAdding(true); setError(''); setSuccess(''); }}><Plus size={16} />{t('settings.add_a_mail_account')}<ChevronRight size={15} /></button>{snapshot.accounts.some(a => !a.is_demo) && <MailStorage accounts={snapshot.accounts} window={preferences.sync_window} onWindow={sync_window => changePreferences({ sync_window })} />}<div className="privacy-note"><ShieldCheck size={18} /><p>{t('settings.your_emails_stay_on_this_device')}</p></div></> : <AddAccount onCancel={() => setAdding(false)} heading={<h3>{t('settings.add_a_mail_account')}</h3>} onConnected={() => { setSuccess(() => () => t('settings.your_account_is_connected')); setAdding(false); onChanged(); }} />}
+    </> : <form onSubmit={event => { event.preventDefault(); void saveAi(); }}><div className="settings-section-heading"><span className="ai-settings-icon"><Sparkles size={20} /></span><h2>{t('settings.alice_ai')}</h2></div><div className="form-grid"><label>{t('settings.ai_provider')}<select value={ai.provider} onChange={event => { const provider = event.target.value; setApiKey(""); setAi({ ...ai, configured: false, provider, base_url: provider === 'anthropic' ? 'https://api.anthropic.com/v1' : provider === 'compatible' ? 'http://localhost:11434/v1' : 'https://api.openai.com/v1', model: '' }); }}><option value="openai">OpenAI</option><option value="anthropic">Anthropic</option><option value="compatible">{t('settings.openai_compatible_local')}</option></select></label><label>{t('settings.model_id')}<input value={ai.model} placeholder={t('settings.a_model_id_from_your_provider')} onChange={event => setAi({ ...ai, model: event.target.value })} required /></label></div><label>{t('settings.api_base_url')}<input type="url" value={ai.base_url} onChange={event => setAi({ ...ai, base_url: event.target.value })} required readOnly={ai.provider !== 'compatible'} /></label><p className="field-note">{rich(ai.provider === 'compatible' ? 'settings.local_model_help' : 'settings.model_id_help', { link: ai.provider === 'openai' ? help('https://developers.openai.com/api/docs/models', t('settings.openai_model_ids')) : ai.provider === 'anthropic' ? help('https://platform.claude.com/docs/en/models/overview', t('settings.anthropic_model_ids')) : help('https://docs.ollama.com/api/openai-compatibility', t('settings.local_server_setup')) })}</p>{requiresKey && <p className="field-note">{t('settings.changing_the_provider_or_endpoint_origin')}</p>}<label>{t('settings.api_key')}<div className="key-input"><KeyRound size={16} /><input type="password" autoComplete="new-password" value={apiKey} required={requiresKey} placeholder={!requiresKey ? t('settings.leave_blank_to_keep_your_stored_key') : t('settings.a_fresh_key_for_this_provider_and_endpoint')} onChange={event => setApiKey(event.target.value)} /></div></label><div className="privacy-note"><ShieldCheck size={18} /><p>{t('settings.alice_shares_only_the_email_you')}</p></div><button type="submit" className="primary" disabled={busy}>{busy ? t('settings.connecting') : ai.configured ? t('settings.save_ai_connection') : t('settings.connect_alice')}<Sparkles size={15} /></button></form>}
+    {error && <motion.p className="form-error" role="alert" {...rise}>{error}</motion.p>}{success && <motion.p className="form-success" role="status" {...rise}><Check size={16} />{typeof success === 'function' ? success() : success}</motion.p>}</motion.main></div>
+  </motion.div>;
+}

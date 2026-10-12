@@ -1,0 +1,24 @@
+[package]
+name = "alice"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+alice-core = { path = "../alice-core" }
+anyhow.workspace = true
+serde_json.workspace = true
+tokio.workspace = true
+uuid.workspace = true
+reqwest.workspace = true
+clap = { version = "4", features = ["derive", "string"] }
+ratatui = { version = "0.30", features = ["unstable-rendered-line-info"] }
+chrono.workspace = true
+unicode-width = "0.2"
+rpassword = "7"
+open = "5"

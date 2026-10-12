@@ -1,0 +1,2 @@
+GNOME_KEYRING_CONTROL=/root/.cache/keyring-XOFLW3
+Mail E2E passed: TLS IMAP, special-use folders, distinct Inbox/Sent copies, remote flags, MOVE/UID reconciliation, Reply-To, SMTP STARTTLS and SMTPS, single delivery, Sent receipt merge, external deletion, and credential restart.

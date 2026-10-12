@@ -1,0 +1,52 @@
+[
+  {
+    "path": "target/platform-verification/windows/alice-desktop.exe",
+    "bytes": 19207168,
+    "sha256": "49bbf9bdc82b5e3ec98ea678485a0b66d19f347759d1284350f9e3fdf906bd21"
+  },
+  {
+    "path": "target/platform-verification/windows/alice.exe",
+    "bytes": 12760576,
+    "sha256": "2d4e9d91e452aa7a9e7fe766ceadd20f02d6aef531e90f3b8f1252baa334c9ca"
+  },
+  {
+    "path": "target/platform-verification/windows/Alice_0.1.0_x64-setup.exe",
+    "bytes": 5661259,
+    "sha256": "e8b83665fc7780cb1c74f75f55a0bc910f7a572c65da871e9943cbb7df46804a"
+  },
+  {
+    "path": "target/platform-verification/linux/alice-arm64",
+    "bytes": 12408064,
+    "sha256": "75b12aca8ea3dce95a9db6c210eb3785aaa3300a711701211a0373977f4c9568"
+  },
+  {
+    "path": "target/platform-verification/linux/Alice_0.1.0_arm64.deb",
+    "bytes": 7417584,
+    "sha256": "6cd08e858f12d53f451cc946969c1eda164676d74e751727abb69d7ba3a58666"
+  },
+  {
+    "path": "target/platform-verification/linux/alice-x64",
+    "bytes": 14420408,
+    "sha256": "e0662b3c7c376eeb83844044aad1a810d7d937e86f9ef650902915f246b33f01"
+  },
+  {
+    "path": "target/platform-verification/linux/Alice_0.1.0_amd64.deb",
+    "bytes": 7760208,
+    "sha256": "7739c1533f52405cded34169d2d9699a7dbb1e523c290a90c23313840deaf17c"
+  },
+  {
+    "path": "target/release/alice",
+    "bytes": 11216992,
+    "sha256": "4ac205eee18dcb6fc2013e81bccb38e67fd2c355bc64516a6ba626e67a41671b"
+  },
+  {
+    "path": "target/release/bundle/macos/Alice.app/Contents/MacOS/alice-desktop",
+    "bytes": 15081680,
+    "sha256": "b438a3310621bf3e838ee36b827fe82013d48e2be0c4e545df6f0b7f592f30c4"
+  },
+  {
+    "path": "target/release/bundle/dmg/Alice_0.1.0_aarch64.dmg",
+    "bytes": 6995848,
+    "sha256": "1f8d6a7e3a341b4819abaf318bc3fd5cbb72db00903b76801254f5f0a6e9bca0"
+  }
+]

@@ -1,0 +1,2558 @@
+{
+  "controls": [
+    {
+      "covered": true,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "Compose⌘ N",
+      "pressed": null,
+      "rect": {
+        "bottom": 129,
+        "height": 39,
+        "right": 177,
+        "width": 165,
+        "x": 12,
+        "y": 90
+      },
+      "top": "settings-content"
+    },
+    {
+      "covered": true,
+      "current": "page",
+      "disabled": false,
+      "expanded": null,
+      "name": "Inbox12",
+      "pressed": null,
+      "rect": {
+        "bottom": 177,
+        "height": 32,
+        "right": 177,
+        "width": 165,
+        "x": 12,
+        "y": 145
+      },
+      "top": "settings-content"
+    },
+    {
+      "covered": true,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "Starred",
+      "pressed": null,
+      "rect": {
+        "bottom": 212,
+        "height": 32,
+        "right": 177,
+        "width": 165,
+        "x": 12,
+        "y": 180
+      },
+      "top": "settings-content"
+    },
+    {
+      "covered": true,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "Sent",
+      "pressed": null,
+      "rect": {
+        "bottom": 247,
+        "height": 32,
+        "right": 177,
+        "width": 165,
+        "x": 12,
+        "y": 215
+      },
+      "top": "settings-content"
+    },
+    {
+      "covered": true,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "Drafts",
+      "pressed": null,
+      "rect": {
+        "bottom": 282,
+        "height": 32,
+        "right": 177,
+        "width": 165,
+        "x": 12,
+        "y": 250
+      },
+      "top": "settings-content"
+    },
+    {
+      "covered": true,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "Archive",
+      "pressed": null,
+      "rect": {
+        "bottom": 317,
+        "height": 32,
+        "right": 177,
+        "width": 165,
+        "x": 12,
+        "y": 285
+      },
+      "top": "settings-content"
+    },
+    {
+      "covered": true,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "Trash",
+      "pressed": null,
+      "rect": {
+        "bottom": 352,
+        "height": 32,
+        "right": 177,
+        "width": 165,
+        "x": 12,
+        "y": 320
+      },
+      "top": "settings-content"
+    },
+    {
+      "covered": true,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "Work",
+      "pressed": "false",
+      "rect": {
+        "bottom": 420.5,
+        "height": 27.5,
+        "right": 172,
+        "width": 155,
+        "x": 17,
+        "y": 393
+      },
+      "top": "settings-content"
+    },
+    {
+      "covered": true,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "Personal",
+      "pressed": "false",
+      "rect": {
+        "bottom": 453,
+        "height": 27.5,
+        "right": 172,
+        "width": 155,
+        "x": 17,
+        "y": 425.5
+      },
+      "top": "settings-content"
+    },
+    {
+      "covered": true,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "Reading list",
+      "pressed": "false",
+      "rect": {
+        "bottom": 485.5,
+        "height": 27.5,
+        "right": 172,
+        "width": 155,
+        "x": 17,
+        "y": 458
+      },
+      "top": "settings-content"
+    },
+    {
+      "covered": true,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "Add account",
+      "pressed": null,
+      "rect": {
+        "bottom": 518.5,
+        "height": 18,
+        "right": 170,
+        "width": 18,
+        "x": 152,
+        "y": 500.5
+      },
+      "top": ""
+    },
+    {
+      "covered": true,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "Workalex@form.studio",
+      "pressed": "false",
+      "rect": {
+        "bottom": 568,
+        "height": 43.5,
+        "right": 172,
+        "width": 155,
+        "x": 17,
+        "y": 524.5
+      },
+      "top": "settings-content"
+    },
+    {
+      "covered": true,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "OPersonalalex@outlook.com",
+      "pressed": "false",
+      "rect": {
+        "bottom": 614.5,
+        "height": 43.5,
+        "right": 172,
+        "width": 155,
+        "x": 17,
+        "y": 571
+      },
+      "top": "settings-content"
+    },
+    {
+      "covered": true,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "Ask AliceAI",
+      "pressed": "false",
+      "rect": {
+        "bottom": 580,
+        "height": 40,
+        "right": 177,
+        "width": 165,
+        "x": 12,
+        "y": 540
+      },
+      "top": "settings-content"
+    },
+    {
+      "covered": true,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "Settings",
+      "pressed": null,
+      "rect": {
+        "bottom": 625.5,
+        "height": 30,
+        "right": 175,
+        "width": 24,
+        "x": 151,
+        "y": 595.5
+      },
+      "top": "settings-dialog"
+    },
+    {
+      "covered": true,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "Keyboard shortcuts",
+      "pressed": null,
+      "rect": {
+        "bottom": 45.5,
+        "height": 30,
+        "right": 777,
+        "width": 30,
+        "x": 747,
+        "y": 15.5
+      },
+      "top": "settings-dialog"
+    },
+    {
+      "covered": true,
+      "current": null,
+      "disabled": false,
+      "expanded": "false",
+      "name": "Toggle Alice assistant",
+      "pressed": null,
+      "rect": {
+        "bottom": 45.5,
+        "height": 30,
+        "right": 824,
+        "width": 30,
+        "x": 794,
+        "y": 15.5
+      },
+      "top": "settings-dialog"
+    },
+    {
+      "covered": true,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "Sync accounts",
+      "pressed": null,
+      "rect": {
+        "bottom": 134.875,
+        "height": 30,
+        "right": 824,
+        "width": 30,
+        "x": 794,
+        "y": 104.875
+      },
+      "top": "settings-dialog"
+    },
+    {
+      "covered": true,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "A little help from AliceLess sorting. More space to think.",
+      "pressed": null,
+      "rect": {
+        "bottom": 293.75,
+        "height": 61,
+        "right": 824,
+        "width": 609,
+        "x": 215,
+        "y": 232.75
+      },
+      "top": ""
+    },
+    {
+      "covered": true,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "All mail 12",
+      "pressed": "true",
+      "rect": {
+        "bottom": 356.25,
+        "height": 39,
+        "right": 272.9140625,
+        "width": 57.9140625,
+        "x": 215,
+        "y": 317.25
+      },
+      "top": ""
+    },
+    {
+      "covered": true,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "Unread 4",
+      "pressed": "false",
+      "rect": {
+        "bottom": 356.25,
+        "height": 39,
+        "right": 348.1796875,
+        "width": 53.265625,
+        "x": 294.9140625,
+        "y": 317.25
+      },
+      "top": ""
+    },
+    {
+      "covered": true,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "Newest",
+      "pressed": null,
+      "rect": {
+        "bottom": 356.25,
+        "height": 39,
+        "right": 824,
+        "width": 51.234375,
+        "x": 772.765625,
+        "y": 317.25
+      },
+      "top": "settings-dialog"
+    },
+    {
+      "covered": true,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "Sophie Chen: A little room for big ideas, unread, starred",
+      "pressed": "false",
+      "rect": {
+        "bottom": 517.3984375,
+        "height": 122.6484375,
+        "right": 849,
+        "width": 659,
+        "x": 190,
+        "y": 394.75
+      },
+      "top": ""
+    },
+    {
+      "covered": true,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "Oliver Park: The website is ready for a first look, unread",
+      "pressed": "false",
+      "rect": {
+        "bottom": 640.046875,
+        "height": 122.6484375,
+        "right": 849,
+        "width": 659,
+        "x": 190,
+        "y": 517.3984375
+      },
+      "top": "settings-content"
+    },
+    {
+      "covered": true,
+      "current": null,
+      "disabled": true,
+      "expanded": null,
+      "name": "Previous page",
+      "pressed": null,
+      "rect": {
+        "bottom": 631,
+        "height": 30,
+        "right": 794,
+        "width": 30,
+        "x": 764,
+        "y": 601
+      },
+      "top": "settings-dialog"
+    },
+    {
+      "covered": true,
+      "current": null,
+      "disabled": true,
+      "expanded": null,
+      "name": "Next page",
+      "pressed": null,
+      "rect": {
+        "bottom": 631,
+        "height": 30,
+        "right": 824,
+        "width": 30,
+        "x": 794,
+        "y": 601
+      },
+      "top": "settings-dialog"
+    },
+    {
+      "covered": false,
+      "current": null,
+      "disabled": false,
+      "expanded": null,
+      "name": "Connect Alice",
+      "pressed": null,
+      "rect": {
+        "bottom": 568.1953125,
+        "height": 37,
+        "right": 241,
+        "width": 131,
+        "x": 110,
+        "y": 531.1953125
+      },
+      "top": "primary"
+    }
+  ],
+  "devicePixelRatio": 1,
+  "dialogs": [
+    {
+      "label": null,
+      "labelledby": "settings-title",
+      "modal": true,
+      "name": "Make yourself at home."
+    }
+  ],
+  "document": [
+    850,
+    850,
+    640,
+    640
+  ],
+  "fields": [
+    {
+      "bg": [
+        250,
+        249,
+        252,
+        1
+      ],
+      "border": "rgb(104, 97, 111)",
+      "fg": "rgb(104, 97, 111)",
+      "id": "",
+      "label": "Search mail",
+      "outline": "rgb(104, 97, 111) none 0px",
+      "outlineOffset": "0px",
+      "placeholder": "Search your mail",
+      "placeholderColor": "rgb(104, 97, 111)",
+      "placeholderOpacity": "1",
+      "placeholderRatio": 5.675,
+      "ratio": 5.675,
+      "rect": {
+        "bottom": 202.75,
+        "height": 18,
+        "right": 785.5,
+        "width": 534.5,
+        "x": 251,
+        "y": 184.75
+      },
+      "tag": "INPUT",
+      "value": ""
+    },
+    {
+      "bg": [
+        254,
+        252,
+        254,
+        1
+      ],
+      "border": "rgb(229, 220, 236)",
+      "fg": "rgb(100, 69, 130)",
+      "id": "",
+      "label": "AI providerOpenAIAnthropicOpenAI-compatible / local",
+      "outline": "rgb(100, 69, 130) none 3px",
+      "outlineOffset": "0px",
+      "placeholder": null,
+      "placeholderColor": "rgb(100, 69, 130)",
+      "placeholderOpacity": "1",
+      "placeholderRatio": 7.575,
+      "ratio": 7.575,
+      "rect": {
+        "bottom": 204.1953125,
+        "height": 38.5,
+        "right": 417,
+        "width": 307,
+        "x": 110,
+        "y": 165.6953125
+      },
+      "tag": "SELECT",
+      "value": "openai"
+    },
+    {
+      "bg": [
+        254,
+        252,
+        254,
+        1
+      ],
+      "border": "rgb(229, 220, 236)",
+      "fg": "rgb(100, 69, 130)",
+      "id": "",
+      "label": "Model ID",
+      "outline": "rgb(100, 69, 130) none 3px",
+      "outlineOffset": "0px",
+      "placeholder": "A model ID from your provider",
+      "placeholderColor": "rgb(104, 97, 111)",
+      "placeholderOpacity": "1",
+      "placeholderRatio": 5.83,
+      "ratio": 7.575,
+      "rect": {
+        "bottom": 202.1953125,
+        "height": 36.5,
+        "right": 740,
+        "width": 307,
+        "x": 433,
+        "y": 165.6953125
+      },
+      "tag": "INPUT",
+      "value": ""
+    },
+    {
+      "bg": [
+        254,
+        252,
+        254,
+        1
+      ],
+      "border": "rgb(229, 220, 236)",
+      "fg": "rgb(100, 69, 130)",
+      "id": "",
+      "label": "API base URL",
+      "outline": "rgb(100, 69, 130) none 3px",
+      "outlineOffset": "0px",
+      "placeholder": null,
+      "placeholderColor": "rgb(100, 69, 130)",
+      "placeholderOpacity": "1",
+      "placeholderRatio": 7.575,
+      "ratio": 7.575,
+      "rect": {
+        "bottom": 296.6953125,
+        "height": 36.5,
+        "right": 740,
+        "width": 630,
+        "x": 110,
+        "y": 260.1953125
+      },
+      "tag": "INPUT",
+      "value": "https://api.openai.com/v1"
+    },
+    {
+      "bg": [
+        254,
+        252,
+        254,
+        1
+      ],
+      "border": "rgb(100, 69, 130)",
+      "fg": "rgb(100, 69, 130)",
+      "id": "",
+      "label": "API key",
+      "outline": "rgb(100, 69, 130) none 3px",
+      "outlineOffset": "0px",
+      "placeholder": "A fresh key for this provider and endpoint",
+      "placeholderColor": "rgb(104, 97, 111)",
+      "placeholderOpacity": "1",
+      "placeholderRatio": 5.83,
+      "ratio": 7.575,
+      "rect": {
+        "bottom": 444.1953125,
+        "height": 34.5,
+        "right": 739,
+        "width": 592,
+        "x": 147,
+        "y": 409.6953125
+      },
+      "tag": "INPUT",
+      "value": ""
+    }
+  ],
+  "focus": {
+    "class": "primary",
+    "id": "",
+    "tag": "BUTTON"
+  },
+  "icons": [
+    {
+      "bg": [
+        235,
+        229,
+        243,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(100, 69, 130)",
+      "label": "Compose⌘ N",
+      "ratio": 6.273
+    },
+    {
+      "bg": [
+        234,
+        230,
+        241,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(100, 69, 130)",
+      "label": "Inbox12",
+      "ratio": 6.293
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "label": "Starred",
+      "ratio": 5.563
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "label": "Sent",
+      "ratio": 5.563
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "label": "Drafts",
+      "ratio": 5.563
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "label": "Archive",
+      "ratio": 5.563
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "label": "Trash",
+      "ratio": 5.563
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "label": "Add account",
+      "ratio": 5.563
+    },
+    {
+      "bg": [
+        255,
+        255,
+        255,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "label": "Workalex@form.studio",
+      "ratio": 5.952
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(100, 69, 130)",
+      "label": "Ask AliceAI",
+      "ratio": 7.228
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "label": "Settings",
+      "ratio": 5.563
+    },
+    {
+      "bg": [
+        252,
+        252,
+        253,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "label": "Keyboard shortcuts",
+      "ratio": 5.805
+    },
+    {
+      "bg": [
+        252,
+        252,
+        253,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "label": "Toggle Alice assistant",
+      "ratio": 5.805
+    },
+    {
+      "bg": [
+        253,
+        253,
+        254,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "label": "Sync accounts",
+      "ratio": 5.855
+    },
+    {
+      "bg": [
+        250,
+        248,
+        253,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(100, 69, 130)",
+      "label": "A little help from AliceLess sorting. More space to think.",
+      "ratio": 7.332
+    },
+    {
+      "bg": [
+        240,
+        237,
+        247,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(100, 69, 130)",
+      "label": "A little help from AliceLess sorting. More space to think.",
+      "ratio": 6.688
+    },
+    {
+      "bg": [
+        253,
+        253,
+        254,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "label": "Newest",
+      "ratio": 5.855
+    },
+    {
+      "bg": [
+        253,
+        253,
+        254,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(116, 85, 50)",
+      "label": "Sophie Chen: A little room for big ideas, unread, starred",
+      "ratio": 6.69
+    },
+    {
+      "bg": [
+        128,
+        103,
+        173,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(255, 255, 255)",
+      "label": "Connect Alice",
+      "ratio": 4.707
+    }
+  ],
+  "layout": [
+    {
+      "class": "app-shell  ",
+      "client": [
+        850,
+        640
+      ],
+      "display": "grid",
+      "rect": {
+        "bottom": 640,
+        "height": 640,
+        "right": 850,
+        "width": 850,
+        "x": 0,
+        "y": 0
+      },
+      "scroll": [
+        850,
+        640
+      ],
+      "scrollTop": 0
+    },
+    {
+      "class": "sidebar",
+      "client": [
+        189,
+        640
+      ],
+      "display": "flex",
+      "rect": {
+        "bottom": 640,
+        "height": 640,
+        "right": 190,
+        "width": 190,
+        "x": 0,
+        "y": 0
+      },
+      "scroll": [
+        189,
+        640
+      ],
+      "scrollTop": 0
+    },
+    {
+      "class": "sidebar-scroll",
+      "client": [
+        165,
+        395
+      ],
+      "display": "block",
+      "rect": {
+        "bottom": 540,
+        "height": 395,
+        "right": 177,
+        "width": 165,
+        "x": 12,
+        "y": 145
+      },
+      "scroll": [
+        165,
+        470
+      ],
+      "scrollTop": 0
+    },
+    {
+      "class": "sidebar-footer",
+      "client": [
+        165,
+        59
+      ],
+      "display": "flex",
+      "rect": {
+        "bottom": 640,
+        "height": 60,
+        "right": 177,
+        "width": 165,
+        "x": 12,
+        "y": 580
+      },
+      "scroll": [
+        165,
+        59
+      ],
+      "scrollTop": 0
+    },
+    {
+      "class": "workspace-header",
+      "client": [
+        660,
+        61
+      ],
+      "display": "flex",
+      "rect": {
+        "bottom": 62,
+        "height": 62,
+        "right": 850,
+        "width": 660,
+        "x": 190,
+        "y": 0
+      },
+      "scroll": [
+        660,
+        61
+      ],
+      "scrollTop": 0
+    },
+    {
+      "class": "mailbox",
+      "client": [
+        659,
+        578
+      ],
+      "display": "flex",
+      "rect": {
+        "bottom": 640,
+        "height": 578,
+        "right": 850,
+        "width": 660,
+        "x": 190,
+        "y": 62
+      },
+      "scroll": [
+        659,
+        578
+      ],
+      "scrollTop": 0
+    },
+    {
+      "class": "reader",
+      "client": [
+        0,
+        0
+      ],
+      "display": "none",
+      "rect": {
+        "bottom": 0,
+        "height": 0,
+        "right": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "scroll": [
+        0,
+        0
+      ],
+      "scrollTop": 0
+    },
+    {
+      "class": "reader-toolbar",
+      "client": [
+        0,
+        0
+      ],
+      "display": "flex",
+      "rect": {
+        "bottom": 0,
+        "height": 0,
+        "right": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "scroll": [
+        0,
+        0
+      ],
+      "scrollTop": 0
+    },
+    {
+      "class": "toolbar-actions",
+      "client": [
+        0,
+        0
+      ],
+      "display": "flex",
+      "rect": {
+        "bottom": 0,
+        "height": 0,
+        "right": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "scroll": [
+        0,
+        0
+      ],
+      "scrollTop": 0
+    },
+    {
+      "class": "reader-pagination",
+      "client": [
+        0,
+        0
+      ],
+      "display": "flex",
+      "rect": {
+        "bottom": 0,
+        "height": 0,
+        "right": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "scroll": [
+        0,
+        0
+      ],
+      "scrollTop": 0
+    },
+    {
+      "class": "settings-dialog",
+      "client": [
+        698,
+        561
+      ],
+      "display": "block",
+      "rect": {
+        "bottom": 601.59375,
+        "height": 563.1953125,
+        "right": 775,
+        "width": 700,
+        "x": 75,
+        "y": 38.3984375
+      },
+      "scroll": [
+        698,
+        776
+      ],
+      "scrollTop": 215.5
+    },
+    {
+      "class": "settings-content",
+      "client": [
+        698,
+        627
+      ],
+      "display": "block",
+      "rect": {
+        "bottom": 600.1953125,
+        "height": 626.796875,
+        "right": 774,
+        "width": 698,
+        "x": 76,
+        "y": -26.6015625
+      },
+      "scroll": [
+        698,
+        627
+      ],
+      "scrollTop": 0
+    }
+  ],
+  "name": "b-21-850-ai-footer",
+  "status": [
+    {
+      "live": null,
+      "role": null,
+      "text": "Connected"
+    }
+  ],
+  "text": [
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(52, 51, 59)",
+      "font": "32px",
+      "ratio": 11.664,
+      "rect": {
+        "bottom": 66.75,
+        "height": 41.5,
+        "right": 140.671875,
+        "width": 72.671875,
+        "x": 68,
+        "y": 25.25
+      },
+      "tag": "SPAN",
+      "text": "alice"
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "brand-dot",
+      "fg": "rgb(128, 103, 173)",
+      "font": "32px",
+      "ratio": 4.399,
+      "rect": {
+        "bottom": 66.75,
+        "height": 41.5,
+        "right": 140.671875,
+        "width": 6.3125,
+        "x": 134.359375,
+        "y": 25.25
+      },
+      "tag": "SPAN",
+      "text": "."
+    },
+    {
+      "bg": [
+        235,
+        229,
+        243,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(100, 69, 130)",
+      "font": "12px",
+      "ratio": 6.273,
+      "rect": {
+        "bottom": 117.25,
+        "height": 15.5,
+        "right": 109.5390625,
+        "width": 55.5390625,
+        "x": 54,
+        "y": 101.75
+      },
+      "tag": "SPAN",
+      "text": "Compose"
+    },
+    {
+      "bg": [
+        235,
+        229,
+        243,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(100, 69, 130)",
+      "font": "10px",
+      "ratio": 6.273,
+      "rect": {
+        "bottom": 116,
+        "height": 13,
+        "right": 162,
+        "width": 19.5703125,
+        "x": 142.4296875,
+        "y": 103
+      },
+      "tag": "KBD",
+      "text": "⌘  N"
+    },
+    {
+      "bg": [
+        234,
+        230,
+        241,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(100, 69, 130)",
+      "font": "12px",
+      "ratio": 6.293,
+      "rect": {
+        "bottom": 168.75,
+        "height": 15.5,
+        "right": 87.703125,
+        "width": 31.703125,
+        "x": 56,
+        "y": 153.25
+      },
+      "tag": "SPAN",
+      "text": "Inbox"
+    },
+    {
+      "bg": [
+        221,
+        212,
+        235,
+        1
+      ],
+      "class": "nav-count",
+      "fg": "rgb(100, 69, 130)",
+      "font": "10px",
+      "ratio": 5.41,
+      "rect": {
+        "bottom": 169.5,
+        "height": 17,
+        "right": 163,
+        "width": 21,
+        "x": 142,
+        "y": 152.5
+      },
+      "tag": "SPAN",
+      "text": "12"
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "12px",
+      "ratio": 5.563,
+      "rect": {
+        "bottom": 203.75,
+        "height": 15.5,
+        "right": 97.1875,
+        "width": 41.1875,
+        "x": 56,
+        "y": 188.25
+      },
+      "tag": "SPAN",
+      "text": "Starred"
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "12px",
+      "ratio": 5.563,
+      "rect": {
+        "bottom": 238.75,
+        "height": 15.5,
+        "right": 81.375,
+        "width": 25.375,
+        "x": 56,
+        "y": 223.25
+      },
+      "tag": "SPAN",
+      "text": "Sent"
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "12px",
+      "ratio": 5.563,
+      "rect": {
+        "bottom": 273.75,
+        "height": 15.5,
+        "right": 90.0390625,
+        "width": 34.0390625,
+        "x": 56,
+        "y": 258.25
+      },
+      "tag": "SPAN",
+      "text": "Drafts"
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "12px",
+      "ratio": 5.563,
+      "rect": {
+        "bottom": 308.75,
+        "height": 15.5,
+        "right": 97.6640625,
+        "width": 41.6640625,
+        "x": 56,
+        "y": 293.25
+      },
+      "tag": "SPAN",
+      "text": "Archive"
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "12px",
+      "ratio": 5.563,
+      "rect": {
+        "bottom": 343.75,
+        "height": 15.5,
+        "right": 85.9453125,
+        "width": 29.9453125,
+        "x": 56,
+        "y": 328.25
+      },
+      "tag": "SPAN",
+      "text": "Trash"
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "section-label",
+      "fg": "rgb(104, 97, 111)",
+      "font": "10px",
+      "ratio": 5.563,
+      "rect": {
+        "bottom": 388,
+        "height": 18,
+        "right": 147,
+        "width": 130,
+        "x": 17,
+        "y": 370
+      },
+      "tag": "SPAN",
+      "text": "Your collections"
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "12px",
+      "ratio": 5.563,
+      "rect": {
+        "bottom": 414.5,
+        "height": 15.5,
+        "right": 82.609375,
+        "width": 28.609375,
+        "x": 54,
+        "y": 399
+      },
+      "tag": "SPAN",
+      "text": "Work"
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "12px",
+      "ratio": 5.563,
+      "rect": {
+        "bottom": 447,
+        "height": 15.5,
+        "right": 101.1015625,
+        "width": 47.1015625,
+        "x": 54,
+        "y": 431.5
+      },
+      "tag": "SPAN",
+      "text": "Personal"
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "12px",
+      "ratio": 5.563,
+      "rect": {
+        "bottom": 479.5,
+        "height": 15.5,
+        "right": 117.3125,
+        "width": 63.3125,
+        "x": 54,
+        "y": 464
+      },
+      "tag": "SPAN",
+      "text": "Reading list"
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "section-label",
+      "fg": "rgb(104, 97, 111)",
+      "font": "10px",
+      "ratio": 5.563,
+      "rect": {
+        "bottom": 521.5,
+        "height": 18,
+        "right": 149,
+        "width": 132,
+        "x": 17,
+        "y": 503.5
+      },
+      "tag": "SPAN",
+      "text": "Sample accounts"
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "11px",
+      "ratio": 5.563,
+      "rect": {
+        "bottom": 545,
+        "height": 14.5,
+        "right": 141.90625,
+        "width": 80.90625,
+        "x": 61,
+        "y": 530.5
+      },
+      "tag": "STRONG",
+      "text": "Work"
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "10px",
+      "ratio": 5.563,
+      "rect": {
+        "bottom": 562,
+        "height": 13,
+        "right": 141.90625,
+        "width": 80.90625,
+        "x": 61,
+        "y": 549
+      },
+      "tag": "SMALL",
+      "text": "alex@form.studio"
+    },
+    {
+      "bg": [
+        61,
+        140,
+        203,
+        1
+      ],
+      "class": "outlook-mark",
+      "fg": "rgb(104, 97, 111)",
+      "font": "12px",
+      "ratio": 1.647,
+      "rect": {
+        "bottom": 601.25,
+        "height": 17,
+        "right": 45.703125,
+        "width": 15.40625,
+        "x": 30.296875,
+        "y": 584.25
+      },
+      "tag": "SPAN",
+      "text": "O"
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "11px",
+      "ratio": 5.563,
+      "rect": {
+        "bottom": 591.5,
+        "height": 14.5,
+        "right": 146.3828125,
+        "width": 85.3828125,
+        "x": 61,
+        "y": 577
+      },
+      "tag": "STRONG",
+      "text": "Personal"
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "10px",
+      "ratio": 5.563,
+      "rect": {
+        "bottom": 608.5,
+        "height": 13,
+        "right": 146.3828125,
+        "width": 85.3828125,
+        "x": 61,
+        "y": 595.5
+      },
+      "tag": "SMALL",
+      "text": "alex@outlook.com"
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(100, 69, 130)",
+      "font": "12px",
+      "ratio": 7.228,
+      "rect": {
+        "bottom": 567.75,
+        "height": 15.5,
+        "right": 102.4375,
+        "width": 50.4375,
+        "x": 52,
+        "y": 552.25
+      },
+      "tag": "SPAN",
+      "text": "Ask Alice"
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "new-badge",
+      "fg": "rgb(100, 69, 130)",
+      "font": "10px",
+      "ratio": 7.228,
+      "rect": {
+        "bottom": 568.5,
+        "height": 17,
+        "right": 165,
+        "width": 18.984375,
+        "x": 146.015625,
+        "y": 551.5
+      },
+      "tag": "SPAN",
+      "text": "AI"
+    },
+    {
+      "bg": [
+        234,
+        227,
+        243,
+        1
+      ],
+      "class": "avatar violet",
+      "fg": "rgb(100, 69, 130)",
+      "font": "10px",
+      "ratio": 6.18,
+      "rect": {
+        "bottom": 626,
+        "height": 31,
+        "right": 45,
+        "width": 31,
+        "x": 14,
+        "y": 595
+      },
+      "tag": "DIV",
+      "text": "AM"
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(52, 51, 59)",
+      "font": "10px",
+      "ratio": 11.664,
+      "rect": {
+        "bottom": 608.5,
+        "height": 13,
+        "right": 142,
+        "width": 88,
+        "x": 54,
+        "y": 595.5
+      },
+      "tag": "STRONG",
+      "text": "Alex Morgan"
+    },
+    {
+      "bg": [
+        247,
+        247,
+        249,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "10px",
+      "ratio": 5.563,
+      "rect": {
+        "bottom": 625.5,
+        "height": 13,
+        "right": 142,
+        "width": 88,
+        "x": 54,
+        "y": 612.5
+      },
+      "tag": "SMALL",
+      "text": "Demo workspace"
+    },
+    {
+      "bg": [
+        252,
+        252,
+        253,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "10px",
+      "ratio": 5.805,
+      "rect": {
+        "bottom": 37,
+        "height": 13,
+        "right": 261.484375,
+        "width": 18.484375,
+        "x": 243,
+        "y": 24
+      },
+      "tag": "SPAN",
+      "text": "Mail"
+    },
+    {
+      "bg": [
+        252,
+        252,
+        253,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "10px",
+      "ratio": 5.805,
+      "rect": {
+        "bottom": 37,
+        "height": 13,
+        "right": 345.8203125,
+        "width": 49.3359375,
+        "x": 296.484375,
+        "y": 24
+      },
+      "tag": "SPAN",
+      "text": "All inboxes"
+    },
+    {
+      "bg": [
+        245,
+        242,
+        249,
+        1
+      ],
+      "class": "demo-badge",
+      "fg": "rgb(100, 69, 130)",
+      "font": "10px",
+      "ratio": 6.979,
+      "rect": {
+        "bottom": 42,
+        "height": 23,
+        "right": 650.4296875,
+        "width": 71.140625,
+        "x": 579.2890625,
+        "y": 19
+      },
+      "tag": "SPAN",
+      "text": "Demo inbox"
+    },
+    {
+      "bg": [
+        252,
+        252,
+        253,
+        1
+      ],
+      "class": "connection-status ",
+      "fg": "rgb(104, 97, 111)",
+      "font": "10px",
+      "ratio": 5.805,
+      "rect": {
+        "bottom": 37,
+        "height": 13,
+        "right": 730,
+        "width": 62.5703125,
+        "x": 667.4296875,
+        "y": 24
+      },
+      "tag": "SPAN",
+      "text": "Connected"
+    },
+    {
+      "bg": [
+        253,
+        253,
+        254,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(52, 51, 59)",
+      "font": "35px",
+      "ratio": 12.277,
+      "rect": {
+        "bottom": 130.75,
+        "height": 36.75,
+        "right": 357.1640625,
+        "width": 142.1640625,
+        "x": 215,
+        "y": 94
+      },
+      "tag": "H1",
+      "text": "Inbox"
+    },
+    {
+      "bg": [
+        253,
+        253,
+        254,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "10px",
+      "ratio": 5.855,
+      "rect": {
+        "bottom": 152.75,
+        "height": 13,
+        "right": 357.1640625,
+        "width": 142.1640625,
+        "x": 215,
+        "y": 139.75
+      },
+      "tag": "P",
+      "text": "A little space for what matters."
+    },
+    {
+      "bg": [
+        250,
+        249,
+        252,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "10px",
+      "ratio": 5.675,
+      "rect": {
+        "bottom": 200.25,
+        "height": 13,
+        "right": 813,
+        "width": 18.5,
+        "x": 794.5,
+        "y": 187.25
+      },
+      "tag": "KBD",
+      "text": "⌘  K"
+    },
+    {
+      "bg": [
+        240,
+        237,
+        247,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(100, 69, 130)",
+      "font": "10px",
+      "ratio": 6.688,
+      "rect": {
+        "bottom": 260.75,
+        "height": 13,
+        "right": 783,
+        "width": 514,
+        "x": 269,
+        "y": 247.75
+      },
+      "tag": "STRONG",
+      "text": "A little help from Alice"
+    },
+    {
+      "bg": [
+        240,
+        237,
+        247,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(100, 69, 130)",
+      "font": "10px",
+      "ratio": 6.688,
+      "rect": {
+        "bottom": 278.75,
+        "height": 13,
+        "right": 783,
+        "width": 514,
+        "x": 269,
+        "y": 265.75
+      },
+      "tag": "SMALL",
+      "text": "Less sorting. More space to think."
+    },
+    {
+      "bg": [
+        253,
+        253,
+        254,
+        1
+      ],
+      "class": "active",
+      "fg": "rgb(100, 69, 130)",
+      "font": "10px",
+      "ratio": 7.607,
+      "rect": {
+        "bottom": 356.25,
+        "height": 39,
+        "right": 272.9140625,
+        "width": 57.9140625,
+        "x": 215,
+        "y": 317.25
+      },
+      "tag": "BUTTON",
+      "text": "All mail"
+    },
+    {
+      "bg": [
+        241,
+        238,
+        247,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(100, 69, 130)",
+      "font": "10px",
+      "ratio": 6.744,
+      "rect": {
+        "bottom": 338.25,
+        "height": 15,
+        "right": 272.9140625,
+        "width": 17.2578125,
+        "x": 255.65625,
+        "y": 323.25
+      },
+      "tag": "SPAN",
+      "text": "12"
+    },
+    {
+      "bg": [
+        253,
+        253,
+        254,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "10px",
+      "ratio": 5.855,
+      "rect": {
+        "bottom": 356.25,
+        "height": 39,
+        "right": 348.1796875,
+        "width": 53.265625,
+        "x": 294.9140625,
+        "y": 317.25
+      },
+      "tag": "BUTTON",
+      "text": "Unread"
+    },
+    {
+      "bg": [
+        241,
+        238,
+        247,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "10px",
+      "ratio": 5.191,
+      "rect": {
+        "bottom": 338.25,
+        "height": 15,
+        "right": 348.1796875,
+        "width": 14.0703125,
+        "x": 334.109375,
+        "y": 323.25
+      },
+      "tag": "SPAN",
+      "text": "4"
+    },
+    {
+      "bg": [
+        253,
+        253,
+        254,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "10px",
+      "ratio": 5.855,
+      "rect": {
+        "bottom": 337.25,
+        "height": 13,
+        "right": 824,
+        "width": 34.234375,
+        "x": 789.765625,
+        "y": 324.25
+      },
+      "tag": "SPAN",
+      "text": "Newest"
+    },
+    {
+      "bg": [
+        253,
+        253,
+        254,
+        1
+      ],
+      "class": "date-divider",
+      "fg": "rgb(104, 97, 111)",
+      "font": "10px",
+      "ratio": 5.855,
+      "rect": {
+        "bottom": 394.75,
+        "height": 38,
+        "right": 849,
+        "width": 659,
+        "x": 190,
+        "y": 356.75
+      },
+      "tag": "DIV",
+      "text": "Today"
+    },
+    {
+      "bg": [
+        242,
+        236,
+        226,
+        1
+      ],
+      "class": "avatar sand",
+      "fg": "rgb(116, 85, 50)",
+      "font": "10px",
+      "ratio": 5.787,
+      "rect": {
+        "bottom": 445.75,
+        "height": 32,
+        "right": 247,
+        "width": 32,
+        "x": 215,
+        "y": 413.75
+      },
+      "tag": "DIV",
+      "text": "SC"
+    },
+    {
+      "bg": [
+        253,
+        253,
+        254,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(100, 69, 130)",
+      "font": "12px",
+      "ratio": 7.607,
+      "rect": {
+        "bottom": 429.25,
+        "height": 15.5,
+        "right": 331.0546875,
+        "width": 73.0546875,
+        "x": 258,
+        "y": 413.75
+      },
+      "tag": "STRONG",
+      "text": "Sophie Chen"
+    },
+    {
+      "bg": [
+        253,
+        253,
+        254,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "10px",
+      "ratio": 5.855,
+      "rect": {
+        "bottom": 428,
+        "height": 13,
+        "right": 824,
+        "width": 20.1328125,
+        "x": 803.8671875,
+        "y": 415
+      },
+      "tag": "TIME",
+      "text": "5:35"
+    },
+    {
+      "bg": [
+        253,
+        253,
+        254,
+        1
+      ],
+      "class": "email-subject",
+      "fg": "rgb(100, 69, 130)",
+      "font": "13px",
+      "ratio": 7.607,
+      "rect": {
+        "bottom": 452.25,
+        "height": 17,
+        "right": 824,
+        "width": 566,
+        "x": 258,
+        "y": 435.25
+      },
+      "tag": "DIV",
+      "text": "A little room for big ideas"
+    },
+    {
+      "bg": [
+        253,
+        253,
+        254,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "11px",
+      "ratio": 5.855,
+      "rect": {
+        "bottom": 474.3984375,
+        "height": 18.1484375,
+        "right": 824,
+        "width": 566,
+        "x": 258,
+        "y": 456.25
+      },
+      "tag": "P",
+      "text": "Hey Alex, I've been thinking about our conversation yesterday. What if we gave the new collection a "
+    },
+    {
+      "bg": [
+        238,
+        231,
+        246,
+        1
+      ],
+      "class": "category-label work",
+      "fg": "rgb(100, 69, 130)",
+      "font": "7px",
+      "ratio": 6.406,
+      "rect": {
+        "bottom": 495.8984375,
+        "height": 11,
+        "right": 284.6953125,
+        "width": 26.6953125,
+        "x": 258,
+        "y": 484.8984375
+      },
+      "tag": "SPAN",
+      "text": "Work"
+    },
+    {
+      "bg": [
+        232,
+        237,
+        244,
+        1
+      ],
+      "class": "avatar blue",
+      "fg": "rgb(64, 93, 125)",
+      "font": "10px",
+      "ratio": 5.796,
+      "rect": {
+        "bottom": 568.3984375,
+        "height": 32,
+        "right": 247,
+        "width": 32,
+        "x": 215,
+        "y": 536.3984375
+      },
+      "tag": "DIV",
+      "text": "OP"
+    },
+    {
+      "bg": [
+        253,
+        253,
+        254,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(100, 69, 130)",
+      "font": "12px",
+      "ratio": 7.607,
+      "rect": {
+        "bottom": 551.8984375,
+        "height": 15.5,
+        "right": 319.9765625,
+        "width": 61.9765625,
+        "x": 258,
+        "y": 536.3984375
+      },
+      "tag": "STRONG",
+      "text": "Oliver Park"
+    },
+    {
+      "bg": [
+        253,
+        253,
+        254,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "10px",
+      "ratio": 5.855,
+      "rect": {
+        "bottom": 550.6484375,
+        "height": 13,
+        "right": 824,
+        "width": 19.78125,
+        "x": 804.21875,
+        "y": 537.6484375
+      },
+      "tag": "TIME",
+      "text": "4:52"
+    },
+    {
+      "bg": [
+        253,
+        253,
+        254,
+        1
+      ],
+      "class": "email-subject",
+      "fg": "rgb(100, 69, 130)",
+      "font": "13px",
+      "ratio": 7.607,
+      "rect": {
+        "bottom": 574.8984375,
+        "height": 17,
+        "right": 824,
+        "width": 566,
+        "x": 258,
+        "y": 557.8984375
+      },
+      "tag": "DIV",
+      "text": "The website is ready for a first look"
+    },
+    {
+      "bg": [
+        253,
+        253,
+        254,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "11px",
+      "ratio": 5.855,
+      "rect": {
+        "bottom": 597.046875,
+        "height": 18.1484375,
+        "right": 824,
+        "width": 566,
+        "x": 258,
+        "y": 578.8984375
+      },
+      "tag": "P",
+      "text": "Hi Alex, The first version of the website is ready. All the little details we talked about are in: t"
+    },
+    {
+      "bg": [
+        238,
+        231,
+        246,
+        1
+      ],
+      "class": "category-label work",
+      "fg": "rgb(100, 69, 130)",
+      "font": "7px",
+      "ratio": 6.406,
+      "rect": {
+        "bottom": 618.546875,
+        "height": 11,
+        "right": 284.6953125,
+        "width": 26.6953125,
+        "x": 258,
+        "y": 607.546875
+      },
+      "tag": "SPAN",
+      "text": "Work"
+    },
+    {
+      "bg": [
+        253,
+        253,
+        254,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "10px",
+      "ratio": 5.855,
+      "rect": {
+        "bottom": 622.5,
+        "height": 13,
+        "right": 257.2265625,
+        "width": 42.2265625,
+        "x": 215,
+        "y": 609.5
+      },
+      "tag": "SPAN",
+      "text": "1–12 of 12"
+    },
+    {
+      "bg": [
+        255,
+        255,
+        255,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(100, 69, 130)",
+      "font": "14px",
+      "ratio": 7.734,
+      "rect": {
+        "bottom": 73.8984375,
+        "height": 18.5,
+        "right": 740,
+        "width": 630,
+        "x": 110,
+        "y": 55.3984375
+      },
+      "tag": "H3",
+      "text": "Your key. Your kind of intelligence."
+    },
+    {
+      "bg": [
+        255,
+        255,
+        255,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(100, 69, 130)",
+      "font": "11px",
+      "ratio": 7.734,
+      "rect": {
+        "bottom": 102.6953125,
+        "height": 19.796875,
+        "right": 580,
+        "width": 470,
+        "x": 110,
+        "y": 82.8984375
+      },
+      "tag": "P",
+      "text": "Summaries, thoughtful replies, and inbox actions you review before they happen."
+    },
+    {
+      "bg": [
+        255,
+        255,
+        255,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(100, 69, 130)",
+      "font": "10px",
+      "ratio": 7.734,
+      "rect": {
+        "bottom": 204.1953125,
+        "height": 60.5,
+        "right": 417,
+        "width": 307,
+        "x": 110,
+        "y": 143.6953125
+      },
+      "tag": "LABEL",
+      "text": "AI provider"
+    },
+    {
+      "bg": [
+        255,
+        255,
+        255,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(100, 69, 130)",
+      "font": "10px",
+      "ratio": 7.734,
+      "rect": {
+        "bottom": 204.1953125,
+        "height": 60.5,
+        "right": 740,
+        "width": 307,
+        "x": 433,
+        "y": 143.6953125
+      },
+      "tag": "LABEL",
+      "text": "Model ID"
+    },
+    {
+      "bg": [
+        255,
+        255,
+        255,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(100, 69, 130)",
+      "font": "10px",
+      "ratio": 7.734,
+      "rect": {
+        "bottom": 296.6953125,
+        "height": 58.5,
+        "right": 740,
+        "width": 630,
+        "x": 110,
+        "y": 238.1953125
+      },
+      "tag": "LABEL",
+      "text": "API base URL"
+    },
+    {
+      "bg": [
+        255,
+        255,
+        255,
+        1
+      ],
+      "class": "field-note",
+      "fg": "rgb(100, 69, 130)",
+      "font": "10px",
+      "ratio": 7.734,
+      "rect": {
+        "bottom": 332.1953125,
+        "height": 18.5,
+        "right": 740,
+        "width": 630,
+        "x": 110,
+        "y": 313.6953125
+      },
+      "tag": "P",
+      "text": "Find the exact model ID in your provider account."
+    },
+    {
+      "bg": [
+        255,
+        255,
+        255,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 81, 142)",
+      "font": "10px",
+      "ratio": 6.654,
+      "rect": {
+        "bottom": 329.1953125,
+        "height": 13,
+        "right": 437.8046875,
+        "width": 97.6484375,
+        "x": 340.15625,
+        "y": 316.1953125
+      },
+      "tag": "A",
+      "text": "OpenAI model IDs"
+    },
+    {
+      "bg": [
+        255,
+        255,
+        255,
+        1
+      ],
+      "class": "field-note",
+      "fg": "rgb(100, 69, 130)",
+      "font": "10px",
+      "ratio": 7.734,
+      "rect": {
+        "bottom": 368.6953125,
+        "height": 18.5,
+        "right": 740,
+        "width": 630,
+        "x": 110,
+        "y": 350.1953125
+      },
+      "tag": "P",
+      "text": "Changing the provider or endpoint origin requires a fresh key. For a local server that ignores keys,"
+    },
+    {
+      "bg": [
+        255,
+        255,
+        255,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(100, 69, 130)",
+      "font": "10px",
+      "ratio": 7.734,
+      "rect": {
+        "bottom": 445.1953125,
+        "height": 58.5,
+        "right": 740,
+        "width": 630,
+        "x": 110,
+        "y": 386.6953125
+      },
+      "tag": "LABEL",
+      "text": "API key"
+    },
+    {
+      "bg": [
+        255,
+        255,
+        255,
+        1
+      ],
+      "class": "",
+      "fg": "rgb(104, 97, 111)",
+      "font": "10px",
+      "ratio": 5.952,
+      "rect": {
+        "bottom": 506.1953125,
+        "height": 36,
+        "right": 609,
+        "width": 470,
+        "x": 139,
+        "y": 470.1953125
+      },
+      "tag": "P",
+      "text": "Alice shares only the email you ask about, or up to 20 inbox messages for inbox requests. AI replies"
+    },
+    {
+      "bg": [
+        128,
+        103,
+        173,
+        1
+      ],
+      "class": "primary",
+      "fg": "rgb(255, 255, 255)",
+      "font": "11px",
+      "ratio": 4.707,
+      "rect": {
+        "bottom": 568.1953125,
+        "height": 37,
+        "right": 241,
+        "width": 131,
+        "x": 110,
+        "y": 531.1953125
+      },
+      "tag": "BUTTON",
+      "text": "Connect Alice"
+    }
+  ],
+  "viewport": [
+    850,
+    640
+  ]
+}

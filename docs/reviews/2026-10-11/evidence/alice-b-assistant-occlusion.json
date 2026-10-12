@@ -1,0 +1,20 @@
+{
+  "assistant": {
+    "h": 658,
+    "w": 340,
+    "x": 940,
+    "y": 62
+  },
+  "entireButtonUnderPanel": true,
+  "nextMessage": {
+    "h": 30,
+    "w": 30,
+    "x": 1223,
+    "y": 79.5
+  },
+  "sourceFocusEvidence": "Fresh CUA AX state after Tab from More message actions: focused Next message.",
+  "viewport": [
+    1280,
+    720
+  ]
+}

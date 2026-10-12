@@ -1,0 +1,54 @@
+{
+  "allDay": "Ganztägig",
+  "untitledEvent": "(Termin ohne Titel)",
+  "untitledEventLabel": "Termin ohne Titel",
+  "invitation": "Einladung: {title}",
+  "proposedEvent": "Vorgeschlagener Termin: {title}",
+  "organizedBy": "Organisiert von {organizer}",
+  "guests": { "one": "{count} Gast", "other": "{count} Gäste" },
+  "cancelledBy": "{organizer} hat diesen Termin abgesagt",
+  "cancelled": "Dieser Termin wurde abgesagt",
+  "sendingReply": "Ihre Antwort wird gesendet…",
+  "going": "Nehmen Sie teil?",
+  "answers": {
+    "accepted": { "label": "Zusagen", "done": "Sie haben zugesagt" },
+    "tentative": { "label": "Vielleicht", "done": "Sie haben mit „Vielleicht“ geantwortet" },
+    "declined": { "label": "Absagen", "done": "Sie haben abgesagt" }
+  },
+  "addedTo": "Zu {calendar} hinzugefügt",
+  "viewEvent": "Termin anzeigen",
+  "calendar": "Kalender",
+  "addTo": "Zu {calendar} hinzufügen",
+  "adding": "Wird hinzugefügt…",
+  "add": "Hinzufügen",
+  "addToCalendar": "Zum Kalender hinzufügen",
+  "openCalendarApp": "In der Kalender-App öffnen",
+  "downloadIcs": ".ics herunterladen",
+  "repeat": {
+    "unknown": "Wiederholt sich",
+    "daily": {
+      "simple": "Wiederholt sich täglich",
+      "interval": "Wiederholt sich alle {interval} Tage",
+      "count": { "one": "Wiederholt sich täglich, insgesamt {count} Mal", "other": "Wiederholt sich täglich, insgesamt {count} Mal" },
+      "intervalCount": { "one": "Wiederholt sich alle {interval} Tage, insgesamt {count} Mal", "other": "Wiederholt sich alle {interval} Tage, insgesamt {count} Mal" }
+    },
+    "weekly": {
+      "simple": "Wiederholt sich wöchentlich",
+      "interval": "Wiederholt sich alle {interval} Wochen",
+      "count": { "one": "Wiederholt sich wöchentlich, insgesamt {count} Mal", "other": "Wiederholt sich wöchentlich, insgesamt {count} Mal" },
+      "intervalCount": { "one": "Wiederholt sich alle {interval} Wochen, insgesamt {count} Mal", "other": "Wiederholt sich alle {interval} Wochen, insgesamt {count} Mal" }
+    },
+    "monthly": {
+      "simple": "Wiederholt sich monatlich",
+      "interval": "Wiederholt sich alle {interval} Monate",
+      "count": { "one": "Wiederholt sich monatlich, insgesamt {count} Mal", "other": "Wiederholt sich monatlich, insgesamt {count} Mal" },
+      "intervalCount": { "one": "Wiederholt sich alle {interval} Monate, insgesamt {count} Mal", "other": "Wiederholt sich alle {interval} Monate, insgesamt {count} Mal" }
+    },
+    "yearly": {
+      "simple": "Wiederholt sich jährlich",
+      "interval": "Wiederholt sich alle {interval} Jahre",
+      "count": { "one": "Wiederholt sich jährlich, insgesamt {count} Mal", "other": "Wiederholt sich jährlich, insgesamt {count} Mal" },
+      "intervalCount": { "one": "Wiederholt sich alle {interval} Jahre, insgesamt {count} Mal", "other": "Wiederholt sich alle {interval} Jahre, insgesamt {count} Mal" }
+    }
+  }
+}
