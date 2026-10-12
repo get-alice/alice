@@ -1,0 +1,64 @@
+---
+import DownloadButton from './DownloadButton.astro';
+import Flower from './Flower.astro';
+import Icon from './Icon.astro';
+import { repo, type Release } from '../lib/release';
+
+interface Props { release: Release }
+const { release } = Astro.props;
+const hasInstallers = Object.values(release.platforms).some(links => links.length);
+const platforms = [
+  { name: 'macOS', icon: 'apple-logo', links: release.platforms.mac },
+  { name: 'Windows', icon: 'windows-logo', links: release.platforms.windows },
+  { name: 'Linux', icon: 'linux-logo', links: release.platforms.linux },
+];
+---
+<section class="download" id="download" aria-labelledby="download-title" data-download>
+  <div class="wrap inner">
+    <Flower class="mark" />
+    <h2 id="download-title" data-split>Curious? <em>It’s free.</em></h2>
+    <p class="lede" data-reveal>Free and open source under the GNU AGPL v3. No account to create, no subscription, nothing to sign up for.</p>
+    <div class="ctas" data-reveal>
+      <DownloadButton {release} />
+    </div>
+    <div id="desktop-downloads" class:list={['choices', { platforms: hasInstallers }]} tabindex="-1" data-reveal>
+      {hasInstallers ? <>
+      {platforms.map(p => (
+        <div class="platform">
+          <p class="name"><Icon name={p.icon} size={20} />{p.name}</p>
+          {p.links.length ? <ul>{p.links.map(l => <li><a href={l.url}>{l.label}</a></li>)}</ul> :
+            <p class="unavailable">No installer listed. <a href={`${repo}#run`}>Build from source</a>.</p>}
+        </div>
+      ))}
+      </> : <p class="release-status">Installer links aren’t available here yet. You can build Alice from source, or <a href={`${repo}/releases`}>check GitHub releases</a>.</p>}
+    </div>
+    <p class="meta" data-reveal>
+      {release.version ? `Version ${release.version}. ` : ''}Alice runs on macOS, Windows and Linux. <a href={`${repo}#run`}>Build and terminal instructions</a>.
+    </p>
+  </div>
+</section>
+
+<style>
+  .download { position: relative; padding: clamp(5rem, 12vw, 10rem) 0 clamp(4rem, 8vw, 7rem); text-align: center; overflow: clip; }
+  .inner { display: grid; justify-items: center; gap: 1.5rem; }
+  .download :global(.mark) { width: clamp(7rem, 14vw, 12rem); height: auto; color: var(--lavender); margin-bottom: 0.5rem; overflow: visible; }
+  h2 { font-size: clamp(3rem, 1.5rem + 6vw, 8rem); }
+  .lede { margin: 0 auto; }
+  .ctas { display: flex; justify-content: center; margin-top: 0.5rem; }
+  .choices { margin-top: 1.5rem; width: 100%; max-width: 56rem; scroll-margin-top: 8rem; }
+  .platforms { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border: 1px solid var(--line-strong); border-radius: 20px; text-align: left; overflow: hidden; }
+  .platform { padding: 1.4rem 1.5rem 1.5rem; display: grid; gap: 0.75rem; align-content: start; }
+  .platform + .platform { border-left: 1px solid var(--line); }
+  .name { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600; }
+  .platform ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.35rem; }
+  .platform a { display: inline-flex; align-items: center; min-height: 2.75rem; padding: 0.4rem 0; color: var(--ink-2); text-decoration: none; font-size: 0.95rem; }
+  .release-status { color: var(--ink-2); max-width: 42rem; margin: 0 auto; }
+  .release-status a, .meta a { display: inline-block; padding-block: 0.7rem; }
+  .unavailable { color: var(--ink-2); font-size: 0.95rem; }
+  @media (hover: hover) and (pointer: fine) { .platform a:hover { color: var(--violet); text-decoration: underline; } }
+  .meta { color: var(--ink-3); font-size: 0.92rem; }
+  @media (max-width: 40rem) {
+    .platforms { grid-template-columns: 1fr; }
+    .platform + .platform { border-left: 0; border-top: 1px solid var(--line); }
+  }
+</style>

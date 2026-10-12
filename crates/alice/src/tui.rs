@@ -22,7 +22,9 @@ type ContactLookup = tokio::task::JoinHandle<Result<Vec<Contact>>>;
 /// Recipient suggestions shown under the To field.
 const SUGGESTIONS: usize = 5;
 
-const FOLDERS: [&str; 6] = ["inbox", "starred", "drafts", "sent", "archive", "trash"];
+const FOLDERS: [&str; 7] = [
+    "inbox", "starred", "drafts", "sent", "archive", "trash", "spam",
+];
 const PAGE: usize = 50;
 /// Poll interval while a spinner or status fade is on screen.
 const ANIMATING_POLL: Duration = Duration::from_millis(50);
@@ -651,6 +653,21 @@ async fn run_loop(client: &Client, terminal: &mut ratatui::DefaultTerminal) -> R
                             },
                             "tui.status.trashed",
                         )),
+                        KeyCode::Char('x') if !matches!(m.folder.as_str(), "drafts" | "sent") => {
+                            Some((
+                                MessagePatch {
+                                    folder: Some(
+                                        if m.folder == "spam" { "inbox" } else { "spam" }.into(),
+                                    ),
+                                    ..Default::default()
+                                },
+                                if m.folder == "spam" {
+                                    "tui.status.not_spam"
+                                } else {
+                                    "tui.status.spam"
+                                },
+                            ))
+                        }
                         KeyCode::Char('s') => Some((
                             MessagePatch {
                                 is_starred: Some(!m.is_starred),

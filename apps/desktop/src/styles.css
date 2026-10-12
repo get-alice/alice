@@ -265,9 +265,12 @@ button:not(:disabled):active { transform: scale(calc(1 - .03 * var(--motion))); 
 /* One message's body in a conversation. HTML renders in a sandboxed frame; plain text in Alice's type. */
 .message-view { padding: 28px 0 12px; }
 .message-view .message-body { padding: 0; }
-.message-view iframe { display: block; width: 100%; border: 0; }
+/* The white email canvas needs the sender's light styles, even when Alice is dark. */
+.message-view iframe { display: block; width: 100%; border: 0; color-scheme: light; }
 :root[data-theme='dark'] .message-view iframe { box-sizing: content-box; width: calc(100% - 40px); padding: 20px; border-radius: var(--radius-lg); background: #fff; }
 .html-controls { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; padding: 8px 12px 8px 14px; border-radius: var(--radius); background: var(--bg); color: var(--muted); font-size: var(--text-sm); line-height: 1.5; }
+.otp-controls code { margin-inline-start: 10px; color: var(--ink); font-family: var(--mono); font-size: var(--text-md); font-weight: 600; letter-spacing: .08em; }
+.otp-controls .form-error { flex-basis: 100%; margin: 0; }
 .quoted-toggle { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; padding: 2px 10px 2px 6px; border: 1px solid var(--border); border-radius: 999px; background: var(--paper); color: var(--muted); font-size: var(--text-xs); font-weight: 500; }
 .quoted-toggle:hover { border-color: var(--border-strong); background: var(--hover); color: var(--ink); }
 /* Conversations: the newest and unread messages open, the rest folded to one line. */
@@ -290,7 +293,8 @@ button:not(:disabled):active { transform: scale(calc(1 - .03 * var(--motion))); 
 .email-from .thread-size { margin-left: 6px; color: var(--faint); font-size: var(--text-xs); font-weight: 500; }
 .attachments { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 10px; padding: 16px 0; }
 .attachments > span { width: 100%; color: var(--muted); font-size: var(--text-sm); }
-.attachments > .form-error { width: 100%; margin: 0; }
+.attachments > :is(.form-error, .attachment-notice) { width: 100%; margin: 0; }
+.attachment-notice { color: var(--muted); font-size: var(--text-sm); }
 .attachment-item { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; max-width: 100%; }
 .attachment-info { display: flex; align-items: center; gap: 10px; max-width: 100%; padding: 10px 12px 10px 14px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); color: var(--ink); font-size: var(--text-sm); text-align: left; }
 .attachment-info:hover:not(:disabled) { border-color: var(--border-strong); background: var(--hover); }

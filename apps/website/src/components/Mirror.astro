@@ -1,0 +1,105 @@
+---
+import Shot from './Shot.astro';
+import appLight from '../assets/app-light.png';
+import appDark from '../assets/app-dark.png';
+import { tui } from '../lib/tui';
+
+// Symbols the monospace font may lack fall back to another font; pin each to one cell so columns stay aligned.
+const cells = (text: string) => text.split(/([^\x20-\x7e\u2500-\u257f·–—…×])/u);
+
+const commands = [
+  ['alice list --unread --json', 'Your unread mail, ready for scripts'],
+  ['alice reply demo-1 --body "Let\'s explore the softer direction."', 'Drafts a reply; sending stays explicit'],
+  ['alice archive demo-2', 'Archived here, archived in the app'],
+];
+---
+<section class="mirror" id="terminal" aria-labelledby="mirror-title">
+  <div class="wrap head">
+    <h2 id="mirror-title" data-split>Through the <em>looking glass.</em></h2>
+    <p class="lede" data-reveal>Read, reply or archive in your terminal, and pick up where you left off in the app. Both share the same mail and drafts.</p>
+  </div>
+
+  <div class="stage" data-mirror>
+    <div class="glass" data-glass>
+      <Shot class="pane desktop" light={appLight} dark={appDark} sizes="(min-width: 90rem) 84rem, 94vw" alt="" />
+      <div class="pane term" role="img" aria-label="Alice's terminal app showing the same conversation with Sophie Chen.">
+        <pre aria-hidden="true">{tui.map(line => <span class="row">{line.map(([cls, text]) => <span class={cls || undefined}>{cells(text).map((part, i) => i % 2 ? <span class="g">{part}</span> : part)}</span>)}{'\n'}</span>)}</pre>
+      </div>
+      <div class="seam" aria-hidden="true"><span class="grip"></span></div>
+      <label class="sr-only" for="mirror-split">Compare the desktop app and the terminal app</label>
+      <input id="mirror-split" class="split" type="range" min="0" max="100" value="50" data-split-input />
+    </div>
+  </div>
+  <p class="wrap compare-hint">Desktop and terminal. Drag the divider, or use the arrow keys, to compare.</p>
+
+  <div class="wrap">
+    <ol class="cli" data-cli>
+      {commands.map(([command, note]) => (
+        <li data-reveal>
+          <code><span class="prompt" aria-hidden="true">$</span> {command}</code>
+          <span class="note">{note}</span>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .mirror { padding: clamp(5rem, 10vw, 8rem) 0; }
+  .head { display: grid; gap: 1.25rem; margin-bottom: clamp(2.5rem, 5vw, 4rem); }
+  .head h2 { max-width: 13ch; }
+  .stage { padding: 4.5rem var(--gutter) 1.5rem; min-height: 100dvh; display: grid; align-items: center; }
+  .glass {
+    --split: 50%;
+    position: relative; container-type: inline-size; isolation: isolate;
+    width: min(100%, 84rem, (100dvh - 7rem) * 1.6); margin: 0 auto; aspect-ratio: 16 / 10; border-radius: clamp(10px, 1.2vw, 18px); overflow: hidden;
+    border: 1px solid var(--line-strong);
+    box-shadow: 0 50px 120px -50px rgb(var(--shade) / 0.55);
+  }
+  .glass > :global(.pane) { position: absolute; inset: 0; }
+  .glass :global(.desktop img) { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .term {
+    display: grid; place-items: center; background: #16131d; color: #d9d6e2;
+    clip-path: inset(0 0 0 var(--split));
+  }
+  pre {
+    margin: 0; font: 400 calc(100cqw / 94) / 1.3 ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+    font-variant-ligatures: none; letter-spacing: 0;
+  }
+  .g { display: inline-block; width: 1ch; text-align: center; }
+  /* The TUI's own truecolor palette. */
+  .term :global(.b) { color: #4e4c60; }
+  .term :global(.m) { color: #8c8c9d; }
+  .term :global(.v) { color: #b49be1; }
+  .term :global(.h) { color: #e2d6ff; }
+  .term :global(.s) { color: #f0c674; }
+  .term :global(.k) { color: #181422; }
+  .term :global(.bs) { background: #3e3456; }
+  .term :global(.bt) { background: #2e2640; }
+  .term :global(.bv) { background: #b49be1; }
+  .term :global(.B) { font-weight: 700; }
+
+  .seam { position: absolute; top: 0; bottom: 0; left: var(--split); width: 2px; translate: -1px 0; background: linear-gradient(180deg, transparent, #fdfcff 12%, #fdfcff 88%, transparent); box-shadow: 0 0 0 1px rgb(20 16 30 / 0.15); z-index: 2; pointer-events: none; }
+  .grip { position: absolute; left: 50%; top: 50%; translate: -50% -50%; width: 2.75rem; height: 2.75rem; border-radius: 50%; background: #fdfcff; box-shadow: 0 8px 24px -6px rgb(20 16 30 / 0.5); display: grid; place-items: center; }
+  .grip::before, .grip::after { content: ''; position: absolute; top: 50%; width: 0; height: 0; border: 5px solid transparent; translate: 0 -50%; }
+  .grip::before { left: 0.55rem; border-right-color: #5e4691; }
+  .grip::after { right: 0.55rem; border-left-color: #5e4691; }
+  .split { position: absolute; inset: 0; z-index: 3; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: ew-resize; }
+  .split:focus-visible ~ .seam .grip, .glass:has(.split:focus-visible) .grip { outline: 2px solid var(--violet); outline-offset: 3px; }
+
+  .cli { list-style: none; margin: clamp(2.5rem, 5vw, 4rem) auto 0; padding: 0; max-width: 84rem; display: grid; gap: 1.1rem; }
+  .cli li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.25rem 2rem; align-items: baseline; padding-bottom: 1.1rem; border-bottom: 1px solid var(--line); }
+  .cli li:last-child { border-bottom: 0; }
+  code { font: 400 clamp(0.85rem, 0.75rem + 0.4vw, 1.05rem)/1.5 ui-monospace, 'SF Mono', Menlo, Consolas, monospace; color: var(--ink); overflow-wrap: anywhere; }
+  .prompt { color: var(--violet); }
+  .note { color: var(--ink-3); font-size: 0.92rem; }
+  .compare-hint { color: var(--ink-3); text-align: center; font-size: 0.95rem; margin-top: 1rem; }
+  @media (max-width: 60rem) {
+    .stage { min-height: 0; padding-top: 0; padding-bottom: 0; }
+    .glass { width: 100%; aspect-ratio: 4 / 3; }
+    .term { place-items: center start; }
+    pre { font-size: 0.875rem; translate: -20ch 0; }
+    .cli li { grid-template-columns: 1fr; }
+    .cli li:not(:first-child) { display: none; }
+  }
+</style>

@@ -1,0 +1,18 @@
+---
+/** The Alice mark. Petals and heart carry classes so a page can bloom them. */
+interface Props { class?: string }
+const { class: className } = Astro.props;
+---
+<svg class:list={['flower', className]} viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+  <g fill="currentColor">
+    <ellipse class="petal" cx="32" cy="23" rx="7" ry="14" />
+    <ellipse class="petal" cx="41" cy="32" rx="14" ry="7" />
+    <ellipse class="petal" cx="32" cy="41" rx="7" ry="14" />
+    <ellipse class="petal" cx="23" cy="32" rx="14" ry="7" />
+  </g>
+  <circle class="heart" cx="32" cy="32" r="5" />
+</svg>
+
+<style>
+  .heart { fill: var(--bg); }
+</style>

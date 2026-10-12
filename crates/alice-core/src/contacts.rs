@@ -889,6 +889,9 @@ mod tests {
         mail("inbox", "MAILER-DAEMON@mx.example.com", &[me], 1)?;
         // An automated-looking address you wrote to is a real correspondent.
         mail("sent", me, &["no-reply@bank.example"], 5)?;
+        // Spam must not introduce correspondents, including a spoofed copy of mail from yourself.
+        mail("spam", "unwanted@example.com", &[me], 1)?;
+        mail("spam", me, &["spam-recipient@example.com"], 1)?;
         let people = suggest(&Directory::default(), &store, "", 50)?;
         let position = |email: &str| people.iter().position(|p| p == email);
         for kept in [
@@ -909,6 +912,8 @@ mod tests {
             "noreply@service.example",
             "notifications@github.com",
             "mailer-daemon@mx.example.com",
+            "unwanted@example.com",
+            "spam-recipient@example.com",
             me,
         ] {
             assert_eq!(position(excluded), None, "{excluded}");

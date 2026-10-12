@@ -1,0 +1,15 @@
+{
+  "engine": "HeadlessChrome 153",
+  "device": "iPhone12 emulation",
+  "method": "CDP Input.dispatchTouchEvent",
+  "before": {
+    "value": "99",
+    "split": "99%",
+    "scrollY": 3174
+  },
+  "after": {
+    "value": "82",
+    "split": "82%",
+    "scrollY": 3174
+  }
+}

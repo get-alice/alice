@@ -1,0 +1,20 @@
+---
+import Icon from './Icon.astro';
+import { repo, type Release } from '../lib/release';
+
+interface Props { release: Release }
+const { platforms } = Astro.props.release;
+const source = { label: 'Build from source', icon: 'code', url: `${repo}#run` };
+const options = [
+  { os: 'mac', ...(platforms.mac[0] ? { label: 'Download for macOS', icon: 'apple-logo', url: platforms.mac[0].url } : source) },
+  { os: 'windows', ...(platforms.windows[0] ? { label: 'Download for Windows', icon: 'windows-logo', url: platforms.windows[0].url } : source) },
+  { os: 'linux', ...(platforms.linux[0] ? { label: 'Download for Linux', icon: 'linux-logo', url: platforms.linux[0].url } : source) },
+  { os: 'other', ...(Object.values(platforms).some(links => links.length) ? { label: 'Choose a desktop version', icon: 'arrow-down', url: '#desktop-downloads' } : source) },
+];
+---
+{options.map(o => (
+  <a class={`button primary os os-${o.os}`} href={o.url}>
+    <Icon name={o.icon} size={20} />
+    {o.label}
+  </a>
+))}

@@ -1,0 +1,77 @@
+{
+  "desktop-dark": {
+    "overflow": 0,
+    "pins": 3,
+    "width": 1440
+  },
+  "mobile-light": {
+    "overflow": 0,
+    "pins": 0,
+    "width": 390
+  },
+  "menuOpen": true,
+  "menuEscape": {
+    "focus": true,
+    "open": false,
+    "outline": "solid"
+  },
+  "menuLink": {
+    "href": "http://localhost:4400/#product",
+    "open": false
+  },
+  "faqOpen": true,
+  "faqClosed": true,
+  "rangeBefore": "50",
+  "rangeAfter": {
+    "split": "51%",
+    "value": "51"
+  },
+  "rangeBox": {
+    "h": 266.5,
+    "w": 356,
+    "x": 17,
+    "y": 288.53125
+  },
+  "320": {
+    "overflow": 0,
+    "pins": 0,
+    "width": 320
+  },
+  "768": {
+    "overflow": 0,
+    "pins": 0,
+    "width": 768
+  },
+  "reduced": {
+    "hidden": 0,
+    "match": true,
+    "motion": false,
+    "pins": 0
+  },
+  "moduleFailure": {
+    "cta": [
+      {
+        "href": "https://github.com/get-alice/alice#run",
+        "text": "Build from source"
+      },
+      {
+        "href": "https://github.com/get-alice/alice#run",
+        "text": "Build from source"
+      }
+    ],
+    "headings": [
+      "Email, light as air.",
+      "What's left is your mail.",
+      "Light enough to float.",
+      "Through the looking glass.",
+      "Appears when asked. Vanishes when not.",
+      "Little things, handled.",
+      "There is no Alice server.",
+      "Curious? It\u2019s free.",
+      "Questions, answered."
+    ],
+    "hidden": 0,
+    "os": "mac",
+    "theme": "light"
+  }
+}

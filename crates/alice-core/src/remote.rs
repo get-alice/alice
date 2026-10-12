@@ -101,43 +101,11 @@ impl Remote {
             let _ = self.session.logout();
         }
     }
-    /// The account's Inbox, Sent, Trash and Archive mailboxes, found by special-use attributes
+    /// The account's Inbox, Sent, Trash, Spam and Archive mailboxes, found by special-use attributes
     /// (Gmail's All Mail stands in for Archive), and those of them that exist, in sync order.
     pub fn folders(&mut self) -> Result<(Mailboxes, Vec<(String, String)>)> {
         let names = self.command(|s| s.list(Some(""), Some("*")))?;
-        let find = |flag: &str, fallback: &str| -> String {
-            names
-                .iter()
-                .find(|name| name.attributes().iter().any(|attr| matches!(attr, imap::types::NameAttribute::Custom(value) if value.eq_ignore_ascii_case(flag))))
-                .map(|n| n.name().to_string())
-                .unwrap_or_else(|| fallback.to_string())
-        };
-        let gmail = self.account.provider == Provider::Gmail;
-        let folders = Mailboxes {
-            inbox: "INBOX".into(),
-            sent: find("\\Sent", &self.account.folders.sent),
-            archive: find(
-                if gmail { "\\All" } else { "\\Archive" },
-                if gmail {
-                    "[Gmail]/All Mail"
-                } else {
-                    &self.account.folders.archive
-                },
-            ),
-            trash: find("\\Trash", &self.account.folders.trash),
-        };
-        let mut present: Vec<(String, String)> = Vec::new();
-        for (folder, mailbox) in [
-            ("inbox", &folders.inbox),
-            ("sent", &folders.sent),
-            ("trash", &folders.trash),
-            ("archive", &folders.archive),
-        ] {
-            let exists = folder == "inbox" || names.iter().any(|n| n.name() == mailbox);
-            if exists && !present.iter().any(|(_, m)| m == mailbox) {
-                present.push((folder.to_string(), mailbox.clone()));
-            }
-        }
+        let (folders, present) = discover_folders(&self.account, &names);
         drop(names);
         self.drain();
         Ok((folders, present))
@@ -530,9 +498,181 @@ fn parse_status(response: &[u8]) -> Option<MailboxStatus> {
     })
 }
 
+/// Discovers existing mailboxes without creating remote folders. Spam has no usable destination
+/// when neither special-use attributes nor known existing names identify a Junk mailbox.
+fn discover_folders(
+    account: &Account,
+    names: &[imap::types::Name],
+) -> (Mailboxes, Vec<(String, String)>) {
+    let special = |flag: &str| {
+        names.iter().find(|name| {
+            !name.attributes().contains(&imap::types::NameAttribute::NoSelect)
+                && name.attributes().iter().any(|attr| {
+                    matches!(attr, imap::types::NameAttribute::Custom(value) if value.eq_ignore_ascii_case(flag))
+                })
+        })
+    };
+    let find = |flag: &str, fallback: &str| {
+        special(flag)
+            .map(|n| n.name().to_string())
+            .unwrap_or_else(|| fallback.to_string())
+    };
+    let existing = |wanted: &str| {
+        names.iter().find(|n| {
+            n.name().eq_ignore_ascii_case(wanted)
+                && !n
+                    .attributes()
+                    .contains(&imap::types::NameAttribute::NoSelect)
+        })
+    };
+    let provider_spam: &[&str] = match account.provider {
+        Provider::Gmail => &["[Gmail]/Spam", "[Google Mail]/Spam"],
+        Provider::Outlook => &["Junk Email", "Junk E-mail"],
+        Provider::Imap => &[],
+    };
+    let spam = special("\\Junk")
+        .or_else(|| existing(&account.folders.spam))
+        .or_else(|| provider_spam.iter().find_map(|n| existing(n)))
+        .or_else(|| {
+            [
+                "Junk",
+                "Spam",
+                "Junk Email",
+                "Junk E-mail",
+                "Junk Mail",
+                "Bulk Mail",
+                "INBOX.Junk",
+                "INBOX.Spam",
+                "INBOX/Junk",
+                "INBOX/Spam",
+            ]
+            .iter()
+            .find_map(|n| existing(n))
+        })
+        .map(|n| n.name().to_string())
+        .unwrap_or_default();
+    let gmail = account.provider == Provider::Gmail;
+    let folders = Mailboxes {
+        inbox: "INBOX".into(),
+        sent: find("\\Sent", &account.folders.sent),
+        archive: find(
+            if gmail { "\\All" } else { "\\Archive" },
+            if gmail {
+                "[Gmail]/All Mail"
+            } else {
+                &account.folders.archive
+            },
+        ),
+        trash: find("\\Trash", &account.folders.trash),
+        spam,
+    };
+    let mut present: Vec<(String, String)> = Vec::new();
+    for (folder, mailbox) in [
+        ("inbox", &folders.inbox),
+        ("sent", &folders.sent),
+        ("trash", &folders.trash),
+        ("spam", &folders.spam),
+        ("archive", &folders.archive),
+    ] {
+        let exists = folder == "inbox" || existing(mailbox).is_some();
+        if exists && !present.iter().any(|(_, m)| m == mailbox) {
+            present.push((folder.to_string(), mailbox.clone()));
+        }
+    }
+    (folders, present)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn junk_discovery_uses_existing_special_use_provider_and_name_fallbacks() -> Result<()> {
+        use std::io::{Cursor, Read, Write};
+        struct ListStream {
+            response: Cursor<Vec<u8>>,
+            commands: Vec<u8>,
+        }
+        impl Read for ListStream {
+            fn read(&mut self, bytes: &mut [u8]) -> std::io::Result<usize> {
+                self.response.read(bytes)
+            }
+        }
+        impl Write for ListStream {
+            fn write(&mut self, bytes: &[u8]) -> std::io::Result<usize> {
+                self.commands.write(bytes)
+            }
+            fn flush(&mut self) -> std::io::Result<()> {
+                self.commands.flush()
+            }
+        }
+        let dir = tempfile::tempdir()?;
+        let store = crate::store::Store::open(&dir.path().join("mail.db"))?;
+        let mut account = store.add_demo()?;
+        account.folders.spam = "Custom Junk".into();
+        for (provider, listed, expected) in [
+            (
+                Provider::Imap,
+                r#"(\junk) "/" "Unwanted";() "/" "Custom Junk""#,
+                "Unwanted",
+            ),
+            (
+                Provider::Imap,
+                r#"() "/" "Custom Junk";() "/" "Spam""#,
+                "Custom Junk",
+            ),
+            (
+                Provider::Gmail,
+                r#"() "/" "[Gmail]/Spam";() "/" "Spam""#,
+                "[Gmail]/Spam",
+            ),
+            (
+                Provider::Gmail,
+                r#"() "/" "[Google Mail]/Spam""#,
+                "[Google Mail]/Spam",
+            ),
+            (Provider::Outlook, r#"() "/" "Junk Email""#, "Junk Email"),
+            (Provider::Imap, r#"() "." "INBOX.Junk""#, "INBOX.Junk"),
+            (Provider::Imap, r#"() "/" "sPaM""#, "sPaM"),
+            (
+                Provider::Imap,
+                r#"(\Noselect \Junk) "/" "Unselectable";() "/" "Spam""#,
+                "Spam",
+            ),
+            (Provider::Gmail, r#"() "/" "[Gmail]/All Mail""#, ""),
+        ] {
+            account.provider = provider;
+            let mut response = String::from("a1 OK logged in\r\n");
+            for line in listed.split(';') {
+                response.push_str(&format!("* LIST {line}\r\n"));
+            }
+            response.push_str("a2 OK listed\r\n");
+            let stream = ListStream {
+                response: Cursor::new(response.into_bytes()),
+                commands: Vec::new(),
+            };
+            let mut session = imap::Client::new(stream)
+                .login("fixture", "fixture")
+                .map_err(|(error, _)| error)?;
+            let names = session.list(Some(""), Some("*"))?;
+            let (folders, present) = discover_folders(&account, &names);
+            assert_eq!(folders.spam, expected, "{listed}");
+            let synced_spam: Vec<_> = present
+                .iter()
+                .filter(|(folder, _)| folder == "spam")
+                .collect();
+            if expected.is_empty() {
+                assert!(
+                    synced_spam.is_empty(),
+                    "Never invent a missing Junk destination"
+                );
+            } else {
+                assert_eq!(synced_spam.len(), 1);
+                assert_eq!(synced_spam[0].1, expected);
+            }
+        }
+        Ok(())
+    }
 
     #[test]
     fn uid_sets_collapse_runs() {

@@ -1,0 +1,9 @@
+{
+  "linux": "installer",
+  "macOS": "installer",
+  "mobile": "desktop choices",
+  "passed": true,
+  "version": "1.2.3",
+  "windows": "source fallback",
+  "native_mobile_destination": "http://localhost:4402/#desktop-downloads"
+}

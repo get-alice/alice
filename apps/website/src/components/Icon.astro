@@ -1,0 +1,21 @@
+---
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import * as brands from 'simple-icons';
+
+/** Phosphor icons by file name (`arrow-down`), or Simple Icons brand marks as `brand:anthropic`. Inlined at build time. */
+interface Props { name: string; size?: number; class?: string }
+const { name, size = 20, class: className } = Astro.props;
+
+let svg: string;
+if (name.startsWith('brand:')) {
+  const key = `si${name[6].toUpperCase()}${name.slice(7)}` as keyof typeof brands;
+  const icon = brands[key] as { path: string } | undefined;
+  if (!icon) throw new Error(`Unknown brand icon: ${name}`);
+  svg = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="${icon.path}"/></svg>`;
+} else {
+  svg = readFileSync(join(process.cwd(), 'node_modules/@phosphor-icons/core/assets/regular', `${name}.svg`), 'utf8');
+}
+const html = svg.replace('<svg', `<svg width="${size}" height="${size}" aria-hidden="true" focusable="false"${className ? ` class="${className}"` : ''}`);
+---
+<Fragment set:html={html} />

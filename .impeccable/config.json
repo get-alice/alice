@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "apps/desktop/src/styles.css"
+        ],
+        "createdAt": "2026-10-12T17:02:02.774Z",
+        "reason": "Agent review: styles.css lines 196-197 define a 3px selected-email-row marker, visible only for .email-row.selected, rather than a decorative card border. Preserve the functional selection indicator."
+      }
+    ]
+  }
+}

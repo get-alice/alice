@@ -1,0 +1,17 @@
+{
+  "touchBefore": "50",
+  "touchAfter": {
+    "value": "81",
+    "split": "81%",
+    "scrollY": 2499
+  },
+  "touchAfterCancel": "29",
+  "font32": {
+    "root": "32px",
+    "body": "34px",
+    "width": 390,
+    "overflow": 0,
+    "navHeight": 349.1875,
+    "titleHeight": 291.84375
+  }
+}

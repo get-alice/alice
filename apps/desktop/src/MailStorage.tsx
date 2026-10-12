@@ -5,7 +5,7 @@ import { errorMessage, formatBytes, get, type Account, type StorageReport, type 
 import { Glide } from './motion';
 
 const windows = (): [SyncWindow, string][] => [['30_days', t('settings.30_days')], ['90_days', t('settings.90_days')], ['1_year', t('settings.1_year')], ['all', t('settings.all_mail')]];
-const folderNames = () => ({ inbox: t('common.folder.inbox'), starred: t('common.folder.starred'), sent: t('common.folder.sent'), drafts: t('common.folder.drafts'), archive: t('common.folder.archive'), trash: t('common.folder.trash') });
+const folderNames = () => ({ inbox: t('common.folder.inbox'), starred: t('common.folder.starred'), sent: t('common.folder.sent'), drafts: t('common.folder.drafts'), archive: t('common.folder.archive'), trash: t('common.folder.trash'), spam: t('common.folder.spam') });
 
 function since(value: string | null) {
   if (!value) return t('settings.not_synced_yet');

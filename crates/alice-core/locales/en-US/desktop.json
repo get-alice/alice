@@ -16,6 +16,16 @@
     "permission_denied": "Notifications are turned off for Alice in System Settings",
     "failed": "Could not show a notification: {error}"
   },
+  "otp": {
+    "code": "Verification code: {code}",
+    "copied": "Copied to clipboard",
+    "copy_failed": "Not copied — private clipboard access failed. Copy the code manually",
+    "expired": "Not copied — the code expired before it could be copied",
+    "superseded": "Not copied — a newer code was copied instead",
+    "older_not_copied": "Not copied — a newer code arrived, but could not be copied",
+    "notice_failed": "Could not show a verification-code notification",
+    "not_found": "No unambiguous verification code was found in this email"
+  },
   "download": {
     "attachment": "attachment",
     "reserved_name": "attachment {name}"
@@ -37,6 +47,8 @@
     "message_missing": "This message cannot be found",
     "downloads_folder": "Your Downloads folder could not be found",
     "attachment_save": "The attachment could not be saved: {error}",
+    "attachment_open": "The attachment could not be opened: {error}",
+    "data_folder": "Alice's data folder could not be found",
     "download_missing": "This download is no longer there",
     "saved_only": "Only saved attachments can be shown",
     "cache_folder": "Alice's cache folder could not be found",

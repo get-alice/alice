@@ -12,6 +12,7 @@ pub mod ical;
 pub mod mime;
 pub mod model;
 pub mod oauth;
+pub mod otp;
 pub mod providers;
 pub mod remote;
 pub mod search;

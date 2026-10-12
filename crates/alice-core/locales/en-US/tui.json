@@ -21,6 +21,8 @@
     "marked_read": "Marked as read",
     "archived": "Archived",
     "trashed": "Moved to Trash",
+    "spam": "Moved to Spam",
+    "not_spam": "Marked as not spam · moved to Inbox",
     "unstarred": "Unstarred",
     "starred": "Starred",
     "marked_unread": "Marked as unread",
@@ -74,7 +76,9 @@
     "archive": "Archive is empty",
     "archive_hint": "Press a on a message to archive it.",
     "trash": "Trash is empty",
-    "trash_hint": "Press d on a message to move it here."
+    "trash_hint": "Press d on a message to move it here.",
+    "spam": "Spam is empty",
+    "spam_hint": "Press x on a message to mark it as spam. In Spam, x restores it to Inbox."
   },
   "label": {
     "from": "From",
@@ -124,6 +128,8 @@
     "star": "star",
     "archive": "archive",
     "trash": "trash",
+    "spam": "mark spam",
+    "not_spam": "not spam",
     "next_page": "next page",
     "prev_page": "prev page",
     "unread": "unread",
@@ -145,6 +151,7 @@
     "star": "Star or unstar",
     "archive": "Archive",
     "trash": "Move to Trash",
+    "spam": "Mark as spam · in Spam, mark as not spam and move to Inbox (not for drafts or sent mail)",
     "send": "Send this draft",
     "invite": "Answer an invitation",
     "write": "Write",

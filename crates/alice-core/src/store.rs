@@ -20,6 +20,8 @@ impl Store {
             CREATE TABLE IF NOT EXISTS messages(id TEXT PRIMARY KEY, data TEXT NOT NULL);
             CREATE TABLE IF NOT EXISTS settings(id TEXT PRIMARY KEY, data TEXT NOT NULL);
             CREATE TABLE IF NOT EXISTS deliveries(id TEXT PRIMARY KEY, status TEXT NOT NULL);
+            CREATE TABLE IF NOT EXISTS otp_deliveries(id TEXT PRIMARY KEY, account_id TEXT NOT NULL, received_at INTEGER NOT NULL, expires_at INTEGER NOT NULL, data TEXT, status TEXT NOT NULL);
+            CREATE INDEX IF NOT EXISTS otp_pending ON otp_deliveries(status,expires_at);
             CREATE TABLE IF NOT EXISTS dav_sources(id TEXT PRIMARY KEY, data TEXT NOT NULL);
             CREATE TABLE IF NOT EXISTS contacts(owner TEXT NOT NULL, source TEXT NOT NULL, email TEXT NOT NULL, name TEXT NOT NULL, PRIMARY KEY(owner, source, email));
             CREATE INDEX IF NOT EXISTS message_scope ON messages(json_extract(data,'$.folder'),json_extract(data,'$.account_id'),json_extract(data,'$.category'),json_extract(data,'$.is_read'),julianday(json_extract(data,'$.date')));
@@ -30,6 +32,12 @@ impl Store {
         ensure_search_index(&mut db)?;
         // Sync's legacy-copy merge deletes messages through the shared index/FTS triggers.
         crate::sync_store::migrate(&mut db)?;
+        // A legacy enabled toggle is not consent to the new sending capability.
+        db.execute(
+            "UPDATE settings SET data=json_set(data,'$.mcp',CASE json_type(data,'$.mcp') WHEN 'true' THEN 'read_only' ELSE 'off' END)
+             WHERE id='preferences' AND json_type(data,'$.mcp') IN ('true','false')",
+            [],
+        )?;
         let store = Self {
             db: Mutex::new(db),
             epoch: Utc::now().timestamp_micros(),
@@ -193,7 +201,6 @@ impl Store {
             .map(|(_, rows)| rows.iter().any(|r| !r.is_read))
             .collect();
         let unread_total = unread.iter().filter(|u| **u).count();
-        let in_trash = query.folder.as_deref() == Some("trash");
         let offset = query.offset.unwrap_or(0);
         let limit = query.limit.unwrap_or(100).clamp(1, 200);
         let mut body = db.prepare("SELECT data FROM messages WHERE id=?1")?;
@@ -212,7 +219,7 @@ impl Store {
             } else {
                 conversation(
                     &members[&(newest.account_id.as_str(), newest.key.as_str())],
-                    in_trash,
+                    query.folder.as_deref(),
                     |r| own.contains(r.id.as_str()),
                 )
             };
@@ -262,8 +269,8 @@ impl Store {
             revision,
         })
     }
-    /// Every message in the conversation of message `id`, oldest first. Trash is included only when
-    /// the message itself is in Trash; copies of one message in several folders appear once.
+    /// Every message in the conversation of message `id`, oldest first. Spam is isolated from normal
+    /// mail; Trash is included only for a Trash message. Provider copies appear once.
     pub fn conversation(&self, id: &str) -> Result<Vec<Message>> {
         let message = self.message(id)?;
         let key = thread_key(&message.subject);
@@ -274,7 +281,7 @@ impl Store {
         let rows = thread_rows(&db, Some(&message.account_id))?;
         let members: Vec<&ThreadRow> = rows.iter().filter(|r| r.key == key).collect();
         let mut body = db.prepare("SELECT data FROM messages WHERE id=?1")?;
-        conversation(&members, message.folder == "trash", |r| r.id == id)
+        conversation(&members, Some(&message.folder), |r| r.id == id)
             .into_iter()
             .map(|r| {
                 Ok(serde_json::from_str(
@@ -318,7 +325,7 @@ impl Store {
             message.is_starred = starred;
         }
         if let Some(folder) = &patch.folder {
-            if !["inbox", "archive", "trash"].contains(&folder.as_str())
+            if !["inbox", "archive", "trash", "spam"].contains(&folder.as_str())
                 || ["drafts", "sent"].contains(&message.folder.as_str())
             {
                 bail!(crate::text!("server.error.move_folder"));
@@ -615,7 +622,7 @@ impl Store {
         )?;
         Ok(count as usize)
     }
-    /// Walks the headers of every stored message but drafts, from the search index so no message
+    /// Walks the headers of every stored message but drafts and spam, from the search index so no message
     /// JSON is parsed: `visit(account_id, folder, from_name, from_email, recipients, julian_date)`,
     /// recipients separated by spaces. Returns the revision the walk saw.
     pub fn each_correspondence(
@@ -624,7 +631,7 @@ impl Store {
     ) -> Result<String> {
         let db = self.db.lock();
         let revision = revision(self.epoch, &db);
-        let mut stmt = db.prepare("SELECT account_id,folder,from_name,from_email,recipients,julian FROM message_index WHERE folder IS NOT 'drafts'")?;
+        let mut stmt = db.prepare("SELECT account_id,folder,from_name,from_email,recipients,julian FROM message_index WHERE folder IS NOT 'drafts' AND folder IS NOT 'spam'")?;
         let mut rows = stmt.query([])?;
         while let Some(row) = rows.next()? {
             let text = |index| -> rusqlite::Result<&str> {
@@ -727,6 +734,15 @@ impl Store {
         if let Some(value) = patch.notifications {
             saved.notifications = value;
         }
+        if let Some(value) = patch.otp_autocopy {
+            saved.otp_autocopy = value;
+            if !value {
+                tx.execute(
+                    "UPDATE otp_deliveries SET status='retired',data=NULL WHERE status='pending'",
+                    [],
+                )?;
+            }
+        }
         if let Some(value) = patch.menu_bar {
             saved.menu_bar = value;
         }
@@ -735,6 +751,9 @@ impl Store {
         }
         if let Some(value) = patch.system_contacts {
             saved.system_contacts = value;
+        }
+        if let Some(value) = patch.mcp {
+            saved.mcp = value;
         }
         tx.execute("INSERT INTO settings VALUES('preferences',?1) ON CONFLICT(id) DO UPDATE SET data=excluded.data", [serde_json::to_string(&saved)?])?;
         tx.commit()?;
@@ -1108,7 +1127,7 @@ fn scope_filter(
     if let Some(folder) = &query.folder {
         if folder == "starred" {
             conditions.push(format!(
-                "{}=1 AND {}!='trash'",
+                "{}=1 AND {} NOT IN ('trash','spam')",
                 column("is_starred"),
                 column("folder")
             ));
@@ -1116,6 +1135,8 @@ fn scope_filter(
             conditions.push(format!("{}=?", column("folder")));
             values.push(folder.clone().into());
         }
+    } else {
+        conditions.push(format!("{}!='spam'", column("folder")));
     }
     if let Some(category) = &query.category {
         conditions.push(format!("{}=?", column("category")));
@@ -1310,12 +1331,12 @@ fn thread_rows(db: &Connection, account_id: Option<&str>) -> Result<Vec<ThreadRo
     .map(|r| Ok(r?))
     .collect()
 }
-/// A conversation's messages, oldest first, without drafts and (unless `include_trash`) Trash. Providers
-/// such as Gmail keep one message in several mailboxes; each Message-ID appears once, preferring
-/// `preferred` copies, then Inbox, Sent and other folders, then Archive.
+/// A conversation's messages, oldest first, without drafts. Spam contains only Spam messages;
+/// other views exclude Spam, and include Trash only in Trash. Each Message-ID appears once,
+/// preferring `preferred` copies, then Inbox, Sent and other folders, then Archive.
 fn conversation<'a>(
     members: &[&'a ThreadRow],
-    include_trash: bool,
+    folder: Option<&str>,
     preferred: impl Fn(&ThreadRow) -> bool,
 ) -> Vec<&'a ThreadRow> {
     let rank = |r: &ThreadRow| {
@@ -1331,11 +1352,14 @@ fn conversation<'a>(
         }
     };
     let mut chosen: Vec<&ThreadRow> = Vec::new();
-    for row in members
-        .iter()
-        .copied()
-        .filter(|r| r.folder != "drafts" && (include_trash || r.folder != "trash"))
-    {
+    for row in members.iter().copied().filter(|r| {
+        r.folder != "drafts"
+            && if folder == Some("spam") {
+                r.folder == "spam"
+            } else {
+                r.folder != "spam" && (folder == Some("trash") || r.folder != "trash")
+            }
+    }) {
         match row.message_id.as_ref().and_then(|id| {
             chosen
                 .iter()
@@ -1444,6 +1468,46 @@ mod tests {
         let store = Store::open(path)?;
         store.add_demo()?;
         Ok(store)
+    }
+    #[test]
+    fn legacy_mcp_preferences_survive_startup_without_granting_send_access() -> Result<()> {
+        for (value, expected) in [
+            (serde_json::json!(true), McpAccess::ReadOnly),
+            (serde_json::json!(false), McpAccess::Off),
+            (serde_json::json!("off"), McpAccess::Off),
+            (serde_json::json!("read_only"), McpAccess::ReadOnly),
+            (serde_json::json!("full"), McpAccess::Full),
+        ] {
+            let dir = tempfile::tempdir()?;
+            let path = dir.path().join("mail.db");
+            let saved = serde_json::json!({"mcp": value, "signature": "Keep my signature", "theme": "dark"});
+            let db = Connection::open(&path)?;
+            db.execute_batch("CREATE TABLE settings(id TEXT PRIMARY KEY, data TEXT NOT NULL)")?;
+            db.execute(
+                "INSERT INTO settings VALUES('preferences',?1)",
+                [saved.to_string()],
+            )?;
+            drop(db);
+            for _ in 0..2 {
+                let store = Store::open(&path)?;
+                let preferences = store.preferences()?;
+                assert_eq!(preferences.mcp, expected);
+                assert_eq!(preferences.signature, "Keep my signature");
+                assert_eq!(preferences.theme, Theme::Dark);
+                let stored: String = store.db.lock().query_row(
+                    "SELECT data FROM settings WHERE id='preferences'",
+                    [],
+                    |r| r.get(0),
+                )?;
+                let mut expected_saved = saved.clone();
+                expected_saved["mcp"] = serde_json::to_value(expected)?;
+                assert_eq!(
+                    serde_json::from_str::<serde_json::Value>(&stored)?,
+                    expected_saved
+                );
+            }
+        }
+        Ok(())
     }
     #[test]
     fn sample_data_is_opt_in_and_the_demo_stays_until_a_real_account_exists() -> Result<()> {
@@ -1979,6 +2043,111 @@ mod tests {
         let store = Store::open(&path)?;
         assert_eq!(ids(&store, "quarterly")?, ["sender"]);
         assert_eq!(ids(&store, "from:zed resched")?, ["body"]);
+        Ok(())
+    }
+
+    #[test]
+    fn spam_conversations_are_isolated_and_restoring_inbox_rejoins_normal_mail() -> Result<()> {
+        let dir = tempfile::tempdir()?;
+        let store = store_with_demo(&dir.path().join("mail.db"))?;
+        let mut normal = store.message("demo-1")?;
+        normal.subject = "Quarantine fixture".into();
+        normal.date = "2026-10-01T10:00:00Z".into();
+        normal.is_read = true;
+        normal.is_starred = false;
+        let mut reply = normal.clone();
+        reply.id = "normal-reply".into();
+        reply.folder = "sent".into();
+        reply.subject = "Re: Quarantine fixture".into();
+        reply.date = "2026-10-01T11:00:00Z".into();
+        reply.message_id = Some("<normal-reply@x>".into());
+        let mut trash = reply.clone();
+        trash.id = "normal-trash".into();
+        trash.folder = "trash".into();
+        trash.message_id = Some("<normal-trash@x>".into());
+        let mut spam = reply.clone();
+        spam.id = "spam-reply".into();
+        spam.folder = "inbox".into();
+        spam.from_name = "Unwanted sender".into();
+        spam.from_email = "unwanted@example.test".into();
+        spam.body = "Quarantined body".into();
+        spam.date = "2026-10-01T12:00:00Z".into();
+        spam.message_id = Some("<spam-reply@x>".into());
+        spam.is_read = false;
+        spam.is_starred = true;
+        store.save_messages([normal, reply, trash, spam])?;
+        store.patch(
+            "spam-reply",
+            &MessagePatch {
+                folder: Some("spam".into()),
+                ..Default::default()
+            },
+        )?;
+        let query = |folder: Option<&str>| MessageQuery {
+            folder: folder.map(str::to_string),
+            q: Some("Quarantine fixture".into()),
+            ..Default::default()
+        };
+        for folder in [None, Some("inbox"), Some("sent")] {
+            let page = store.threads(&query(folder))?;
+            assert_eq!(page.all_total, 1);
+            assert_eq!(page.unread_total, 0);
+            let thread = &page.threads[0];
+            assert_eq!(thread.count, 2);
+            assert!(thread.unread_ids.is_empty());
+            assert!(!thread.is_starred);
+            assert!(!thread.participants.iter().any(|p| p == "Unwanted sender"));
+        }
+        assert_eq!(store.threads(&query(Some("starred")))?.total, 0);
+        assert_eq!(store.list(&query(Some("starred")))?.total, 0);
+        assert_eq!(
+            store
+                .list(&MessageQuery {
+                    q: Some("Quarantined body".into()),
+                    ..Default::default()
+                })?
+                .total,
+            0
+        );
+        let ids = |messages: Vec<Message>| messages.into_iter().map(|m| m.id).collect::<Vec<_>>();
+        assert_eq!(
+            ids(store.conversation("demo-1")?),
+            ["demo-1", "normal-reply"]
+        );
+        assert_eq!(
+            ids(store.conversation("normal-trash")?),
+            ["demo-1", "normal-reply", "normal-trash"]
+        );
+        assert_eq!(ids(store.conversation("spam-reply")?), ["spam-reply"]);
+        let spam_page = store.threads(&query(Some("spam")))?;
+        assert_eq!(spam_page.total, 1);
+        assert_eq!(spam_page.unread_total, 1);
+        assert_eq!(spam_page.threads[0].count, 1);
+        assert_eq!(spam_page.threads[0].ids, ["spam-reply"]);
+        assert_eq!(spam_page.threads[0].unread_ids, ["spam-reply"]);
+        assert_eq!(spam_page.threads[0].participants, ["Unwanted sender"]);
+
+        store.patch(
+            "spam-reply",
+            &MessagePatch {
+                folder: Some("inbox".into()),
+                ..Default::default()
+            },
+        )?;
+        assert_eq!(store.threads(&query(Some("spam")))?.total, 0);
+        let inbox = store.threads(&query(Some("inbox")))?;
+        assert_eq!(inbox.unread_total, 1);
+        assert_eq!(inbox.threads[0].count, 3);
+        assert_eq!(inbox.threads[0].unread_ids, ["spam-reply"]);
+        assert!(inbox.threads[0].is_starred);
+        assert_eq!(
+            ids(store.conversation("spam-reply")?),
+            ["demo-1", "normal-reply", "spam-reply"]
+        );
+        assert_eq!(
+            store.list(&query(Some("starred")))?.messages[0].id,
+            "spam-reply"
+        );
         Ok(())
     }
 }

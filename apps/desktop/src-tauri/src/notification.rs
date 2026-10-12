@@ -21,6 +21,10 @@ impl Target {
         }
     }
     fn from_identifier(identifier: &str) -> Self {
+        let identifier = identifier
+            .strip_prefix("otp:")
+            .and_then(|rest| rest.split_once(':').map(|(_, target)| target))
+            .unwrap_or(identifier);
         identifier
             .strip_prefix("message:")
             .map_or(Self::Inbox, |id| Self::Message(id.into()))
@@ -58,7 +62,12 @@ pub fn request_permission(locale: Locale) {
 }
 
 pub fn show(notice: Notice) {
-    platform::show(notice);
+    platform::show(notice, None);
+}
+
+/// OTP notification failures must never log a native error that might embed their payload.
+pub fn show_sensitive(notice: Notice, expires_at: i64) {
+    platform::show(notice, Some(expires_at));
 }
 
 #[cfg(target_os = "macos")]
@@ -69,7 +78,7 @@ mod platform {
     use objc2::{
         AnyThread, define_class, msg_send, rc::Retained, runtime::Bool, runtime::ProtocolObject,
     };
-    use objc2_foundation::{NSBundle, NSError, NSObject, NSObjectProtocol, NSString};
+    use objc2_foundation::{NSArray, NSBundle, NSError, NSObject, NSObjectProtocol, NSString};
     use objc2_user_notifications::{
         UNAuthorizationOptions, UNMutableNotificationContent, UNNotification,
         UNNotificationPresentationOptions, UNNotificationRequest, UNNotificationResponse,
@@ -154,19 +163,41 @@ mod platform {
         }
     }
 
-    pub fn show(notice: Notice) {
+    pub fn show(notice: Notice, expires_at: Option<i64>) {
         let Some(center) = center() else { return };
         let content = UNMutableNotificationContent::new();
         content.setTitle(&NSString::from_str(&notice.title));
         content.setSubtitle(&NSString::from_str(&notice.subtitle));
         content.setBody(&NSString::from_str(&notice.body));
         content.setSound(Some(&UNNotificationSound::defaultSound()));
+        static NEXT_OTP: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
+        let identifier = if expires_at.is_some() {
+            format!(
+                "otp:{}:{}",
+                NEXT_OTP.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+                notice.target.identifier()
+            )
+        } else {
+            notice.target.identifier()
+        };
         let request = UNNotificationRequest::requestWithIdentifier_content_trigger(
-            &NSString::from_str(&notice.target.identifier()),
+            &NSString::from_str(&identifier),
             &content,
             None,
         );
         center.addNotificationRequest_withCompletionHandler(&request, None);
+        if let Some(expires_at) = expires_at {
+            let delay = crate::clipboard::lifetime(expires_at).unwrap_or_default();
+            tauri::async_runtime::spawn(async move {
+                tokio::time::sleep(delay).await;
+                if let Some(center) = self::center() {
+                    let id = NSString::from_str(&identifier);
+                    let identifiers = NSArray::from_slice(&[&*id]);
+                    center.removePendingNotificationRequestsWithIdentifiers(&identifiers);
+                    center.removeDeliveredNotificationsWithIdentifiers(&identifiers);
+                }
+            });
+        }
     }
 }
 
@@ -195,11 +226,18 @@ mod platform {
 
     pub fn request_permission(_locale: Locale) {}
 
-    pub fn show(notice: Notice) {
+    pub fn show(notice: Notice, expires_at: Option<i64>) {
         // Each notification waits for its click or dismissal on its own thread.
         std::thread::spawn(move || {
             let mut notification = notify_rust::Notification::new();
             notification.summary(&notice.title);
+            let delay =
+                expires_at.map(|expiry| crate::clipboard::lifetime(expiry).unwrap_or_default());
+            if let Some(delay) = delay {
+                notification.timeout(notify_rust::Timeout::Milliseconds(
+                    delay.as_millis().max(1).min(60_000) as u32,
+                ));
+            }
             #[cfg(windows)]
             {
                 notification.subtitle(&notice.subtitle).body(&notice.body);
@@ -223,22 +261,51 @@ mod platform {
                         "default",
                         &alice_core::t!(notice.locale, "desktop.notice.open"),
                     );
+                if expires_at.is_some() {
+                    notification.hint(notify_rust::Hint::Transient(true));
+                }
             }
             let handle = match notification.show() {
                 Ok(handle) => handle,
                 Err(error) => {
-                    eprintln!(
-                        "{}",
-                        alice_core::t!(
-                            notice.locale,
-                            "desktop.notice.failed",
-                            error = error.to_string()
-                        )
-                    );
+                    if expires_at.is_some() {
+                        eprintln!(
+                            "{}",
+                            alice_core::t!(notice.locale, "desktop.otp.notice_failed")
+                        );
+                    } else {
+                        eprintln!(
+                            "{}",
+                            alice_core::t!(
+                                notice.locale,
+                                "desktop.notice.failed",
+                                error = error.to_string()
+                            )
+                        );
+                    }
                     return;
                 }
             };
             let target = notice.target;
+            #[cfg(not(windows))]
+            if let Some(delay) = delay {
+                tauri::async_runtime::spawn(async move {
+                    tokio::select! {
+                        () = tokio::time::sleep(delay) => {},
+                        () = handle.wait_for_action_async(|response| {
+                            match response {
+                                notify_rust::NotificationResponse::Default => clicked(target.clone()),
+                                notify_rust::NotificationResponse::Action(action) if action == "default" => {
+                                    clicked(target.clone());
+                                }
+                                _ => {}
+                            }
+                        }) => {},
+                    }
+                    handle.close_async().await;
+                });
+                return;
+            }
             #[cfg(windows)]
             {
                 let _ = handle.wait_for_response(|response: &notify_rust::NotificationResponse| {
@@ -265,6 +332,10 @@ mod tests {
     fn a_clicked_notification_opens_what_it_announced() {
         for target in [Target::Message("a1:b2".into()), Target::Inbox] {
             assert_eq!(Target::from_identifier(&target.identifier()), target);
+            assert_eq!(
+                Target::from_identifier(&format!("otp:42:{}", target.identifier())),
+                target,
+            );
         }
     }
 }

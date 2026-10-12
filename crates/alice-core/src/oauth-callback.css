@@ -1,0 +1,115 @@
+:root {
+  color-scheme: light dark;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  --ink: #2e2d35;
+  --muted: #66606d;
+  --bg: #f6f5f8;
+  --paper: #fff;
+  --line: #e7e5ec;
+  --violet: #8067ad;
+  --selected: #ddd4eb;
+  --success-text: #426347;
+  --success-bg: #eef5ed;
+  --neutral-bg: #eeebf6;
+  --error-text: #923f37;
+  --error-bg: #fcf3f2;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #ebe8f0;
+    --muted: #aaa4b2;
+    --bg: #141317;
+    --paper: #1c1b21;
+    --line: #2a2830;
+    --violet: #b9a0dc;
+    --selected: #3b334a;
+    --success-text: #a3cfa3;
+    --success-bg: #1c2a1d;
+    --neutral-bg: #2e2840;
+    --error-text: #f0a197;
+    --error-bg: #2d1c1b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 32px 20px;
+}
+
+::selection { color: var(--ink); background: var(--selected); }
+
+.confirmation {
+  width: 100%;
+  max-width: 560px;
+  padding: 40px 44px 52px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--paper);
+  text-align: center;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  font-size: 23px;
+  font-weight: 650;
+  letter-spacing: -0.04em;
+}
+
+.brand-mark, .brand-mark svg { display: block; width: 32px; height: 32px; }
+.brand-dot { color: var(--violet); }
+.brand-mark rect, .brand-mark circle { fill: var(--neutral-bg); }
+.brand-mark g { fill: var(--violet); }
+
+.status-icon {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  margin: 44px auto 24px;
+  border-radius: 50%;
+  color: var(--violet);
+  background: var(--neutral-bg);
+}
+
+.success .status-icon { color: var(--success-text); background: var(--success-bg); }
+.error .status-icon { color: var(--error-text); background: var(--error-bg); }
+
+h1 {
+  margin: 0;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(30px, 5vw, 38px);
+  font-weight: 400;
+  line-height: 1.18;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}
+
+p {
+  max-width: 34ch;
+  margin: 16px auto 0;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.65;
+  text-wrap: pretty;
+  overflow-wrap: break-word;
+}
+
+@media (max-width: 480px) {
+  .confirmation { padding: 32px 24px 40px; }
+  .status-icon { margin-top: 36px; }
+}

@@ -159,6 +159,7 @@ fn folder_title(folder: &str) -> String {
         "drafts" => "common.folder.drafts",
         "sent" => "common.folder.sent",
         "archive" => "common.folder.archive",
+        "spam" => "common.folder.spam",
         _ => "common.folder.trash",
     };
     i18n::tr(crate::locale(), key, &[])
@@ -453,6 +454,7 @@ fn list_empty(frame: &mut Frame<'_>, area: Rect, app: &App, theme: &Theme, activ
             "drafts" => ("tui.empty.drafts", "tui.empty.drafts_hint"),
             "sent" => ("tui.empty.sent", "tui.empty.sent_hint"),
             "archive" => ("tui.empty.archive", "tui.empty.archive_hint"),
+            "spam" => ("tui.empty.spam", "tui.empty.spam_hint"),
             _ => ("tui.empty.trash", "tui.empty.trash_hint"),
         };
         (
@@ -1068,6 +1070,18 @@ fn hints(app: &App) -> Vec<(&'static str, &'static str)> {
         ("a", "tui.hint.archive"),
         ("d", "tui.hint.trash"),
     ]);
+    if let Some(message) = app.selected.and_then(|i| app.messages.get(i))
+        && !matches!(message.folder.as_str(), "drafts" | "sent")
+    {
+        hints.push((
+            "x",
+            if message.folder == "spam" {
+                "tui.hint.not_spam"
+            } else {
+                "tui.hint.spam"
+            },
+        ));
+    }
     if app.offset + PAGE < app.total {
         hints.push(("]", "tui.hint.next_page"));
     }
@@ -1141,6 +1155,7 @@ const HELP: [(&str, &[(&str, &str)]); 4] = [
             ("s", "tui.help.star"),
             ("a", "tui.help.archive"),
             ("d", "tui.help.trash"),
+            ("x", "tui.help.spam"),
             ("!", "tui.help.send"),
             ("i", "tui.help.invite"),
         ],

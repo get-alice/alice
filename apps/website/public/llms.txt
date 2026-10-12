@@ -1,0 +1,27 @@
+# Alice
+
+> Alice is a free, open-source email client for macOS, Windows and Linux. It has a calm desktop inbox, a terminal app and scriptable command line, and optional AI that uses your own API key. Mail is stored on your device; there is no Alice server.
+
+- Website: https://getalice.email
+- Source code: https://github.com/get-alice/alice
+- License: GNU AGPL v3
+- Platforms: macOS, Windows, Linux (Android and iOS planned)
+
+## What it does
+
+- Connects Gmail and Outlook through browser sign-in, and any provider that offers IMAP and SMTP (iCloud, Fastmail, self-hosted).
+- Shows every account in one inbox, with keyboard shortcuts for every action.
+- One local service owns the mail store, so the desktop app, terminal app and command line always show the same mail and drafts.
+- Ask Alice: optional summaries, answers and draft replies with OpenAI, Anthropic or any OpenAI-compatible endpoint, including local models. Only the message you ask about (or the newest 20 inbox messages for inbox questions) is sent, directly to the provider you choose.
+- Answers calendar invitations (accept, maybe, decline) by email, and can add events to a calendar app or a connected Google, Outlook or CalDAV calendar.
+- Suggests recipients from your own mail and from read-only address books (Google, Outlook, CardDAV, Mac Contacts).
+- Blocks remote images until you allow them, so senders cannot track when you open a message.
+- Stores passwords and sign-in tokens in the system keychain (macOS Keychain, Windows Credential Manager, Linux Secret Service).
+- Interface languages: English (US) and German.
+
+## Pages
+
+- [Download](https://getalice.email/#download): installers for macOS, Windows and Linux
+- [Privacy policy](https://getalice.email/privacy)
+- [Terms of service](https://getalice.email/terms)
+- [README and setup guide](https://github.com/get-alice/alice#readme)

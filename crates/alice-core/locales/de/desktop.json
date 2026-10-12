@@ -16,6 +16,16 @@
     "permission_denied": "Benachrichtigungen für Alice sind in den Systemeinstellungen ausgeschaltet",
     "failed": "Eine Benachrichtigung konnte nicht angezeigt werden: {error}"
   },
+  "otp": {
+    "code": "Bestätigungscode: {code}",
+    "copied": "In die Zwischenablage kopiert",
+    "copy_failed": "Nicht kopiert — der Zugriff auf die geschützte Zwischenablage ist fehlgeschlagen. Kopieren Sie den Code manuell",
+    "expired": "Nicht kopiert — der Code ist vor dem Kopieren abgelaufen",
+    "superseded": "Nicht kopiert — stattdessen wurde ein neuerer Code kopiert",
+    "older_not_copied": "Nicht kopiert — ein neuerer Code ist eingetroffen, konnte aber nicht kopiert werden",
+    "notice_failed": "Eine Bestätigungscode-Benachrichtigung konnte nicht angezeigt werden",
+    "not_found": "In dieser E-Mail wurde kein eindeutiger Bestätigungscode gefunden"
+  },
   "download": {
     "attachment": "Anhang",
     "reserved_name": "Anhang {name}"
@@ -37,6 +47,8 @@
     "message_missing": "Diese Nachricht kann nicht gefunden werden",
     "downloads_folder": "Ihr Downloads-Ordner konnte nicht gefunden werden",
     "attachment_save": "Der Anhang konnte nicht gespeichert werden: {error}",
+    "attachment_open": "Der Anhang konnte nicht geöffnet werden: {error}",
+    "data_folder": "Der Datenordner von Alice konnte nicht gefunden werden",
     "download_missing": "Dieser Download ist nicht mehr vorhanden",
     "saved_only": "Nur gespeicherte Anhänge können angezeigt werden",
     "cache_folder": "Der Cache-Ordner von Alice konnte nicht gefunden werden",

@@ -1,0 +1,19 @@
+{
+  "font32": {
+    "root": "32px",
+    "body": "34px",
+    "width": 390,
+    "overflow": 0,
+    "navHeight": 349.1875,
+    "title": {
+      "x": 32,
+      "y": 384,
+      "width": 326,
+      "height": 291.84375,
+      "top": 384,
+      "right": 358,
+      "bottom": 675.84375,
+      "left": 32
+    }
+  }
+}

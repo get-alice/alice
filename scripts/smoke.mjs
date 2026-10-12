@@ -70,10 +70,40 @@ try {
   assert.equal(JSON.parse(cli('read', controlId, '--json')).body, unsafeText);
   assert.ok(!cli('list', '--folder', 'drafts').includes('\u001b'));
   cli('discard', controlId);
+  const mcp = spawn(binary, ['mcp'], { env, stdio: ['pipe', 'pipe', 'inherit'] });
+  const replies = []; let buffered = '';
+  mcp.stdout.on('data', chunk => { buffered += chunk; let at; while ((at = buffered.indexOf('\n')) >= 0) { replies.push(JSON.parse(buffered.slice(0, at))); buffered = buffered.slice(at + 1); } });
+  let rpcId = 0;
+  async function rpc(method, params) {
+    const id = ++rpcId; mcp.stdin.write(JSON.stringify({ jsonrpc: '2.0', id, method, params }) + '\n');
+    for (let i = 0; i < 100; i++) { const reply = replies.find(r => r.id === id); if (reply) return reply; await new Promise(done => setTimeout(done, 50)); }
+    throw new Error(`No MCP reply to ${method}`);
+  }
+  const tool = async (name, args = {}) => (await rpc('tools/call', { name, arguments: args })).result;
+  assert.equal((await rpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'smoke', version: '0' } })).result.serverInfo.name, 'alice');
+  mcp.stdin.write('{"jsonrpc":"2.0","method":"notifications/initialized"}\n');
+  const toolNames = (await rpc('tools/list')).result.tools.map(t => t.name);
+  assert.ok(toolNames.includes('draft_email') && toolNames.includes('send_draft'));
+  assert.equal((await tool('search_mail')).isError, true);
+  cli('mcp', 'read-only');
+  const found = JSON.parse((await tool('search_mail', { query: 'from:sophie' })).content[0].text); assert.equal(found.messages[0].from.includes('sophie@form.studio'), true);
+  const unreadBefore = (await api('GET', '/v1/messages/demo-4')).data.is_read;
+  const asStored = JSON.parse((await tool('read_message', { id: 'demo-4' })).content[0].text);
+  assert.deepEqual(asStored, (await api('GET', '/v1/messages/demo-4')).data);
+  assert.equal(asStored.is_read, unreadBefore);
+  assert.equal((await tool('draft_email', { reply_to: 'demo-1', body: 'Not allowed yet' })).isError, true);
+  cli('mcp', 'full');
+  const agentDraft = JSON.parse((await tool('draft_email', { reply_to: 'demo-1', body: 'Drafted by an agent' })).content[0].text);
+  assert.equal(agentDraft.folder, 'drafts'); assert.deepEqual(agentDraft.to, ['sophie@form.studio']);
+  const sentByAgent = JSON.parse((await tool('send_draft', { id: agentDraft.id })).content[0].text);
+  assert.equal(sentByAgent.folder, 'sent'); assert.equal(JSON.parse(cli('list', '--folder', 'sent', '--json')).total, 2);
+  cli('mcp', 'off'); assert.equal((await tool('list_accounts')).isError, true);
+  assert.equal((await rpc('nope')).error.code, -32601);
+  mcp.stdin.end(); await once(mcp, 'exit'); assert.equal(mcp.exitCode, 0);
   // Signal termination leaves exitCode null; repeated cleanup must not wait for a past exit.
   await stop('SIGKILL'); await stop(); start(); await ready();
   assert.equal(JSON.parse(cli('list', '--folder', 'archive', '--json')).messages[0].id, 'demo-2');
-  assert.equal(JSON.parse(cli('list', '--folder', 'sent', '--json')).total, 1);
+  assert.equal(JSON.parse(cli('list', '--folder', 'sent', '--json')).total, 2);
   await stop();
   try {
     const launched = spawnSync(binary, ['list', '--json'], { env, encoding: 'utf8', detached: process.platform !== 'win32' });
@@ -84,9 +114,9 @@ try {
     }
     await new Promise(done => setTimeout(done, 100));
     assert.equal((await api('GET', '/v1/health')).status, 200);
-    assert.equal(JSON.parse(cli('list', '--folder', 'sent', '--json')).total, 1);
+    assert.equal(JSON.parse(cli('list', '--folder', 'sent', '--json')).total, 2);
   } finally {
     assert.equal((await api('POST', '/v1/shutdown')).status, 200);
   }
 } finally { await stop(); rmSync(directory, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 }); }
-console.log('Alice smoke passed: auth, draft validation, shared CLI/API state, recipient suggestions, invitation replies and calendar files, reply drafts, send idempotency, terminal control sanitization, restart persistence, terminal isolation, and graceful shutdown.');
+console.log('Alice smoke passed: auth, draft validation, shared CLI/API state, recipient suggestions, invitation replies and calendar files, reply drafts, send idempotency, terminal control sanitization, MCP access modes and agent sending, restart persistence, terminal isolation, and graceful shutdown.');

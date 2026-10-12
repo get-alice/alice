@@ -1,0 +1,492 @@
+{
+  "bodyWidth": 426,
+  "docWidth": 390,
+  "method": "200% root font-size emulation",
+  "nav": [
+    {
+      "box": {
+        "bottom": 126.40625,
+        "height": 92.8125,
+        "left": 61.796875,
+        "right": 215.46875,
+        "top": 33.59375,
+        "width": 153.671875,
+        "x": 61.796875,
+        "y": 33.59375
+      },
+      "label": "alice"
+    },
+    {
+      "box": {
+        "bottom": 0,
+        "height": 0,
+        "left": 0,
+        "right": 0,
+        "top": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "label": "Product"
+    },
+    {
+      "box": {
+        "bottom": 0,
+        "height": 0,
+        "left": 0,
+        "right": 0,
+        "top": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "label": "Terminal"
+    },
+    {
+      "box": {
+        "bottom": 0,
+        "height": 0,
+        "left": 0,
+        "right": 0,
+        "top": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "label": "Privacy"
+    },
+    {
+      "box": {
+        "bottom": 0,
+        "height": 0,
+        "left": 0,
+        "right": 0,
+        "top": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "label": "FAQ"
+    },
+    {
+      "box": {
+        "bottom": 120,
+        "height": 80,
+        "left": 215.46875,
+        "right": 295.46875,
+        "top": 40,
+        "width": 80,
+        "x": 215.46875,
+        "y": 40
+      },
+      "label": "Switch to day"
+    },
+    {
+      "box": {
+        "bottom": 120,
+        "height": 80,
+        "left": 311.46875,
+        "right": 391.46875,
+        "top": 40,
+        "width": 80,
+        "x": 311.46875,
+        "y": 40
+      },
+      "label": "Alice on GitHub"
+    },
+    {
+      "box": {
+        "bottom": 120,
+        "height": 80,
+        "left": 407.46875,
+        "right": 613.578125,
+        "top": 40,
+        "width": 206.109375,
+        "x": 407.46875,
+        "y": 40
+      },
+      "label": "Download"
+    }
+  ],
+  "overflow": [
+    {
+      "box": {
+        "bottom": 120,
+        "height": 80,
+        "left": 215.46875,
+        "right": 613.578125,
+        "top": 40,
+        "width": 398.109375,
+        "x": 215.46875,
+        "y": 40
+      },
+      "class": "nav-end",
+      "tag": "DIV",
+      "text": "      Download "
+    },
+    {
+      "box": {
+        "bottom": 120,
+        "height": 80,
+        "left": 311.46875,
+        "right": 391.46875,
+        "top": 40,
+        "width": 80,
+        "x": 311.46875,
+        "y": 40
+      },
+      "class": "icon-link",
+      "tag": "A",
+      "text": ""
+    },
+    {
+      "box": {
+        "bottom": 120,
+        "height": 80,
+        "left": 407.46875,
+        "right": 613.578125,
+        "top": 40,
+        "width": 206.109375,
+        "x": 407.46875,
+        "y": 40
+      },
+      "class": "button primary small",
+      "tag": "A",
+      "text": "Download"
+    },
+    {
+      "box": {
+        "bottom": 1196.671875,
+        "height": 1196.671875,
+        "left": 0,
+        "right": 430.203125,
+        "top": 0,
+        "width": 430.203125,
+        "x": 0,
+        "y": 0
+      },
+      "class": "wrap hero-copy",
+      "tag": "DIV",
+      "text": " Email, light as air. Alice is a lightweight email client for Mac, Windows and L"
+    },
+    {
+      "box": {
+        "bottom": 521.984375,
+        "height": 297.984375,
+        "left": 32,
+        "right": 398.203125,
+        "top": 224,
+        "width": 366.203125,
+        "x": 32,
+        "y": 224
+      },
+      "class": "",
+      "tag": "H1",
+      "text": "Email, light as air."
+    },
+    {
+      "box": {
+        "bottom": 521.984375,
+        "height": 200.703125,
+        "left": 32,
+        "right": 398.203125,
+        "top": 321.28125,
+        "width": 366.203125,
+        "x": 32,
+        "y": 321.28125
+      },
+      "class": "",
+      "tag": "EM",
+      "text": "light as air."
+    },
+    {
+      "box": {
+        "bottom": 833.484375,
+        "height": 260.3125,
+        "left": 32,
+        "right": 398.203125,
+        "top": 573.171875,
+        "width": 366.203125,
+        "x": 32,
+        "y": 573.171875
+      },
+      "class": "lede",
+      "tag": "P",
+      "text": "Alice is a lightweight email client for Mac, Windows and Linux. Free, open sourc"
+    },
+    {
+      "box": {
+        "bottom": 1116.671875,
+        "height": 232,
+        "left": 32,
+        "right": 398.203125,
+        "top": 884.671875,
+        "width": 366.203125,
+        "x": 32,
+        "y": 884.671875
+      },
+      "class": "ctas",
+      "tag": "DIV",
+      "text": "   Download for macOS   Download for Windows   Download for Linux   Download Ali"
+    },
+    {
+      "box": {
+        "bottom": 988.671875,
+        "height": 104,
+        "left": 32,
+        "right": 397.234375,
+        "top": 884.671875,
+        "width": 365.234375,
+        "x": 32,
+        "y": 884.671875
+      },
+      "class": "button primary os os-other",
+      "tag": "A",
+      "text": "  Download Alice "
+    },
+    {
+      "box": {
+        "bottom": 1116.671875,
+        "height": 104,
+        "left": 32,
+        "right": 398.203125,
+        "top": 1012.671875,
+        "width": 366.203125,
+        "x": 32,
+        "y": 1012.671875
+      },
+      "class": "button ghost",
+      "tag": "A",
+      "text": "View on GitHub"
+    },
+    {
+      "box": {
+        "bottom": 10174.296875,
+        "height": 1555.765625,
+        "left": 32,
+        "right": 396.53125,
+        "top": 8618.53125,
+        "width": 364.53125,
+        "x": 32,
+        "y": 8618.53125
+      },
+      "class": "copy",
+      "tag": "DIV",
+      "text": " Appears when asked. Vanishes when not. Ask Alice summarizes a thread, drafts a "
+    },
+    {
+      "box": {
+        "bottom": 9026.5,
+        "height": 407.96875,
+        "left": 32,
+        "right": 396.53125,
+        "top": 8618.53125,
+        "width": 364.53125,
+        "x": 32,
+        "y": 8618.53125
+      },
+      "class": "",
+      "tag": "H2",
+      "text": "Appears when asked. Vanishes when not."
+    },
+    {
+      "box": {
+        "bottom": 9386.875,
+        "height": 312.375,
+        "left": 32,
+        "right": 396.53125,
+        "top": 9074.5,
+        "width": 364.53125,
+        "x": 32,
+        "y": 9074.5
+      },
+      "class": "lede",
+      "tag": "P",
+      "text": "Ask Alice summarizes a thread, drafts a reply, or finds what needs you. Bring yo"
+    },
+    {
+      "box": {
+        "bottom": 9785.8125,
+        "height": 334.9375,
+        "left": 32,
+        "right": 396.53125,
+        "top": 9450.875,
+        "width": 364.53125,
+        "x": 32,
+        "y": 9450.875
+      },
+      "class": "providers",
+      "tag": "UL",
+      "text": " OpenAI Anthropic Ollama and other local models "
+    },
+    {
+      "box": {
+        "bottom": 9785.8125,
+        "height": 131.28125,
+        "left": 32,
+        "right": 396.53125,
+        "top": 9654.53125,
+        "width": 364.53125,
+        "x": 32,
+        "y": 9654.53125
+      },
+      "class": "",
+      "tag": "LI",
+      "text": "Ollama and other local models"
+    },
+    {
+      "box": {
+        "bottom": 10174.296875,
+        "height": 340.484375,
+        "left": 32,
+        "right": 396.53125,
+        "top": 9833.8125,
+        "width": 364.53125,
+        "x": 32,
+        "y": 9833.8125
+      },
+      "class": "fine",
+      "tag": "P",
+      "text": "Alice sends only what your question needs, straight to the provider you chose. I"
+    },
+    {
+      "box": {
+        "bottom": 22047.21875,
+        "height": 195.8125,
+        "left": 32,
+        "right": 397.234375,
+        "top": 21851.40625,
+        "width": 365.234375,
+        "x": 32,
+        "y": 21851.40625
+      },
+      "class": "",
+      "tag": "H2",
+      "text": "Curious? It’s free."
+    },
+    {
+      "box": {
+        "bottom": 22355.53125,
+        "height": 260.3125,
+        "left": 32,
+        "right": 397.234375,
+        "top": 22095.21875,
+        "width": 365.234375,
+        "x": 32,
+        "y": 22095.21875
+      },
+      "class": "lede",
+      "tag": "P",
+      "text": "Free and open source under the GNU AGPL v3. No account to create, no subscriptio"
+    },
+    {
+      "box": {
+        "bottom": 22523.53125,
+        "height": 104,
+        "left": 32,
+        "right": 397.234375,
+        "top": 22419.53125,
+        "width": 365.234375,
+        "x": 32,
+        "y": 22419.53125
+      },
+      "class": "ctas",
+      "tag": "DIV",
+      "text": "   Download for macOS   Download for Windows   Download for Linux   Download Ali"
+    },
+    {
+      "box": {
+        "bottom": 22523.53125,
+        "height": 104,
+        "left": 32,
+        "right": 397.234375,
+        "top": 22419.53125,
+        "width": 365.234375,
+        "x": 32,
+        "y": 22419.53125
+      },
+      "class": "button primary os os-other",
+      "tag": "A",
+      "text": "  Download Alice "
+    },
+    {
+      "box": {
+        "bottom": 23332.265625,
+        "height": 680.734375,
+        "left": 32,
+        "right": 397.234375,
+        "top": 22651.53125,
+        "width": 365.234375,
+        "x": 32,
+        "y": 22651.53125
+      },
+      "class": "platforms",
+      "tag": "DIV",
+      "text": "  macOS Releases on GitHub  Windows Releases on GitHub  Linux Releases on GitHub"
+    },
+    {
+      "box": {
+        "bottom": 22878.109375,
+        "height": 225.578125,
+        "left": 33,
+        "right": 396.234375,
+        "top": 22652.53125,
+        "width": 363.234375,
+        "x": 33,
+        "y": 22652.53125
+      },
+      "class": "platform",
+      "tag": "DIV",
+      "text": " macOS Releases on GitHub "
+    },
+    {
+      "box": {
+        "bottom": 23104.6875,
+        "height": 226.578125,
+        "left": 33,
+        "right": 396.234375,
+        "top": 22878.109375,
+        "width": 363.234375,
+        "x": 33,
+        "y": 22878.109375
+      },
+      "class": "platform",
+      "tag": "DIV",
+      "text": " Windows Releases on GitHub "
+    },
+    {
+      "box": {
+        "bottom": 23331.265625,
+        "height": 226.578125,
+        "left": 33,
+        "right": 396.234375,
+        "top": 23104.6875,
+        "width": 363.234375,
+        "x": 33,
+        "y": 23104.6875
+      },
+      "class": "platform",
+      "tag": "DIV",
+      "text": " Linux Releases on GitHub "
+    },
+    {
+      "box": {
+        "bottom": 23521.546875,
+        "height": 141.28125,
+        "left": 32,
+        "right": 397.234375,
+        "top": 23380.265625,
+        "width": 365.234375,
+        "x": 32,
+        "y": 23380.265625
+      },
+      "class": "meta",
+      "tag": "P",
+      "text": " Prefer the terminal or building it yourself? Instructions on GitHub.\n"
+    }
+  ],
+  "viewport": {
+    "h": 844,
+    "w": 390
+  }
+}

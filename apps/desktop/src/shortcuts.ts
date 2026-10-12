@@ -32,6 +32,7 @@ export const shortcuts = {
   archive: shortcut('app.shortcut11', 'e'),
   trash: shortcut('app.shortcut12', '#', 'Delete', 'Backspace'),
   inbox: shortcut('app.shortcut13', 'i'),
+  spam: shortcut('app.shortcut27', '!'),
   read: shortcut('app.shortcut14', 'u'),
   star: shortcut('app.shortcut15', 's'),
   back: shortcut('app.shortcut16', 'Escape'),
@@ -44,6 +45,7 @@ export const shortcuts = {
 export const goTo = {
   inbox: shortcut('app.shortcut20', 'Mod+1'), starred: shortcut('app.shortcut21', 'Mod+2'), sent: shortcut('app.shortcut22', 'Mod+3'),
   drafts: shortcut('app.shortcut23', 'Mod+4'), archive: shortcut('app.shortcut24', 'Mod+5'), trash: shortcut('app.shortcut25', 'Mod+6'),
+  spam: shortcut('app.shortcut26', 'Mod+7'),
 };
 
 function parse(key: string) {

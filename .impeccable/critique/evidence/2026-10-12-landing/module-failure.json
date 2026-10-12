@@ -1,0 +1,66 @@
+{
+  "headings": [
+    {
+      "id": "hero-title",
+      "text": "Email, light as air.",
+      "visibility": "hidden"
+    },
+    {
+      "id": "product-title",
+      "text": "What's left is your mail.",
+      "visibility": "hidden"
+    },
+    {
+      "id": "small-title",
+      "text": "Light enough to float.",
+      "visibility": "hidden"
+    },
+    {
+      "id": "mirror-title",
+      "text": "Through the looking glass.",
+      "visibility": "hidden"
+    },
+    {
+      "id": "ai-title",
+      "text": "Appears when asked. Vanishes when not.",
+      "visibility": "hidden"
+    },
+    {
+      "id": "wonders-title",
+      "text": "Little things, handled.",
+      "visibility": "hidden"
+    },
+    {
+      "id": "privacy-title",
+      "text": "There is no Alice server.",
+      "visibility": "hidden"
+    },
+    {
+      "id": "download-title",
+      "text": "Curious? It’s free.",
+      "visibility": "hidden"
+    },
+    {
+      "id": "faq-title",
+      "text": "Questions, answered.",
+      "visibility": "hidden"
+    }
+  ],
+  "heroContent": [
+    {
+      "text": "Alice is a lightweight email client for Mac, Windows and Linux. Free, open source, and private by design.",
+      "visibility": "hidden"
+    },
+    {
+      "text": "Download for macOS   Download for Windows   Download for Linux   Download Alice  View on GitHub",
+      "visibility": "hidden"
+    }
+  ],
+  "motionClass": true,
+  "reduced": false,
+  "scripts": [
+    "http://localhost:4400/_astro/Base.astro_astro_type_script_index_0_lang.BYSsicNJ.js",
+    "http://localhost:4400/_astro/index.astro_astro_type_script_index_0_lang.D_v179w7.js"
+  ],
+  "test": "External script requests aborted; inline first-paint script allowed"
+}

@@ -63,6 +63,11 @@ pub fn port() -> Result<u16> {
         .parse()
         .context(crate::text!("server.error.invalid_port"))
 }
+/// This binary's daemon API identity, reported by `/v1/health`. A daemon of another build is
+/// replaced on connect, even at the same version: its endpoints may differ.
+pub const BUILD: &str = env!("ALICE_BUILD");
+/// The version with its build, as `alice --version` prints it.
+pub const VERSION: &str = concat!(env!("CARGO_PKG_VERSION"), " (", env!("ALICE_BUILD"), ")");
 pub fn http_client() -> Result<reqwest::Client> {
     Ok(reqwest::Client::builder()
         .timeout(Duration::from_secs(90))
@@ -94,12 +99,27 @@ impl Client {
     }
     pub async fn connect(daemon_args: &[&str]) -> Result<Self> {
         if let Ok(client) = Self::existing()
-            && client
-                .request_value("GET", "/v1/health", None)
-                .await
-                .is_ok()
+            && let Ok(health) = client.request_value("GET", "/v1/health", None).await
         {
-            return Ok(client);
+            if health["build"] == BUILD {
+                return Ok(client);
+            }
+            // A daemon left running by another build serves another API: endpoints this build
+            // calls may be missing. Stop it, and start this build's own once it releases its lock.
+            client.request_value("POST", "/v1/shutdown", None).await?;
+            let lock = std::fs::File::open(data_dir()?.join("daemon.lock"))?;
+            let mut stopped = false;
+            for _ in 0..100 {
+                tokio::time::sleep(Duration::from_millis(100)).await;
+                if lock.try_lock().is_ok() {
+                    stopped = true;
+                    break;
+                }
+            }
+            drop(lock);
+            if !stopped {
+                bail!(crate::text!("server.error.daemon_outdated"));
+            }
         }
         let exe = std::env::current_exe()?;
         #[cfg(not(windows))]

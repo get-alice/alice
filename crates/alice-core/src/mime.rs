@@ -27,6 +27,8 @@ pub struct Part {
     /// `Content-Disposition: attachment`.
     pub attachment: bool,
     pub filename: Option<String>,
+    /// `Content-ID` without its angle brackets: how the HTML body refers to this part (`cid:…`).
+    pub content_id: Option<String>,
     /// Decoded size in bytes; estimated from the encoded size for a server structure.
     pub size: usize,
     pub children: Vec<Part>,
@@ -140,6 +142,16 @@ pub(crate) fn percent_decode(value: &str) -> Vec<u8> {
     output
 }
 
+/// A `Content-ID` value without its angle brackets.
+fn content_id(value: &str) -> Option<String> {
+    let id = value
+        .trim()
+        .trim_start_matches('<')
+        .trim_end_matches('>')
+        .trim();
+    (!id.is_empty()).then(|| id.to_string())
+}
+
 fn encoding_name(encoding: &ContentEncoding<'_>) -> String {
     match encoding {
         ContentEncoding::SevenBit => "7bit".into(),
@@ -190,6 +202,11 @@ impl Part {
             })
             .map(|h| h.get_value().trim().to_ascii_lowercase())
             .unwrap_or_else(|| "7bit".into());
+        let content_id = mail
+            .headers
+            .iter()
+            .find(|h| h.get_key_ref().eq_ignore_ascii_case("Content-ID"))
+            .and_then(|h| content_id(&h.get_value()));
         let mimetype = mail.ctype.mimetype.to_ascii_lowercase();
         let children: Vec<Part> = mail
             .subparts
@@ -224,6 +241,7 @@ impl Part {
             encoding,
             attachment,
             filename,
+            content_id,
             mimetype,
             children,
             text,
@@ -243,6 +261,7 @@ impl Part {
         let single = |common: &BodyContentCommon<'_>, other: &BodyContentSinglePart<'_>| {
             let mut part = Self::common(common, section.clone());
             part.encoding = encoding_name(&other.transfer_encoding);
+            part.content_id = other.id.and_then(content_id);
             part.size = decoded_size(other.octets as usize, &part.encoding);
             part
         };
@@ -394,7 +413,8 @@ impl Part {
         found
     }
     /// The name a part is offered under as an attachment: its file name, or for an attached
-    /// message or an unnamed part marked as an attachment, a generic name by type.
+    /// message, an unnamed part marked as an attachment or an unnamed embedded image, a generic
+    /// name by type.
     pub fn attachment_name(&self) -> Option<String> {
         if let Some(name) = &self.filename {
             return Some(name.clone());
@@ -402,7 +422,8 @@ impl Part {
         if self.mimetype == "message/rfc822" {
             return Some("Attached message.eml".into());
         }
-        if !self.attachment || !self.children.is_empty() {
+        let embedded = self.content_id.is_some() && self.mimetype.starts_with("image/");
+        if !(self.attachment || embedded) || !self.children.is_empty() {
             return None;
         }
         let extension = match self.mimetype.as_str() {
@@ -426,6 +447,7 @@ impl Part {
                 size: self.size,
                 part: (!self.section.is_empty()).then(|| self.section.clone()),
                 content_type: Some(self.mimetype.clone()),
+                content_id: self.content_id.clone(),
             });
         }
         for child in &self.children {
@@ -795,6 +817,18 @@ mod tests {
             Some("You have been invited")
         );
         assert_eq!(structured.html_body(), None);
+        Ok(())
+    }
+
+    #[test]
+    fn embedded_images_are_attachments_with_their_content_id() -> anyhow::Result<()> {
+        let raw = b"Content-Type: multipart/related; boundary=b\r\n\r\n--b\r\nContent-Type: text/html\r\n\r\n<img src=\"cid:ii_1\">\r\n--b\r\nContent-Type: image/png\r\nContent-ID: <ii_1>\r\nContent-Transfer-Encoding: base64\r\n\r\niVBORw0K\r\n--b--\r\n";
+        let parsed = Part::from_parsed(&mailparse::parse_mail(raw)?);
+        let attachments = parsed.attachments();
+        assert_eq!(attachments.len(), 1);
+        assert_eq!(attachments[0].name, "Attachment.png");
+        assert_eq!(attachments[0].content_id.as_deref(), Some("ii_1"));
+        assert_eq!(attachments[0].part.as_deref(), Some("2"));
         Ok(())
     }
 }

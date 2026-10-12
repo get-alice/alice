@@ -9,7 +9,7 @@ import tseslint from 'typescript-eslint';
 const duplicateHookRules = Object.fromEntries(['error-boundaries', 'exhaustive-deps', 'purity', 'rules-of-hooks', 'set-state-in-effect', 'set-state-in-render', 'static-components', 'unsupported-syntax', 'use-memo'].map(rule => [`@eslint-react/${rule}`, 'off']));
 
 export default tseslint.config(
-  { ignores: ['dist/', 'target/', 'vendor/', 'node_modules/', 'apps/desktop/src-tauri/', '.claude/', '.agents/'] },
+  { ignores: ['dist/', 'target/', 'vendor/', 'node_modules/', 'apps/desktop/src-tauri/', 'apps/website/', '.claude/', '.agents/'] },
   {
     name: 'alice/desktop',
     files: ['apps/desktop/src/**/*.{ts,tsx}', 'vite.config.ts'],

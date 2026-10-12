@@ -36,7 +36,8 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         if self.path.startswith("/v1/health"):
-            self.out(dict(status="ok", version="0.1.0"))
+            # The binary replaces a daemon of another build; the fixture stands in for this one.
+            self.out(dict(status="ok", version="0.1.0", build=build))
         elif self.path.startswith("/v1/accounts"):
             self.out(state["accounts"])
             state["loaded"].set()
@@ -63,6 +64,7 @@ server = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
 server.daemon_threads = True
 threading.Thread(target=server.serve_forever, daemon=True).start()
 binary = str(Path("target/debug/alice").resolve())
+build = subprocess.run([binary, "--version"], capture_output=True, text=True, check=True).stdout.strip().rpartition("(")[2].rstrip(")")
 results = {}
 
 class Terminal:

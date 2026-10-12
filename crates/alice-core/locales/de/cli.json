@@ -89,6 +89,11 @@
   "rsvp_sent": "{state}: „{title}“ · Antwort an {organizer} gesendet",
   "updated": "Aktualisiert: {id} ({folder})",
   "draft_saved": "Entwurf gespeichert: {id}\nSenden mit: alice send {id}",
+  "mcp_read_only_on": "KI-Agenten können Ihre E-Mails jetzt über `alice mcp` lesen. Änderungen und Senden erlauben Sie mit `alice mcp full`; den Zugriff beenden Sie mit `alice mcp off`.",
+  "mcp_full": "KI-Agenten haben jetzt über `alice mcp` vollen Zugriff auf Ihre E-Mails: Sie können lesen, ordnen, Entwürfe schreiben und senden. Den Zugriff beenden Sie mit `alice mcp off`.",
+  "mcp_off": "KI-Agenten können Ihre E-Mails nicht mehr nutzen.",
+  "mcp_disabled": "Alice erlaubt KI-Agenten keinen Zugriff auf E-Mails. Bitten Sie die Person, in den Alice-Einstellungen für KI-Agenten „Nur lesen“ oder „Vollzugriff“ zu wählen oder `alice mcp read-only` bzw. `alice mcp full` auszuführen.",
+  "mcp_read_only": "Alice gibt KI-Agenten nur Lesezugriff, daher ist dieses Werkzeug nicht verfügbar. Bitten Sie die Person, in den Alice-Einstellungen für KI-Agenten „Vollzugriff“ zu wählen oder `alice mcp full` auszuführen.",
   "help": {
     "template": "{about-with-newline}\nAufruf: {usage}\n\n{all-args}{after-help}",
     "commands_heading": "Befehle",
@@ -114,7 +119,8 @@
       "discard": "Einen ungesendeten lokalen Entwurf verwerfen. E-Mails beim Anbieter werden nie gelöscht.",
       "archive": "Eine Nachricht archivieren.",
       "trash": "Eine Nachricht in den Papierkorb verschieben.",
-      "restore": "Eine Nachricht in den Posteingang zurückverschieben.",
+      "spam": "Eine Nachricht als Spam markieren und in den Spam-Ordner des Anbieters verschieben. Ob dessen Spamfilter daraus lernt, hängt vom Anbieter ab.",
+      "restore": "Eine Nachricht in den Posteingang zurückverschieben und Spam-Nachrichten als kein Spam markieren.",
       "star": "Eine Nachricht markieren oder ihre Markierung mit --remove entfernen.",
       "unread": "Eine Nachricht als ungelesen markieren.",
       "sync": "E-Mails jetzt synchronisieren.",
@@ -138,7 +144,8 @@
       "calendar_list": "Kalender, zu denen Einladungen hinzugefügt werden können.",
       "calendar_busy": "Belegte Zeiten aus verbundenen Kalendern in Ortszeit. Titel werden nie angezeigt.",
       "calendar_add": "Eine Einladung zu einem Kalender hinzufügen (Standard: der in den Einstellungen ausgewählte Kalender).",
-      "calendar_export": "Eine Einladung als .ics-Datei speichern oder mit --open in Ihrer Kalender-App öffnen."
+      "calendar_export": "Eine Einladung als .ics-Datei speichern oder mit --open in Ihrer Kalender-App öffnen.",
+      "mcp": "Ihre E-Mails über MCP (stdio) für KI-Agenten bereitstellen. `off`, `read-only` oder `full` legt fest, was Agenten dürfen."
     },
     "args": {
       "help": "Hilfe anzeigen",
@@ -183,7 +190,8 @@
       "model": "Name des KI-Modells",
       "base_url": "Basis-URL der KI-API",
       "prompt": "Frage oder Anweisungen für Alice",
-      "message": "Diese Nachricht statt der neuesten Nachrichten im Posteingang verwenden"
+      "message": "Diese Nachricht statt der neuesten Nachrichten im Posteingang verwenden",
+      "access": "Zugriff für KI-Agenten: off, read-only (suchen und lesen) oder full (auch ordnen, Entwürfe schreiben und senden)"
     },
     "scoped": {
       "contacts_search": {"account": "Adressbuch und Korrespondenz dieses Absenderkontos bevorzugen."},

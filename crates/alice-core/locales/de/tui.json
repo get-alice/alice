@@ -21,6 +21,8 @@
     "marked_read": "Als gelesen markiert",
     "archived": "Archiviert",
     "trashed": "In den Papierkorb verschoben",
+    "spam": "In den Spam-Ordner verschoben",
+    "not_spam": "Als kein Spam markiert · in den Posteingang verschoben",
     "unstarred": "Markierung entfernt",
     "starred": "Markiert",
     "marked_unread": "Als ungelesen markiert",
@@ -74,7 +76,9 @@
     "archive": "Archiv ist leer",
     "archive_hint": "Drücken Sie a bei einer Nachricht, um sie zu archivieren.",
     "trash": "Papierkorb ist leer",
-    "trash_hint": "Drücken Sie d bei einer Nachricht, um sie hierher zu verschieben."
+    "trash_hint": "Drücken Sie d bei einer Nachricht, um sie hierher zu verschieben.",
+    "spam": "Spam-Ordner ist leer",
+    "spam_hint": "Drücken Sie x bei einer Nachricht, um sie als Spam zu markieren. Im Spam-Ordner verschiebt x sie zurück in den Posteingang."
   },
   "label": {
     "from": "Von",
@@ -124,6 +128,8 @@
     "star": "markieren",
     "archive": "archivieren",
     "trash": "Papierkorb",
+    "spam": "als Spam markieren",
+    "not_spam": "kein Spam",
     "next_page": "nächste Seite",
     "prev_page": "vorige Seite",
     "unread": "ungelesen",
@@ -145,6 +151,7 @@
     "star": "Markierung setzen oder entfernen",
     "archive": "Archivieren",
     "trash": "In den Papierkorb verschieben",
+    "spam": "Als Spam markieren · im Spam-Ordner als kein Spam markieren und in den Posteingang verschieben (nicht für Entwürfe oder gesendete Nachrichten)",
     "send": "Diesen Entwurf senden",
     "invite": "Eine Einladung beantworten",
     "write": "Verfassen",

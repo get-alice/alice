@@ -1,0 +1,21 @@
+---
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+/** A real screenshot in both themes; CSS shows the one matching the page's theme. */
+interface Props { light: ImageMetadata; dark: ImageMetadata; alt: string; sizes: string; eager?: boolean; class?: string }
+const { light, dark, alt, sizes, eager = false, class: className } = Astro.props;
+const widths = [720, 1080, 1440, 2160, 2880].filter(w => w <= light.width);
+const [l, d] = await Promise.all([light, dark].map(src => getImage({ src, widths, format: 'webp', quality: 82 })));
+---
+<span class:list={['shot', className]}>
+  <img class="day" src={l.src} srcset={l.srcSet.attribute} {sizes} {alt} width={light.width} height={light.height} loading={eager ? 'eager' : 'lazy'} decoding="async" />
+  <img class="night" src={d.src} srcset={d.srcSet.attribute} {sizes} {alt} width={dark.width} height={dark.height} loading="lazy" decoding="async" />
+</span>
+
+<style>
+  .shot { display: block; }
+  .shot > img { display: block; }
+  .shot > .night, :global([data-theme="dark"]) .shot > .day { display: none; }
+  :global([data-theme="dark"]) .shot > .night { display: block; }
+</style>

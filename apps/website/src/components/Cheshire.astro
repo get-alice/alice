@@ -1,0 +1,67 @@
+---
+import Icon from './Icon.astro';
+
+const summary = 'Sophie wants the new collection to feel calmer and has two directions for the studio identity: one soft and warm, one more unexpected. She’d like your thoughts before Thursday’s review.';
+const draft = 'Hi Sophie, I love the idea of more room to breathe. The softer direction feels right; could we bring one unexpected detail from the second into it?';
+---
+<section class="cheshire" aria-labelledby="ai-title" data-cheshire>
+  <div class="wrap grid">
+    <div class="copy">
+      <h2 id="ai-title" data-split>Appears when asked. <em>Vanishes when not.</em></h2>
+      <p class="lede" data-reveal>Ask Alice summarizes a thread, drafts a reply, or finds what needs you. Bring your own key, or run a model on your own machine.</p>
+      <ul class="providers" data-reveal aria-label="Supported AI providers">
+        <li><Icon name="open-ai-logo" size={22} />OpenAI</li>
+        <li><Icon name="brand:anthropic" size={18} />Anthropic</li>
+        <li><Icon name="brand:ollama" size={20} />Ollama and other local models</li>
+      </ul>
+      <p class="fine" data-reveal>Alice sends only what your question needs, straight to the provider you chose. It shows its plan before anything changes, and it can never send or delete mail.</p>
+    </div>
+
+    <div class="visual" aria-hidden="true">
+      <article class="mail">
+        <p class="from"><span class="avatar">SC</span><span><b>Sophie Chen</b><br />A little room for big ideas</span></p>
+        <p class="body">I’ve been thinking about our conversation yesterday. What if we gave the new collection a little more room to breathe? Less noise, more intention.</p>
+        <div class="ask" data-ask>
+          <p class="grin"><Icon name="sparkle" size={18} />Ask Alice</p>
+          <p class="said" data-words>{summary}</p>
+          <p class="reply-label" data-words>A first draft</p>
+          <p class="said draft" data-words>{draft}</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cheshire { padding: clamp(5rem, 10vw, 8rem) 0; }
+  .grid { min-height: 100dvh; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(2.5rem, 6vw, 6rem); align-items: center; }
+  .copy { display: grid; gap: 1.5rem; align-content: center; }
+  .copy h2 { font-size: clamp(2.5rem, 1.6rem + 3.2vw, 4.5rem); }
+  .providers { list-style: none; margin: 0.5rem 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.6rem; }
+  .providers li { display: inline-flex; align-items: center; gap: 0.55rem; padding: 0.5rem 0.95rem 0.5rem 0.75rem; border-radius: 999px; border: 1px solid var(--line-strong); color: var(--ink); font-size: 0.95rem; }
+  .fine { color: var(--ink-3); font-size: 0.95rem; max-width: 34rem; }
+
+  .visual { position: relative; }
+  .visual::before {
+    content: ''; position: absolute; inset: -12% -8%; z-index: -1; border-radius: 50%;
+    background: radial-gradient(closest-side, color-mix(in oklab, var(--lavender) 22%, transparent), transparent);
+  }
+  .mail {
+    background: var(--bg-raise); border: 1px solid var(--line); border-radius: 18px;
+    padding: clamp(1.4rem, 3vw, 2.4rem); display: grid; gap: 1.25rem;
+    box-shadow: 0 40px 90px -50px rgb(var(--shade) / 0.5);
+  }
+  .from { display: flex; gap: 0.85rem; align-items: center; color: var(--ink-2); line-height: 1.35; }
+  .from b { color: var(--ink); }
+  .avatar { display: grid; place-items: center; width: 2.6rem; height: 2.6rem; border-radius: 50%; background: var(--bg-sunk); color: var(--ink-3); font-size: 0.8rem; font-weight: 600; flex: none; }
+  .body { font: 400 clamp(1.1rem, 1rem + 0.4vw, 1.3rem)/1.55 var(--font-serif); color: var(--ink-2); }
+  .ask { border-radius: 14px; padding: 1.25rem 1.35rem; background: color-mix(in oklab, var(--lavender) 10%, var(--bg-raise)); border: 1px solid color-mix(in oklab, var(--lavender) 30%, transparent); display: grid; gap: 0.8rem; }
+  .grin { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--violet); font-weight: 600; font-size: 0.95rem; }
+  .said { color: var(--ink); line-height: 1.55; }
+  .draft { font-family: var(--font-serif); font-size: 1.1rem; font-style: italic; color: var(--ink-2); }
+  .reply-label { color: var(--violet); font-size: 0.8rem; font-weight: 600; margin-top: 0.4rem; }
+
+  @media (max-width: 60rem) {
+    .grid { grid-template-columns: 1fr; min-height: auto; }
+  }
+</style>

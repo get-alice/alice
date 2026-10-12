@@ -1,0 +1,31 @@
+{
+  "links": [
+    {
+      "height": 44,
+      "text": "Get Alice",
+      "width": 65.609375
+    },
+    {
+      "height": 44,
+      "text": "Source code",
+      "width": 90.46875
+    },
+    {
+      "height": 44,
+      "text": "Report an issue",
+      "width": 110.46875
+    },
+    {
+      "height": 44,
+      "text": "Privacy",
+      "width": 52.359375
+    },
+    {
+      "height": 44,
+      "text": "Terms",
+      "width": 44
+    }
+  ],
+  "passed": true,
+  "viewport": 393
+}

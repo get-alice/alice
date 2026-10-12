@@ -24,9 +24,17 @@ open = "5"
 [target.'cfg(target_os = "macos")'.dependencies]
 block2 = "0.6"
 objc2 = "0.6"
+objc2-app-kit = { version = "0.3", default-features = false, features = ["std", "NSPasteboard"] }
 objc2-contacts = { version = "0.3", default-features = false, features = ["std", "block2", "CNContact", "CNContactFetchRequest", "CNContactStore", "CNFetchRequest", "CNLabeledValue"] }
 objc2-foundation = { version = "0.3", default-features = false, features = ["std", "NSArray", "NSBundle", "NSError", "NSObject", "NSString"] }
 objc2-user-notifications = { version = "0.3", default-features = false, features = ["std", "block2", "UNNotification", "UNNotificationContent", "UNNotificationRequest", "UNNotificationResponse", "UNNotificationSound", "UNNotificationTrigger", "UNUserNotificationCenter"] }
 
 [target.'cfg(not(target_os = "macos"))'.dependencies]
 notify-rust = "4.18"
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.61", features = ["Win32_Foundation", "Win32_System_DataExchange", "Win32_System_Memory"] }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+arboard = { version = "3.6.1", default-features = false, features = ["wayland-data-control"] }
+wl-clipboard-rs = "0.9.3"

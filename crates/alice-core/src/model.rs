@@ -35,6 +35,9 @@ pub struct Mailboxes {
     pub sent: String,
     pub archive: String,
     pub trash: String,
+    /// Existing provider Junk mailbox; empty when the server has no discoverable spam folder.
+    #[serde(default = "default_spam_mailbox")]
+    pub spam: String,
 }
 impl Default for Mailboxes {
     fn default() -> Self {
@@ -43,8 +46,12 @@ impl Default for Mailboxes {
             sent: "Sent".into(),
             archive: "Archive".into(),
             trash: "Trash".into(),
+            spam: default_spam_mailbox(),
         }
     }
+}
+fn default_spam_mailbox() -> String {
+    "Junk".into()
 }
 
 /// Provider APIs an OAuth account may use besides mail. Each needs its own consent.
@@ -74,6 +81,9 @@ pub struct Attachment {
     pub part: Option<String>,
     #[serde(default)]
     pub content_type: Option<String>,
+    /// `Content-ID` of an image the HTML body shows inline (`<img src="cid:…">`).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub content_id: Option<String>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -91,6 +101,7 @@ pub struct Message {
     #[serde(default)]
     pub html_body: Option<String>,
     pub date: String,
+    /// Logical folder; `spam` is quarantined from normal conversation and recipient-suggestion views.
     pub folder: String,
     pub is_read: bool,
     pub is_starred: bool,
@@ -147,9 +158,9 @@ pub struct ThreadSummary {
     pub message: Message,
     /// The conversation's messages in the listed view, newest first; moving the conversation moves these.
     pub ids: Vec<String>,
-    /// Every unread message of the conversation, in any folder except Trash.
+    /// Every unread message of the conversation: normal mail excludes Trash and Spam; Spam stays isolated.
     pub unread_ids: Vec<String>,
-    /// Messages in the whole conversation, in any folder except Trash.
+    /// Messages in the conversation, excluding Spam outside its own view and Trash outside Trash.
     pub count: usize,
     /// Senders from oldest to newest, without repeats; the account's own messages are "me".
     pub participants: Vec<String>,
@@ -264,6 +275,15 @@ pub enum RemoteImages {
     Ask,
     Always,
 }
+/// What AI agents may do through `alice mcp`: nothing (the default), read, or read, change and send.
+#[derive(Clone, Copy, Default, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum McpAccess {
+    #[default]
+    Off,
+    ReadOnly,
+    Full,
+}
 /// How far back mail is kept on this device. Mail older than the window stays on the server.
 #[derive(Clone, Copy, Default, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum SyncWindow {
@@ -305,12 +325,16 @@ pub struct Preferences {
     pub default_account_id: String,
     /// Desktop notifications for new Inbox mail.
     pub notifications: bool,
+    /// Extract verification codes locally and copy fresh deliveries in the desktop app.
+    pub otp_autocopy: bool,
     /// The desktop app's menu bar (system tray) icon, which keeps the app running after its window closes.
     pub menu_bar: bool,
     /// Calendar that "Add to calendar" uses first: a `Calendar::id` from `/v1/calendars`, or empty.
     pub default_calendar: String,
     /// The desktop app imports the operating system's address book (macOS Contacts).
     pub system_contacts: bool,
+    /// What AI agents may do with mail through `alice mcp`.
+    pub mcp: McpAccess,
 }
 impl Default for Preferences {
     fn default() -> Self {
@@ -327,9 +351,11 @@ impl Default for Preferences {
             signature: String::new(),
             default_account_id: String::new(),
             notifications: true,
+            otp_autocopy: false,
             menu_bar: true,
             default_calendar: String::new(),
             system_contacts: false,
+            mcp: McpAccess::Off,
         }
     }
 }
@@ -361,9 +387,11 @@ pub struct PreferencesPatch {
     pub signature: Option<String>,
     pub default_account_id: Option<String>,
     pub notifications: Option<bool>,
+    pub otp_autocopy: Option<bool>,
     pub menu_bar: Option<bool>,
     pub default_calendar: Option<String>,
     pub system_contacts: Option<bool>,
+    pub mcp: Option<McpAccess>,
 }
 
 #[derive(Deserialize)]
@@ -437,6 +465,19 @@ pub struct Arrival {
     pub from_email: String,
     pub subject: String,
     pub preview: String,
+}
+/// Fresh locally extracted verification code, delivered independently of mail previews.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct OtpArrival {
+    pub id: String,
+    /// Cached message to open; `id` above identifies the durable OTP delivery for claims.
+    pub message_id: String,
+    pub account_id: String,
+    pub from_name: String,
+    pub from_email: String,
+    pub code: String,
+    pub received_at: i64,
+    pub expires_at: i64,
 }
 /// Arrivals after a cursor, and the cursor to pass next time.
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -670,4 +711,38 @@ pub struct BusyReport {
 pub struct CalendarList {
     pub calendars: Vec<Calendar>,
     pub errors: Vec<SourceError>,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn accounts_saved_before_spam_support_keep_their_mailbox_configuration() -> anyhow::Result<()> {
+        let mut saved = serde_json::json!({
+            "id": "old-account", "name": "Mail", "email": "me@example.test",
+            "provider": "imap", "is_demo": false,
+            "imap_host": "imap.example.test", "imap_port": 993,
+            "smtp_host": "smtp.example.test", "smtp_port": 587,
+            "folders": {
+                "inbox": "INBOX", "sent": "INBOX.Sent",
+                "archive": "Saved", "trash": "Deleted"
+            },
+            "last_synced": null, "sync_error": null
+        });
+        let account: Account = serde_json::from_value(saved.clone())?;
+        assert_eq!(account.folders.sent, "INBOX.Sent");
+        assert_eq!(account.folders.archive, "Saved");
+        assert_eq!(account.folders.trash, "Deleted");
+        assert_eq!(account.folders.spam, "Junk");
+        saved["folders"]["spam"] = "[Provider]/Unwanted".into();
+        let account: Account = serde_json::from_value(saved.clone())?;
+        let roundtrip: Account = serde_json::from_str(&serde_json::to_string(&account)?)?;
+        assert_eq!(roundtrip.folders.spam, "[Provider]/Unwanted");
+        saved.as_object_mut().unwrap().remove("folders");
+        let account: Account = serde_json::from_value(saved)?;
+        assert_eq!(account.folders.inbox, "INBOX");
+        assert_eq!(account.folders.spam, "Junk");
+        Ok(())
+    }
 }

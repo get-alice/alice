@@ -1,0 +1,56 @@
+---
+const facts = [
+  ['Less to download.', 'Alice uses the browser your system already has. Its Rust mail engine and native Tauri app keep the download small.'],
+  ['One inbox, everywhere.', 'Read or draft in the app or terminal; both stay in sync through one small service on your computer.'],
+  ['Mail you can keep.', 'Your local mail lives in one SQLite database, ready to back up or delete.'],
+];
+---
+<section class="small" aria-labelledby="small-title">
+  <canvas class="breeze" aria-hidden="true" data-dandelion></canvas>
+  <div class="wrap inner">
+    <div class="spot" data-dandelion-spot aria-hidden="true">
+      <p class="hint">Go on, make a wish.</p>
+    </div>
+    <div class="copy">
+      <h2 id="small-title" data-split>Light enough <em>to float.</em></h2>
+      <div class="stat" data-reveal>
+        <p class="figure">8 MB</p>
+        <p class="caption">The entire Alice download for Apple silicon Macs. Many desktop email apps ship a whole browser inside; Alice uses the one your system already has.</p>
+      </div>
+    </div>
+    <dl class="facts">
+      {facts.map(([term, text]) => (
+        <div data-reveal>
+          <dt>{term}</dt>
+          <dd>{text}</dd>
+        </div>
+      ))}
+    </dl>
+  </div>
+</section>
+
+<style>
+  .small { position: relative; padding: clamp(5rem, 10vw, 8rem) 0; overflow: clip; }
+  .breeze { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+  .inner { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 2.5rem var(--gutter); align-items: center; }
+  .spot { grid-column: 1 / span 5; position: relative; aspect-ratio: 4 / 5; max-height: 80vh; cursor: pointer; }
+  .hint { position: absolute; left: 50%; bottom: -0.5rem; translate: -50% 0; white-space: nowrap; font: italic 400 1.15rem/1 var(--font-serif); color: var(--ink-3); }
+  .copy { grid-column: 7 / -1; display: grid; gap: 2.5rem; }
+  .stat { display: grid; gap: 0.75rem; }
+  .figure { font: 300 clamp(4.5rem, 2rem + 7vw, 9rem)/0.9 var(--font-serif); letter-spacing: -0.05em; color: var(--violet); }
+  .caption { color: var(--ink-2); max-width: 28rem; }
+  .facts { grid-column: 1 / -1; margin: clamp(1rem, 4vw, 3rem) 0 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem var(--gutter); }
+  .facts > div { display: grid; gap: 0.6rem; align-content: start; padding-top: 1.5rem; border-top: 1px solid var(--line-strong); }
+  .facts > div:nth-child(2) { margin-top: 2.5rem; }
+  .facts > div:nth-child(3) { margin-top: 5rem; }
+  dt { font: 400 clamp(1.6rem, 1.2rem + 1vw, 2.2rem)/1.1 var(--font-serif); letter-spacing: -0.02em; }
+  dd { margin: 0; color: var(--ink-2); max-width: 24rem; }
+
+  @media (max-width: 56rem) {
+    .inner { grid-template-columns: 1fr; }
+    .spot, .copy, .facts { grid-column: 1; }
+    .spot { width: min(100%, 22rem); justify-self: center; }
+    .facts { grid-template-columns: 1fr; }
+    .facts > div:nth-child(n) { margin-top: 0; }
+  }
+</style>

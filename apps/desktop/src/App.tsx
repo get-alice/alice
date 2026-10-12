@@ -1,7 +1,7 @@
 import { t, useLocale, date as localizedDate, number, list, applyLanguage } from './i18n';
 import { useCallback, useEffect, useEffectEvent, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { Archive, ArrowDown, ArrowLeft, Check, ChevronLeft, ChevronRight, CircleHelp, Copy, Inbox, Mail, MailOpen, MoreHorizontal, PanelRight, Pencil, Plus, RefreshCw, Reply, Search, Send, Settings as SettingsIcon, Sparkles, Star, Tag, Trash2, X } from 'lucide-react';
+import { Archive, ArrowDown, ArrowLeft, Check, ChevronLeft, ChevronRight, CircleHelp, Copy, Inbox, Mail, MailOpen, MoreHorizontal, PanelRight, Pencil, Plus, RefreshCw, Reply, Search, Send, Settings as SettingsIcon, ShieldAlert, Sparkles, Star, Tag, Trash2, X } from 'lucide-react';
 import { get, patch, post, openEmailLink, onNotificationOpen, importSystemContacts, isMacDesktop, systemContactsImportedAt, errorMessage, type Account, type Compose, type Message, type Opened, type Patch, type Snapshot, type Thread, type ThreadPage, defaultPreferences, type Preferences } from './api';
 import ComposeModal from './Compose';
 import SettingsPage, { type SettingsSection } from './Settings';
@@ -21,6 +21,7 @@ const folders = [
   { id: 'inbox', name: 'common.folder.inbox', icon: Inbox, shortcut: goTo.inbox }, { id: 'starred', name: 'common.folder.starred', icon: Star, shortcut: goTo.starred },
   { id: 'sent', name: 'common.folder.sent', icon: Send, shortcut: goTo.sent }, { id: 'drafts', name: 'common.folder.drafts', icon: Pencil, shortcut: goTo.drafts },
   { id: 'archive', name: 'common.folder.archive', icon: Archive, shortcut: goTo.archive }, { id: 'trash', name: 'common.folder.trash', icon: Trash2, shortcut: goTo.trash },
+  { id: 'spam', name: 'common.folder.spam', icon: ShieldAlert, shortcut: goTo.spam },
 ] as const;
 export function initials(name: string) { return name.split(/[\s@]+/).filter(Boolean).slice(0, 2).map(n => n[0]).join('').toUpperCase(); }
 export function avatarColor(name: string) { return ['rose', 'sage', 'violet', 'sand', 'blue'][name.charCodeAt(0) % 5]; }
@@ -219,13 +220,13 @@ export default function App() {
     catch (e) { notify(errorMessage(e), true); }
     finally { setSyncing(false); }
   };
-  // Archive and Trash move the conversation's messages in this view. A pointer move folds the row away
+  // Folder moves affect the conversation's messages in this view. A pointer move folds the row away
   // so the list doesn't jump; a keyboard shortcut removes it instantly.
   const move = async (row: Thread, destination: string, pointer: boolean) => {
     if (pointer) setLeaving(ids => new Set(ids).add(row.id));
     const ok = await change(row.ids, { folder: destination });
     setLeaving(ids => { const next = new Set(ids); next.delete(row.id); return next; });
-    if (ok) notify(destination === 'archive' ? t('app.movedArchive') : destination === 'trash' ? t('app.movedTrash') : t('app.movedInbox'));
+    if (ok) notify(destination === 'archive' ? t('app.movedArchive') : destination === 'trash' ? t('app.movedTrash') : destination === 'spam' ? t('app.movedSpam') : t('app.movedInbox'));
   };
   // Starring marks the newest message; unstarring clears every starred message, as the list shows the conversation starred if any is.
   // A conversation that isn't open has only its listed messages to clear.
@@ -262,7 +263,8 @@ export default function App() {
       reply: { label: draft ? t('app.continueWriting') : t('app.reply'), icon: draft ? Pencil : Reply, shortcut: shortcuts.reply, disabled: !canReply, run: () => void replyTo(row) },
       archive: { label: t('app.archive'), icon: Archive, shortcut: shortcuts.archive, disabled: busy || fixed || row.message.folder === 'archive', run: () => void move(row, 'archive', pointer) },
       trash: { label: t('app.moveTrash'), icon: Trash2, shortcut: shortcuts.trash, disabled: busy || fixed || row.message.folder === 'trash', run: () => void move(row, 'trash', pointer) },
-      inbox: { label: t('app.moveInbox'), icon: Inbox, shortcut: shortcuts.inbox, disabled: busy || fixed || row.message.folder === 'inbox', run: () => void move(row, 'inbox', pointer) },
+      inbox: { label: row.message.folder === 'spam' ? t('app.notSpam') : t('app.moveInbox'), icon: Inbox, shortcut: shortcuts.inbox, disabled: busy || fixed || row.message.folder === 'inbox', run: () => void move(row, 'inbox', pointer) },
+      spam: { label: t('app.markSpam'), icon: ShieldAlert, shortcut: shortcuts.spam, disabled: busy || fixed || row.message.folder === 'spam', run: () => void move(row, 'spam', pointer) },
       read: { label: unread ? t('app.markRead') : t('app.markUnread'), icon: unread ? MailOpen : Mail, shortcut: shortcuts.read, disabled: busy, run: () => void (unread ? change(row.unread_ids, { is_read: true }) : change([row.message.id], { is_read: false })) },
       star: { label: row.is_starred ? t('app.unstar') : t('app.star'), icon: Star, shortcut: shortcuts.star, disabled: busy, run: () => toggleStar(row) },
       ask: { label: t('app.askAbout'), icon: Sparkles, shortcut: shortcuts.assistant, run: () => { if (!open) choose(row, pointer); setAssistant(true); } },
@@ -272,7 +274,7 @@ export default function App() {
   /** A conversation's menu: `lead` items, then moving, flagging and asking Alice. */
   const threadMenu = (row: Thread, lead: MenuEntry[], tail: MenuEntry[] = []): MenuEntry[] => {
     const actions = threadActions(row, true);
-    return [...lead, 'separator', actions.archive, actions.trash, actions.inbox, 'separator', actions.read, actions.star, 'separator', actions.ask, ...tail];
+    return [...lead, 'separator', actions.archive, actions.trash, actions.inbox, ...(row.message.folder === 'spam' ? [] : [actions.spam]), 'separator', actions.read, actions.star, 'separator', actions.ask, ...tail];
   };
   // One window listener for the app's lifetime; the event handler always reads the latest render.
   const onKeyDown = useEffectEvent((event: KeyboardEvent) => {
@@ -301,7 +303,7 @@ export default function App() {
     if (target.matches('.email-list')) commands.push([shortcuts.open, () => { const row = thread ?? visible[0]; if (row) choose(row); }]);
     if (thread) {
       const actions = threadActions(thread, false);
-      for (const action of [actions.reply, actions.archive, actions.trash, actions.inbox, actions.read, actions.star]) commands.push([action.shortcut, () => { if (!action.disabled) action.run(); }]);
+      for (const action of [actions.reply, actions.archive, actions.trash, actions.inbox, actions.spam, actions.read, actions.star]) commands.push([action.shortcut, () => { if (!action.disabled) action.run(); }]);
     }
     const command = commands.find(([shortcut]) => matches(event, shortcut));
     if (command) { event.preventDefault(); command[1](); }
@@ -331,6 +333,8 @@ export default function App() {
   // The React Compiler's ref check reads these actions as ref values because their handlers (not render) reach the
   // request counter through `refresh`; render only reads labels and disabled states.
   const actions = thread ? threadActions(thread, true) : null;
+  // eslint-disable-next-line react-hooks/refs -- only labels and disabled states are read during render
+  const spamAction = thread?.message.folder === 'spam' ? actions?.inbox : actions?.spam;
   // eslint-disable-next-line react-hooks/refs -- see above
   const readerMenu = thread && actions ? threadMenu(thread, [actions.reply], [actions.copy]) : [];
   const syncItem: MenuItem = { label: t('app.syncAccounts'), icon: RefreshCw, shortcut: shortcuts.sync, disabled: syncing, run: () => void sync() };
@@ -387,6 +391,8 @@ export default function App() {
       <div className="reader-toolbar"><button className="icon-button mobile-back" aria-label={t('app.backList')} onClick={backToList}><ArrowLeft size={19} /></button><div className="toolbar-actions"><button className="icon-button" aria-label={t('app.archiveConversation')} aria-keyshortcuts={ariaKeys(shortcuts.archive)} title={hint(t('app.archive'), shortcuts.archive)} disabled={!actions || actions.archive.disabled} onClick={actions?.archive.run}><Archive size={19} /></button><button className="icon-button" aria-label={t('app.trashConversation')} aria-keyshortcuts={ariaKeys(shortcuts.trash)} title={hint(t('app.moveTrash'), shortcuts.trash)} disabled={!actions || actions.trash.disabled} onClick={actions?.trash.run}><Trash2 size={19} /></button><span className="toolbar-divider" /><button className="icon-button" aria-label={actions?.read.label || t('app.markUnread')} aria-keyshortcuts={ariaKeys(shortcuts.read)} title={hint(actions?.read.label || t('app.markUnread'), shortcuts.read)} disabled={!actions || actions.read.disabled} onClick={actions?.read.run}><Mail size={19} /></button><button className={`icon-button ${thread?.is_starred ? 'starred' : ''}`} aria-pressed={thread?.is_starred || false} aria-label={thread?.is_starred ? t('app.unstarConversation') : t('app.starConversation')} aria-keyshortcuts={ariaKeys(shortcuts.star)} title={hint(thread?.is_starred ? t('app.unstar') : t('app.star'), shortcuts.star)} disabled={!actions || actions.star.disabled} onClick={actions?.star.run}>
         {/* Remounts on each click so the pop plays for that click only, never when j/k lands on a starred message. */}
         <motion.span key={starPop} className="icon-wrap" animate={starPop && !prefersReducedMotion() ? { transform: ['scale(1) rotate(0deg)', 'scale(1.3) rotate(-12deg)', 'scale(1) rotate(0deg)'] } : undefined} transition={{ duration: 0.36, ease: easeOut }}><Star size={19} /></motion.span></button>
+        {/* eslint-disable-next-line react-hooks/refs -- the conversation actions above; handlers run on click */}
+        <button className="icon-button" aria-label={spamAction?.label ?? t('app.markSpam')} aria-keyshortcuts={ariaKeys(spamAction?.shortcut ?? shortcuts.spam)} title={hint(spamAction?.label ?? t('app.markSpam'), spamAction?.shortcut ?? shortcuts.spam)} disabled={!spamAction || spamAction.disabled} onClick={spamAction?.run}>{thread?.message.folder === 'spam' ? <Inbox size={19} /> : <ShieldAlert size={19} />}</button>
         <button className={`icon-button ${contextMenu?.key === 'more' ? 'selected' : ''}`} aria-label={t('app.moreActions')} aria-haspopup="menu" aria-expanded={contextMenu?.key === 'more'} disabled={!thread} onClick={event => { if (contextMenu?.key === 'more') setContextMenu(null); else menus.open(fromButton(event.currentTarget, event.detail === 0), readerMenu, 'more'); }}><MoreHorizontal size={19} /></button></div><div className="reader-pagination"><span>{t('app.position', { position: selectedIndex >= 0 ? number(selectedIndex + 1) : '–', total: visible.length })}</span><button className="icon-button" aria-label={t('app.previousConversation')} aria-keyshortcuts={ariaKeys(shortcuts.previous)} title={hint(t('app.previousConversation'), shortcuts.previous)} disabled={selectedIndex <= 0} onClick={() => choose(visible[selectedIndex - 1], true)}><ChevronLeft size={18} /></button><button className="icon-button" aria-label={t('app.nextConversation')} aria-keyshortcuts={ariaKeys(shortcuts.next)} title={hint(t('app.nextConversation'), shortcuts.next)} disabled={selectedIndex < 0 || selectedIndex >= visible.length - 1} onClick={() => choose(visible[selectedIndex + 1], true)}><ChevronRight size={18} /></button></div></div>
       {/* Opening a conversation by pointer eases it in; keyboard navigation (j/k) swaps instantly. */}
       {thread && selected && replyTarget ? <div className="reader-scroll" key={thread.id}><motion.article className="message-content" data-menu-default initial={readerEnter ? rise.initial : false} animate={rise.animate} onContextMenu={event => menus.open(fromEvent(event), readerMenu, 'reader')}>

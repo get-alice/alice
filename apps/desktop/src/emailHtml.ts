@@ -29,8 +29,9 @@ function cutFrom(start: Element, root: DocumentFragment) {
  * The original HTML in a sandboxed frame document. Remote images load only when `loadImages` is set;
  * `remoteImages` counts the shown ones that could, so the reader only asks when there is something to load.
  * `quoted` reports whether the email ends with earlier messages; they are left out unless `showQuoted`.
+ * `embedded` maps the Content-IDs of images the message carries to their `data:` URLs (`<img src="cid:…">`).
  */
-export function emailDocument(html: string, loadImages: boolean, showQuoted: boolean) {
+export function emailDocument(html: string, loadImages: boolean, showQuoted: boolean, embedded: Record<string, string> = {}) {
   // Template contents are inert, including images, until sanitized and placed in the frame.
   const template = document.createElement('template');
   template.innerHTML = html;
@@ -61,17 +62,28 @@ export function emailDocument(html: string, loadImages: boolean, showQuoted: boo
   }
   let remoteImages = 0;
   for (const image of clean.querySelectorAll('img')) {
-    const src = image.getAttribute('src') || '';
+    let src = image.getAttribute('src') || '';
+    if (/^cid:/i.test(src)) { src = embedded[contentId(src)] ?? ''; image.setAttribute('src', src); }
     const inline = /^data:image\/(png|jpeg|gif|webp);base64,/i.test(src);
     let remote = false;
     try { const url = new URL(src); remote = url.protocol === 'https:' && !url.username && !url.password; } catch { /* Inline or unsupported image. */ }
     if (remote) remoteImages++;
     if (!inline && !(remote && loadImages)) image.removeAttribute('src');
+    // The frame's `img{height:auto}` keeps narrowed images in proportion. Take that proportion from the declared
+    // size, which other clients draw, not the file's: a 396×1 divider cut from a square tile must stay a line.
+    const width = Number(image.getAttribute('width')), height = Number(image.getAttribute('height'));
+    if (width > 0 && height > 0) image.setAttribute('style', `aspect-ratio:${width}/${height};${image.getAttribute('style') ?? ''}`);
   }
   const container = document.createElement('div');
   container.append(clean);
   const policy = `default-src 'none'; script-src 'none'; style-src 'unsafe-inline'; img-src data:${loadImages ? ' https:' : ''}; form-action 'none'; base-uri 'none'`;
   return { remoteImages, quoted, document: `<!doctype html><html><head><meta http-equiv="Content-Security-Policy" content="${policy}"><meta name="referrer" content="no-referrer"><style>html,body{height:auto!important;min-height:0!important}body{margin:0;font:14px/1.6 Arial,sans-serif;color:#222;overflow-wrap:anywhere}img,table{max-width:100%}img{height:auto}a:focus-visible{outline:2px solid #68518e;outline-offset:3px}</style></head><body>${container.innerHTML}</body></html>` };
+}
+
+/** The Content-ID a `cid:` URL names. */
+export function contentId(url: string) {
+  const id = url.slice(4).replace(/^<|>$/g, '');
+  try { return decodeURIComponent(id); } catch { return id; }
 }
 
 // "On Thu, Sep 24, 2026 at 3:34 PM Ana <ana@…> wrote:" (often wrapped), Outlook's original-message

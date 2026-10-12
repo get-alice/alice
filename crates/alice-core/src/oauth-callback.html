@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="{lang}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>{heading} | Alice</title>
+  <style>{styles}</style>
+</head>
+<body>
+  <main class="confirmation {tone}" aria-labelledby="confirmation-title">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">{logo}</span>
+      <span>Alice<span class="brand-dot">.</span></span>
+    </div>
+    <div class="status-icon" aria-hidden="true">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="{icon}"/>
+      </svg>
+    </div>
+    <h1 id="confirmation-title">{heading}</h1>
+    <p>{detail}</p>
+  </main>
+</body>
+</html>

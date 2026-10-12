@@ -1,0 +1,124 @@
+---
+import Icon from './Icon.astro';
+import Shot from './Shot.astro';
+import inviteLight from '../assets/invite-light.png';
+import inviteDark from '../assets/invite-dark.png';
+---
+<section class="wonders" aria-labelledby="wonders-title">
+  <div class="wrap">
+    <h2 id="wonders-title" data-split>Little things, <em>handled.</em></h2>
+    <div class="bento">
+      <article class="cell invite" data-reveal>
+        <div class="text">
+          <h3>Answer invitations in the email.</h3>
+          <p>Accept, Maybe or Decline sends a standard calendar reply to the organizer, whichever provider they use.</p>
+        </div>
+        <div class="invite-shot">
+          <Shot light={inviteLight} dark={inviteDark} sizes="(min-width: 60rem) 40rem, 90vw" alt="An invitation card in Alice for an identity review on Thursday 15 October, with Accept, Maybe and Decline buttons." />
+        </div>
+      </article>
+
+      <article class="cell keys" data-reveal data-keys>
+        <div class="caps" aria-hidden="true">
+          <kbd>j</kbd><kbd>k</kbd><kbd>e</kbd><kbd>r</kbd><kbd>/</kbd>
+        </div>
+        <div class="text">
+          <h3>Every action has a key.</h3>
+          <p>j and k move, e archives, r replies. Press ? for the rest.</p>
+        </div>
+      </article>
+
+      <article class="cell search" data-reveal data-search>
+        <div class="field" aria-hidden="true">
+          <Icon name="magnifying-glass" size={18} />
+          <span class="query" data-query>sofie studio</span><span class="caret"></span>
+        </div>
+        <p class="hit" aria-hidden="true" data-hit><b>Sophie Chen</b> A little room for big ideas</p>
+        <div class="text">
+          <h3>Search that forgives typos.</h3>
+          <p>A misspelled name still finds its mail, and from:, has:attachment or after:7d narrow it down.</p>
+        </div>
+      </article>
+
+      <article class="cell images" data-reveal>
+        <div class="blocked" aria-hidden="true">
+          <span class="tile"></span><span class="tile"></span><span class="tile"></span>
+          <span class="shield"><Icon name="eye-slash" size={26} /></span>
+        </div>
+        <div class="text">
+          <h3>Trackers wait outside.</h3>
+          <p>Remote images stay blocked until you allow them, so senders can’t see when you read.</p>
+        </div>
+      </article>
+
+      <article class="cell accounts" data-reveal>
+        <ul class="marks" aria-label="Works with">
+          <li><Icon name="brand:gmail" size={26} /><span>Gmail</span></li>
+          <li><Icon name="microsoft-outlook-logo" size={28} /><span>Outlook</span></li>
+          <li><Icon name="brand:icloud" size={28} /><span>iCloud</span></li>
+          <li><Icon name="envelope-simple" size={26} /><span>Any IMAP</span></li>
+        </ul>
+        <div class="text">
+          <h3>Every account, one inbox.</h3>
+          <p>Gmail and Outlook sign in through your browser. iCloud, Fastmail or your own server connect over IMAP.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<style>
+  .wonders { padding: clamp(5rem, 10vw, 8rem) 0; }
+  h2 { margin-bottom: clamp(2.5rem, 5vw, 4rem); max-width: 14ch; }
+  .bento { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 1rem; }
+  .cell {
+    position: relative; overflow: hidden; border-radius: 20px; border: 1px solid var(--line);
+    background: var(--bg-raise); padding: clamp(1.4rem, 2.4vw, 2rem);
+    display: flex; flex-direction: column; justify-content: space-between; gap: 2rem; min-height: 19rem;
+  }
+  .text { display: grid; gap: 0.5rem; max-width: 30rem; }
+  h3 { font-size: clamp(1.5rem, 1.2rem + 0.8vw, 2rem); letter-spacing: -0.02em; line-height: 1.1; }
+  .text p { color: var(--ink-2); font-size: 0.98rem; }
+
+  .invite { grid-column: span 4; background: linear-gradient(160deg, color-mix(in oklab, var(--lavender) 16%, var(--bg-raise)), var(--bg-raise) 60%); }
+  .invite-shot { margin: 0 calc(-1 * clamp(1.4rem, 2.4vw, 2rem)) calc(-1 * clamp(1.4rem, 2.4vw, 2rem)) clamp(1rem, 6vw, 5rem); border-radius: 16px 0 0 0; overflow: hidden; border-top: 1px solid var(--line); border-left: 1px solid var(--line); box-shadow: 0 30px 60px -30px rgb(var(--shade) / 0.45); }
+  .invite-shot :global(img) { display: block; width: 100%; height: auto; }
+
+  .keys, .search { grid-column: span 2; }
+  .caps { display: flex; gap: 0.45rem; flex-wrap: wrap; }
+  kbd {
+    display: grid; place-items: center; width: 3rem; height: 3rem; border-radius: 12px;
+    font: 500 1.1rem/1 ui-monospace, 'SF Mono', Menlo, monospace; color: var(--ink);
+    background: var(--bg); border: 1px solid var(--line-strong);
+    box-shadow: 0 3px 0 var(--line-strong);
+    transition: translate 120ms var(--ease-out), box-shadow 120ms var(--ease-out), background-color 120ms, color 120ms;
+  }
+  kbd.down { translate: 0 3px; box-shadow: 0 0 0 var(--line-strong); background: var(--petal); color: var(--violet); border-color: var(--lavender); }
+
+  .search .field { display: flex; align-items: center; gap: 0.6rem; padding: 0.8rem 1rem; border-radius: 12px; border: 1px solid var(--line-strong); background: var(--bg); color: var(--ink-3); }
+  .query { color: var(--ink); font-size: 0.98rem; white-space: pre; }
+  .caret { width: 1.5px; height: 1.15em; background: var(--violet); margin-left: -0.45rem; animation: blink 1s steps(2) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .hit { margin-top: -1.25rem; padding: 0.7rem 1rem; border-radius: 12px; background: var(--petal); color: var(--ink-2); font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hit b { color: var(--ink); margin-right: 0.35rem; }
+
+  .images { grid-column: span 2; }
+  .blocked { position: relative; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 0.5rem; height: 7.5rem; }
+  .tile { border-radius: 12px; background: repeating-linear-gradient(135deg, var(--bg-sunk) 0 10px, transparent 10px 20px); border: 1px dashed var(--line-strong); }
+  .shield { position: absolute; left: 50%; top: 50%; translate: -50% -50%; display: grid; place-items: center; width: 3.5rem; height: 3.5rem; border-radius: 50%; background: var(--bg-raise); color: var(--violet); border: 1px solid var(--line-strong); box-shadow: 0 10px 30px -12px rgb(var(--shade) / 0.5); }
+
+  .accounts { grid-column: span 2; }
+  .marks { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.5rem; }
+  .marks li { display: grid; justify-items: center; gap: 0.5rem; padding: 0.9rem 0.25rem 0.7rem; border-radius: 14px; background: var(--bg); border: 1px solid var(--line); color: var(--ink); font-size: 0.8rem; }
+
+  @media (prefers-reduced-motion: reduce) { .caret { animation: none; } }
+  @media (max-width: 60rem) {
+    .bento { grid-template-columns: 1fr 1fr; }
+    .invite, .images, .accounts { grid-column: span 2; }
+    .keys, .search { grid-column: span 1; }
+  }
+  @media (max-width: 40rem) {
+    .bento { grid-template-columns: 1fr; }
+    .cell.cell { grid-column: auto; min-height: 0; }
+  }
+</style>

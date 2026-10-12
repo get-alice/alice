@@ -1,10 +1,87 @@
 import { t } from './i18n';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { MoreHorizontal } from 'lucide-react';
+import { Check, Copy, MoreHorizontal } from 'lucide-react';
 import MessageBody from './MessageBody';
-import { emailDocument, splitQuoted } from './emailHtml';
-import type { Message, MessageFormat } from './api';
+import { contentId, emailDocument, splitQuoted } from './emailHtml';
+import { attachmentBytes, copyVerificationCode, errorMessage, get, isDesktop, type Message, type MessageFormat } from './api';
 import { fromEvent, linkMenu, useMenus, wantsSystemMenu } from './ContextMenu';
+
+const embeddable = /^image\/(png|jpeg|gif|webp)$/;
+/** Embedded images already fetched, by message and attachment index, so reopening a message does not fetch them again. */
+const fetched = new Map<string, Promise<string>>();
+function dataUrl(message: Message, index: number, type: string) {
+  const key = `${message.id}:${index}`;
+  let url = fetched.get(key);
+  if (!url) {
+    url = attachmentBytes(message, index).then(bytes => new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = () => reject(reader.error ?? new Error('read'));
+      reader.readAsDataURL(new Blob([bytes], { type }));
+    }));
+    url.catch(() => fetched.delete(key));
+    fetched.set(key, url);
+  }
+  return url;
+}
+
+/**
+ * The images an HTML message embeds (`<img src="cid:…">`) as `data:` URLs by Content-ID, fetched from the
+ * mail server. They are part of the message, so unlike remote images they load without asking.
+ */
+function useEmbedded(message: Message, html: string | null) {
+  const [embedded, setEmbedded] = useState<Record<string, string>>({});
+  useEffect(() => {
+    if (!html || !/["']\s*cid:/i.test(html)) return;
+    const template = document.createElement('template');
+    template.innerHTML = html;
+    const wanted = new Set([...template.content.querySelectorAll('img[src]')].map(img => img.getAttribute('src') || '').filter(src => /^cid:/i.test(src)).map(contentId));
+    let live = true;
+    message.attachments.forEach((file, index) => {
+      const type = file.content_type || '';
+      if (!file.content_id || !wanted.has(file.content_id) || !embeddable.test(type)) return;
+      const id = file.content_id;
+      dataUrl(message, index, type).then(url => { if (live) setEmbedded(current => ({ ...current, [id]: url })); }, () => { /* The image stays blank. */ });
+    });
+    return () => { live = false; };
+  }, [message, html]);
+  return embedded;
+}
+
+/** A reader action, independent of automatic arrival delivery and its freshness window. */
+function VerificationCode({ message }: { message: Message }) {
+  const [detected, setDetected] = useState<{ id: string; code: string | null; error: string } | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [copied, setCopied] = useState<string | null>(null);
+  const [copyError, setCopyError] = useState('');
+  useEffect(() => {
+    let live = true;
+    get<string | null>(`/v1/messages/${encodeURIComponent(message.id)}/otp`).then(
+      code => { if (live) setDetected({ id: message.id, code, error: '' }); },
+      (error: unknown) => { if (live) setDetected({ id: message.id, code: null, error: errorMessage(error) }); },
+    );
+    return () => { live = false; };
+  }, [message.id, message.body, message.subject, message.html_body]);
+  useEffect(() => {
+    if (copied === null) return;
+    const timer = setTimeout(() => setCopied(null), 2000);
+    return () => clearTimeout(timer);
+  }, [copied]);
+  if (detected?.id !== message.id) return null;
+  if (detected.error) return <p className="form-error" role="alert">{detected.error}</p>;
+  if (!detected.code) return null;
+  const copy = async () => {
+    setBusy(true); setCopyError('');
+    try { setCopied(await copyVerificationCode(message.id)); }
+    catch (error) { setCopyError(errorMessage(error)); }
+    finally { setBusy(false); }
+  };
+  return <div className="html-controls otp-controls">
+    <span>{t('app.verificationCode')}<code>{detected.code}</code></span>
+    <button className="text-button" disabled={busy} onClick={() => void copy()} aria-live="polite">{copied === detected.code ? <Check size={16} /> : <Copy size={16} />}{busy ? t('app.copyingCode') : copied === detected.code ? t('app.codeCopied') : t('app.copyCode')}</button>
+    {copyError && <span className="form-error" role="alert">{copyError}</span>}
+  </div>;
+}
 
 /**
  * One message's body in the reader's chosen format (HTML in a sandboxed frame, or plain text).
@@ -16,12 +93,14 @@ export default function MessageView({ message, format, loadImages, onOpen }: { m
   const [showQuoted, setShowQuoted] = useState(false);
   const [height, setHeight] = useState(150);
   const cleanup = useRef<(() => void) | null>(null);
-  const html = format === 'html' ? message.html_body : null;
-  const source = useMemo(() => html ? emailDocument(html, images, showQuoted) : null, [html, images, showQuoted]);
+  const html = format === 'html' ? message.html_body ?? null : null;
+  const embedded = useEmbedded(message, html);
+  const source = useMemo(() => html ? emailDocument(html, images, showQuoted, embedded) : null, [html, images, showQuoted, embedded]);
   const plain = useMemo(() => splitQuoted(message.body), [message.body]);
   useEffect(() => () => cleanup.current?.(), [source]);
   const quoted = source ? source.quoted : plain.quoted;
   return <div className="message-view">
+    {isDesktop && <VerificationCode message={message} />}
     {source && !images && source.remoteImages > 0 && <div className="html-controls"><span>{t('app.hiddenImages')}</span><button className="text-button" onClick={() => setImages(true)}>{t('app.loadImages')}</button></div>}
     {source ? <iframe title={t('app.emailFrom', { name: message.from_name })} sandbox="allow-same-origin" referrerPolicy="no-referrer" srcDoc={source.document} style={{ height }} onLoad={event => {
       const frame = event.currentTarget;

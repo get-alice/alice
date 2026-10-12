@@ -42,6 +42,13 @@ try {
   assert.equal(allowed.querySelector('img[alt="Logo"]').getAttribute('src'), 'https://tracker.invalid/logo.png');
   assert.match(allowed.querySelector('meta[http-equiv="Content-Security-Policy"]').content, /img-src data: https:;/);
   assert.equal(blockedResult.quoted, false);
+  // The declared size, not the file's own proportion, shapes an image: a 396×1 divider cut from a square tile stays a
+  // line under the frame's `img{height:auto}`, while the sender's inline style still wins. Partial sizes add nothing.
+  const sized = parse(exports.emailDocument('<img id="line" src="https://x.test/tile.png" width="396" height="1"><img id="styled" width="87" height="60" style="height:60px"><img id="wide" width="100%" height="20"><img id="free" width="40">', true, false).document);
+  assert.equal(sized.getElementById('line').getAttribute('style'), 'aspect-ratio:396/1;');
+  assert.equal(sized.getElementById('styled').getAttribute('style'), 'aspect-ratio:87/60;height:60px');
+  assert.equal(sized.getElementById('wide').hasAttribute('style'), false);
+  assert.equal(sized.getElementById('free').hasAttribute('style'), false);
 
   // Replies fold the history they quote: Gmail's wrapper, Apple Mail's attribution and cite, Outlook's header block.
   const gmail = '<div dir="ltr">Sounds good, talk next week.<div class="gmail_signature">Joana</div></div><br><div class="gmail_quote"><div class="gmail_attr">On Thu, Sep 24, 2026 at 3:34 PM Amruth &lt;a@x.test&gt; wrote:<br></div><blockquote class="gmail_quote">Earlier <img src="https://tracker.invalid/old.png"></blockquote></div>';

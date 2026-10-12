@@ -89,6 +89,11 @@
   "rsvp_sent": "{state} “{title}” · reply sent to {organizer}",
   "updated": "Updated {id} ({folder})",
   "draft_saved": "Draft saved: {id}\nSend with: alice send {id}",
+  "mcp_read_only_on": "AI agents can now read your mail through `alice mcp`. Allow changes and sending with `alice mcp full`; stop access with `alice mcp off`.",
+  "mcp_full": "AI agents now have full access to your mail through `alice mcp`: they can read, organize, draft and send. Stop access with `alice mcp off`.",
+  "mcp_off": "AI agents can no longer use your mail.",
+  "mcp_disabled": "Alice does not allow AI agents to use mail. Ask the person to choose Read only or Full access for AI agents in Alice Settings, or to run `alice mcp read-only` or `alice mcp full`.",
+  "mcp_read_only": "Alice gives AI agents read-only access, so this tool is not available. Ask the person to choose Full access for AI agents in Alice Settings, or to run `alice mcp full`.",
   "help": {
     "template": "{about-with-newline}\nUsage: {usage}\n\n{all-args}{after-help}",
     "commands_heading": "Commands",
@@ -114,7 +119,8 @@
       "discard": "Discard an unsent local draft. This never deletes provider mail.",
       "archive": "Archive a message.",
       "trash": "Move a message to Trash.",
-      "restore": "Restore a message to Inbox.",
+      "spam": "Mark a message as spam by moving it to the provider's Spam folder. Whether its spam filter learns from that depends on the provider.",
+      "restore": "Restore a message to Inbox, marking Spam mail as not spam.",
       "star": "Star a message, or remove its star with --remove.",
       "unread": "Mark a message unread.",
       "sync": "Synchronize mail now.",
@@ -138,7 +144,8 @@
       "calendar_list": "Calendars that invitations can be added to.",
       "calendar_busy": "Busy times across connected calendars, in local time. Titles are never shown.",
       "calendar_add": "Add an invitation to a calendar (default: the one chosen in Settings).",
-      "calendar_export": "Save an invitation as an .ics file, or open it in your calendar app with --open."
+      "calendar_export": "Save an invitation as an .ics file, or open it in your calendar app with --open.",
+      "mcp": "Serve your mail to AI agents over MCP (stdio). `off`, `read-only` or `full` sets what agents may do."
     },
     "args": {
       "help": "Print help",
@@ -183,7 +190,8 @@
       "model": "AI model name",
       "base_url": "AI API base URL",
       "prompt": "Question or instructions for Alice",
-      "message": "Ask about this message instead of the newest inbox messages"
+      "message": "Ask about this message instead of the newest inbox messages",
+      "access": "AI agent access: off, read-only (search and read) or full (also organize, draft and send)"
     },
     "scoped": {
       "contacts_search": {"account": "Rank this sending account's address book and correspondents first."},

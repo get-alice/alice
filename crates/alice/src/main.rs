@@ -1,5 +1,6 @@
 #![forbid(unsafe_code)]
 
+mod mcp;
 mod tui;
 use alice_core::{
     Account, Client, Compose, EventDraft, Invite, Message, MessagePage, MessagePatch, Rsvp,
@@ -12,7 +13,7 @@ use std::sync::{LazyLock, OnceLock};
 use uuid::Uuid;
 
 #[derive(Parser)]
-#[command(name = "alice", version)]
+#[command(name = "alice", version = alice_core::client::VERSION)]
 struct Args {
     #[command(subcommand)]
     command: Option<Action>,
@@ -79,6 +80,9 @@ enum Action {
     Trash {
         id: String,
     },
+    Spam {
+        id: String,
+    },
     Restore {
         id: String,
     },
@@ -118,6 +122,16 @@ enum Action {
         #[command(subcommand)]
         command: CalendarAction,
     },
+    Mcp {
+        #[arg(value_enum)]
+        access: Option<McpMode>,
+    },
+}
+#[derive(Clone, Copy, ValueEnum)]
+enum McpMode {
+    Off,
+    ReadOnly,
+    Full,
 }
 #[derive(Clone, Copy, ValueEnum)]
 enum Toggle {
@@ -384,6 +398,20 @@ async fn run() -> Result<()> {
         .with_locale(locale());
     match args.command {
         None => tui::run(client).await?,
+        Some(Action::Mcp { access: None }) => mcp::serve(client).await?,
+        Some(Action::Mcp {
+            access: Some(access),
+        }) => {
+            let (mode, key) = match access {
+                McpMode::Off => ("off", "cli.mcp_off"),
+                McpMode::ReadOnly => ("read_only", "cli.mcp_read_only_on"),
+                McpMode::Full => ("full", "cli.mcp_full"),
+            };
+            let _: alice_core::Preferences = client
+                .patch("/v1/preferences", &json!({ "mcp": mode }))
+                .await?;
+            println!("{}", i18n::tr(locale(), key, &[]));
+        }
         Some(Action::List {
             folder,
             account,
@@ -477,20 +505,7 @@ async fn run() -> Result<()> {
             send,
         }) => {
             let m: Message = client.get(&format!("/v1/messages/{}", encode(&id))).await?;
-            let to = m.reply_recipients();
-            let draft = Compose {
-                id: Uuid::new_v4().to_string(),
-                account_id: m.account_id,
-                to,
-                subject: if m.subject.to_lowercase().starts_with("re:") {
-                    m.subject
-                } else {
-                    format!("Re: {}", m.subject)
-                },
-                body: read_body(body, body_file)?,
-                in_reply_to: m.message_id,
-            };
-            save(&client, draft, send).await?;
+            save(&client, reply_compose(m, read_body(body, body_file)?), send).await?;
         }
         Some(Action::Compose {
             account,
@@ -543,6 +558,17 @@ async fn run() -> Result<()> {
                 &id,
                 MessagePatch {
                     folder: Some("trash".into()),
+                    ..Default::default()
+                },
+            )
+            .await?
+        }
+        Some(Action::Spam { id }) => {
+            update(
+                &client,
+                &id,
+                MessagePatch {
+                    folder: Some("spam".into()),
                     ..Default::default()
                 },
             )
@@ -1152,6 +1178,20 @@ async fn run() -> Result<()> {
     }
     Ok(())
 }
+pub(crate) fn reply_compose(m: Message, body: String) -> Compose {
+    Compose {
+        id: Uuid::new_v4().to_string(),
+        to: m.reply_recipients(),
+        account_id: m.account_id,
+        subject: if m.subject.to_lowercase().starts_with("re:") {
+            m.subject
+        } else {
+            format!("Re: {}", m.subject)
+        },
+        body,
+        in_reply_to: m.message_id,
+    }
+}
 fn read_body(body: Option<String>, file: Option<std::path::PathBuf>) -> Result<String> {
     body.map(Ok).unwrap_or_else(|| {
         file.map(std::fs::read_to_string)
@@ -1495,6 +1535,7 @@ async fn update(client: &Client, id: &str, patch: MessagePatch) -> Result<()> {
         "drafts" => alice_core::t!(locale(), "common.folder.drafts"),
         "archive" => alice_core::t!(locale(), "common.folder.archive"),
         "trash" => alice_core::t!(locale(), "common.folder.trash"),
+        "spam" => alice_core::t!(locale(), "common.folder.spam"),
         _ => terminal_text(&m.folder),
     };
     println!(

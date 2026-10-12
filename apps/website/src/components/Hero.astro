@@ -1,0 +1,149 @@
+---
+import DownloadButton from './DownloadButton.astro';
+import Flower from './Flower.astro';
+import Icon from './Icon.astro';
+import { repo, type Release } from '../lib/release';
+
+interface Props { release: Release }
+
+// The inbox Alice leaves behind. x/y place each one in the hero (%), z is depth (1 = nearest).
+// `m` keeps it on narrow screens, where only the upper half has room.
+const noise: { from?: string; text: string; x: number; y: number; z: number; m?: true }[] = [
+  { from: 'Deals', text: 'LAST CHANCE: 40% off ends tonight', x: 9, y: 15, z: 0.9 },
+  { text: '1,284 unread', x: 27, y: 9, z: 0.55, m: true },
+  { from: 'Jordan, Priya +6', text: 'Re: Re: Fwd: Q3 planning (final) (2)', x: 44, y: 21, z: 1 },
+  { from: 'Notifications', text: 'You have 14 new notifications', x: 63, y: 9, z: 0.6 },
+  { from: 'Billing', text: 'Your trial ends in 2 days', x: 81, y: 16, z: 0.85 },
+  { text: '99+', x: 94, y: 29, z: 0.5 },
+  { from: 'Security', text: 'New sign-in from Chrome on Windows', x: 15, y: 32, z: 0.42 },
+  { from: 'Tomás', text: 'Following up on my last email', x: 34, y: 37, z: 0.72, m: true },
+  { from: 'Calendar', text: 'Reminder: Reminder: Standup', x: 55, y: 33, z: 0.45, m: true },
+  { from: 'Weekly digest', text: '48 posts you might have missed', x: 73, y: 30, z: 1 },
+  { from: 'Marta', text: 'Out of office: Re: Budget', x: 88, y: 45, z: 0.75 },
+  { text: '(no subject)', x: 66, y: 49, z: 0.5 },
+  { from: 'Orders', text: 'Your package is out for delivery', x: 82, y: 62, z: 0.95 },
+  { text: 'Unsubscribe', x: 95, y: 75, z: 0.5 },
+  { from: 'Survey', text: 'How did we do? (1 minute)', x: 71, y: 75, z: 0.65 },
+  { from: 'Webinar', text: 'Starting in 5 minutes', x: 79, y: 88, z: 0.42 },
+  { from: 'Reply all', text: 'Thanks!', x: 91, y: 92, z: 0.8 },
+  { text: 'Fwd: Fwd: Fwd:', x: 50, y: 6, z: 0.36 },
+  { from: 'Social', text: 'Someone mentioned you', x: 19, y: 4, z: 0.32 },
+  { text: 'Mark all as read', x: 60, y: 92, z: 0.3 },
+  { from: 'Recruiting', text: 'Quick question about your profile', x: 5, y: 46, z: 0.34 },
+  { from: 'Newsletter', text: '12 things you missed this week', x: 40, y: 48, z: 0.3 },
+  { text: '+1', x: 97, y: 56, z: 0.36 },
+  { from: 'no-reply', text: 'Your password was changed', x: 57, y: 64, z: 0.3 },
+];
+const initials = (name: string) => name.replace(/[^\p{L} ]/gu, '').split(' ').filter(Boolean).slice(0, 2).map(w => w[0]).join('').toUpperCase();
+---
+<section class="hero" data-hero aria-labelledby="hero-title">
+  <div class="field" aria-hidden="true">
+    {[0, 1, 2].map(layer => (
+      <div class="layer" data-depth={layer}>
+        {noise.filter(n => (n.z > 0.75 ? 2 : n.z > 0.5 ? 1 : 0) === layer).map(n => (
+          <div class:list={['frag', { wide: !n.m }]} data-x={n.x} data-y={n.y} data-z={n.z}>
+            <div class:list={['chip', { badge: !n.from }]}>
+              {n.from && <span class="avatar">{initials(n.from)}</span>}
+              {n.from && <b>{n.from}</b>}
+              <span>{n.text}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    ))}
+  </div>
+  <div class="clouds" aria-hidden="true">
+    <span class="cloud c1" data-depth="0.4"></span>
+    <span class="cloud c2" data-depth="0.8"></span>
+    <span class="cloud c3" data-depth="0.25"></span>
+    <span class="cloud c4" data-depth="0.6"></span>
+  </div>
+  <div class="vortex" data-vortex aria-hidden="true">
+    <div class="sun"></div>
+    <div class="moon"></div>
+    <Flower class="bloom" />
+  </div>
+  <canvas class="meadow" aria-hidden="true" data-meadow></canvas>
+
+  <div class="wrap hero-copy">
+    <h1 id="hero-title" data-split>Email, <em>light as air.</em></h1>
+    <p class="lede" data-rise>Alice is a lightweight email client for Mac, Windows and Linux. Free, open source, and private by design.</p>
+    <div class="ctas" data-rise>
+      <DownloadButton release={Astro.props.release} />
+      <a class="button ghost" href={repo}><Icon name="github-logo" size={20} />View on GitHub</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero { position: relative; min-height: 100dvh; display: grid; align-items: end; overflow: clip; isolation: isolate; }
+  .hero-copy { position: relative; z-index: 3; padding-top: 7rem; padding-bottom: calc(clamp(7rem, 22vh, 13rem) + 1rem); display: grid; gap: 1.6rem; justify-items: start; }
+  h1 { font-size: clamp(3.2rem, 1.2rem + 7vw, 8.75rem); line-height: 0.95; max-width: 11ch; letter-spacing: -0.045em; }
+  h1 em { display: inline-block; padding-bottom: 0.06em; }
+  .ctas { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+
+  .field { position: absolute; inset: 0; z-index: 1; pointer-events: none; display: none; }
+  :global(.motion) .field { display: block; }
+  .layer { position: absolute; inset: 0; }
+  .frag { position: absolute; left: 0; top: 0; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 0.55em; white-space: nowrap;
+    padding: 0.5em 0.95em 0.5em 0.5em; border-radius: 999px;
+    background: var(--bg-raise); border: 1px solid var(--line);
+    box-shadow: 0 12px 30px -18px rgb(var(--shade) / 0.45);
+    font-size: 0.9rem; color: var(--ink-2);
+  }
+  .chip b { color: var(--ink); font-weight: 600; }
+  .chip.badge { padding: 0.45em 0.95em; font-weight: 600; color: var(--ink); }
+  .avatar { display: grid; place-items: center; width: 1.9em; height: 1.9em; border-radius: 50%; background: var(--bg-sunk); color: var(--ink-3); font-size: 0.72em; font-weight: 600; letter-spacing: 0.02em; }
+  .layer[data-depth="0"] .chip { filter: blur(1.5px); }
+
+  /* The sun sits where the flower will bloom; the script reads its position for the breeze. */
+  .vortex { position: absolute; z-index: 1; right: clamp(1.5rem, 13vw, 15rem); top: 38%; translate: 0 -50%; width: clamp(10rem, 28vmin, 22rem); aspect-ratio: 1; pointer-events: none; }
+  .sun {
+    position: absolute; inset: -60%; border-radius: 50%;
+    background: radial-gradient(closest-side, rgb(var(--sun) / 0.95), rgb(var(--sun) / 0.55) 35%, rgb(var(--sun) / 0.18) 62%, transparent);
+  }
+  /* Night: a soft lavender aura instead of sunlight, and a crescent moon keeping the flower company. */
+  :global([data-theme="dark"]) .sun {
+    inset: -38%;
+    background: radial-gradient(closest-side, rgb(165 143 214 / 0.3), rgb(120 104 205 / 0.12) 50%, rgb(90 80 180 / 0.04) 72%, transparent);
+  }
+  .moon { display: none; }
+  :global([data-theme="dark"]) .moon {
+    display: block; position: absolute; top: -16%; right: -20%; width: 24%; aspect-ratio: 1; border-radius: 50%;
+    background: radial-gradient(circle at 35% 70%, #fbf8ff, #e4ddfb 70%);
+    mask: radial-gradient(circle at 74% 28%, transparent 0 47%, #000 48%);
+    -webkit-mask: radial-gradient(circle at 74% 28%, transparent 0 47%, #000 48%);
+    filter: drop-shadow(0 0 1.25rem rgb(200 188 255 / 0.45));
+  }
+  .vortex :global(.bloom) { position: absolute; inset: 0; width: 100%; height: 100%; color: var(--lavender); overflow: visible; filter: drop-shadow(0 18px 30px rgb(var(--shade) / 0.25)); }
+  .vortex :global(.bloom .heart) { fill: #f6d66b; }
+
+  /* Soft cumulus built from overlapping circles. */
+  .clouds { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+  /* Opaque puffs with opacity on the whole cloud, so overlapping circles never show a seam. */
+  .cloud { position: absolute; display: block; width: 14rem; height: 4rem; border-radius: 999px; background: #fff; opacity: 0.92; filter: drop-shadow(0 12px 14px rgb(var(--shade) / 0.12)); }
+  .cloud::before, .cloud::after { content: ''; position: absolute; border-radius: 50%; background: inherit; }
+  .cloud::before { width: 6.5rem; height: 6.5rem; left: 2rem; bottom: 1.5rem; }
+  .cloud::after { width: 4.5rem; height: 4.5rem; left: 7rem; bottom: 1.4rem; }
+  .c1 { left: 6%; top: 17%; }
+  .c2 { left: 58%; top: 9%; scale: 1.25; }
+  .c3 { left: 36%; top: 34%; scale: 0.6; opacity: 0.8; }
+  .c4 { left: 82%; top: 57%; scale: 0.8; }
+  :global([data-theme="dark"]) .clouds { display: none; } /* a clear night: moon and stars only */
+
+  .meadow { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; width: 100%; height: clamp(7rem, 22vh, 13rem); pointer-events: none; mask-image: linear-gradient(180deg, #000 70%, transparent); -webkit-mask-image: linear-gradient(180deg, #000 70%, transparent); }
+
+  @media (max-width: 60rem) {
+    .hero { min-height: 0; }
+    .frag.wide { display: none; }
+    .vortex { right: 1.75rem; top: 9rem; translate: 0 -50%; width: 6rem; }
+    .c2, .c4 { display: none; }
+    .hero-copy { padding-top: 12rem; padding-bottom: 3rem; gap: 1.25rem; }
+    .chip { font-size: 0.8rem; }
+    .chip span:last-child { max-width: 9rem; overflow: hidden; text-overflow: ellipsis; }
+    h1 { max-width: 100%; overflow-wrap: anywhere; }
+    h1 em { display: inline; }
+  }
+</style>

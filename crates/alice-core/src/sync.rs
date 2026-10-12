@@ -220,8 +220,8 @@ impl SyncEngine {
         self.wake();
         Ok(results)
     }
-    /// Runs for the daemon's lifetime: syncs every account every minute, or right away after
-    /// [`Self::wake`], and keeps backfilling while any account has older mail left to download.
+    /// Runs for the daemon's lifetime: checks accounts every minute (15 seconds with OTP
+    /// copying enabled), or right after [`Self::wake`], and backfills while older mail remains.
     pub async fn run_background(self: Arc<Self>) {
         loop {
             let mut more = false;
@@ -241,7 +241,8 @@ impl SyncEngine {
             }
             if !more {
                 tokio::select! {
-                    _ = tokio::time::sleep(INTERVAL) => {}
+                    // Opt-in code delivery polls sooner without changing manual sync/backfill.
+                    _ = tokio::time::sleep(if self.store.preferences().is_ok_and(|p| p.otp_autocopy) { Duration::from_secs(15) } else { INTERVAL }) => {}
                     _ = self.wake.notified() => {}
                 }
             }
@@ -573,6 +574,7 @@ impl Run<'_> {
                 &plan.folder,
                 &plan.mailbox,
                 plan.validity,
+                plan.floor,
                 incoming,
             )
         })?;

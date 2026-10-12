@@ -1,4 +1,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+mod clipboard;
 mod contacts;
 mod desktop;
 mod downloads;
@@ -183,7 +184,10 @@ fn main() {
             daemon_request,
             system_locale,
             desktop::take_opened,
-            downloads::save_attachment,
+            clipboard::copy_message_otp,
+            downloads::open_attachment,
+            downloads::saved_attachments,
+            downloads::read_attachment,
             downloads::reveal_download,
             downloads::open_calendar_file,
             contacts::read_system_contacts,

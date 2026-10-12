@@ -10,7 +10,8 @@ export interface Account {
   last_synced: string | null; sync_error: string | null; integrations?: Integrations;
 }
 /** `part` is the attachment's section on the mail server; mail cached before sections were recorded has none. */
-export interface Attachment { name: string; size: number; part?: string | null; content_type?: string | null }
+/** `content_id` names an image the HTML body shows inline as `cid:…`. */
+export interface Attachment { name: string; size: number; part?: string | null; content_type?: string | null; content_id?: string | null }
 export interface Message {
   id: string; account_id: string; from_name: string; from_email: string; to: string[]; reply_to: string[];
   subject: string; preview: string; body: string; html_body?: string | null; date: string; folder: string;
@@ -42,8 +43,8 @@ export interface ThreadPage { threads: Thread[]; total: number; all_total: numbe
 export type MessageFormat = 'html' | 'plain';
 /** How far back mail is kept on this device. */
 export type SyncWindow = '30_days' | '90_days' | '1_year' | 'all';
-export interface Preferences { language: LanguagePreference; theme: 'light' | 'dark'; mail_layout: 'single' | 'horizontal' | 'vertical'; show_avatars: boolean; density: 'comfortable' | 'compact'; message_format: MessageFormat; remote_images: 'ask' | 'always'; thread_order: 'newest_first' | 'oldest_first'; sync_window: SyncWindow; signature: string; default_account_id: string; notifications: boolean; menu_bar: boolean; default_calendar: string; system_contacts: boolean }
-export const defaultPreferences: Preferences = { language: 'system', theme: 'light', mail_layout: 'single', show_avatars: true, density: 'comfortable', message_format: 'html', remote_images: 'ask', thread_order: 'newest_first', sync_window: '90_days', signature: '', default_account_id: '', notifications: true, menu_bar: true, default_calendar: '', system_contacts: false };
+export interface Preferences { language: LanguagePreference; theme: 'light' | 'dark'; mail_layout: 'single' | 'horizontal' | 'vertical'; show_avatars: boolean; density: 'comfortable' | 'compact'; message_format: MessageFormat; remote_images: 'ask' | 'always'; thread_order: 'newest_first' | 'oldest_first'; sync_window: SyncWindow; signature: string; default_account_id: string; notifications: boolean; otp_autocopy: boolean; menu_bar: boolean; default_calendar: string; system_contacts: boolean; mcp: 'off' | 'read_only' | 'full' }
+export const defaultPreferences: Preferences = { language: 'system', theme: 'light', mail_layout: 'single', show_avatars: true, density: 'comfortable', message_format: 'html', remote_images: 'ask', thread_order: 'newest_first', sync_window: '90_days', signature: '', default_account_id: '', notifications: true, otp_autocopy: false, menu_bar: true, default_calendar: '', system_contacts: false, mcp: 'off' };
 export interface Health { status: string; version: string }
 /** `revision` changes whenever the daemon's stored data may have changed; `syncing` while any account is syncing; `unread_count` is unread Inbox conversations. */
 export interface Snapshot { accounts: Account[]; unread_count: number; ai: AiSettings; preferences: Preferences; syncing: boolean; revision: string }
@@ -76,6 +77,8 @@ export function isNotFound(error: unknown) { return typeof error === 'object' &&
 export const get = <T,>(path: string) => api<T>('GET', path);
 export const post = <T,>(path: string, body: unknown) => api<T>('POST', path, body);
 export const patch = (id: string, body: Patch) => api<Message>('PATCH', `/v1/messages/${encodeURIComponent(id)}`, body);
+/** Uses the native, same-device clipboard path; never the WebView's ordinary clipboard. */
+export const copyVerificationCode = (messageId: string) => invoke<string>('copy_message_otp', { messageId });
 export async function openAuth(url: string) {
   if (isTauri()) await invoke('open_auth_url', { url });
   else window.open(url, '_blank', 'noopener,noreferrer');
@@ -91,11 +94,12 @@ export async function openEmailLink(url: string) {
   else window.open(url, '_blank', 'noopener,noreferrer');
 }
 /**
- * Downloads an attachment from the mail server. The desktop app saves it in Downloads and returns
- * where; the browser starts a normal download and returns null.
+ * Opens an attachment. The desktop app saves it in Downloads the first time, opens that file with
+ * its default app (programs and scripts are `shown` in the file manager instead) and returns where
+ * it is; the browser starts a normal download and returns null.
  */
-export async function downloadAttachment(message: Message, index: number): Promise<{ path: string; name: string } | null> {
-  if (isTauri()) return invoke<{ path: string; name: string }>('save_attachment', { messageId: message.id, index, locale: locale() });
+export async function openAttachment(message: Message, index: number): Promise<{ path: string; name: string; shown: boolean } | null> {
+  if (isTauri()) return invoke<{ path: string; name: string; shown: boolean }>('open_attachment', { messageId: message.id, index, locale: locale() });
   const response = await fetch(`/api/v1/messages/${encodeURIComponent(message.id)}/attachments/${index}`, { headers: { 'Accept-Language': locale() } });
   if (!response.ok) throw new Error((await response.json().catch(() => null) as ErrorBody)?.error?.message || t('app.downloadFailed'));
   const name = decodeURIComponent(response.headers.get('X-Alice-Filename') || '') || message.attachments[index]?.name || t('app.attachmentFilename');
@@ -104,6 +108,13 @@ export async function downloadAttachment(message: Message, index: number): Promi
   link.click();
   setTimeout(() => URL.revokeObjectURL(url), 60_000);
   return null;
+}
+/** The bytes of an attachment, fetched from the mail server; for images embedded in HTML mail. */
+export async function attachmentBytes(message: Message, index: number): Promise<ArrayBuffer> {
+  if (isTauri()) return invoke<ArrayBuffer>('read_attachment', { messageId: message.id, index });
+  const response = await fetch(`/api/v1/messages/${encodeURIComponent(message.id)}/attachments/${index}`, { headers: { 'Accept-Language': locale() } });
+  if (!response.ok) throw new Error((await response.json().catch(() => null) as ErrorBody)?.error?.message || t('app.downloadFailed'));
+  return response.arrayBuffer();
 }
 /**
  * Hands an event to the system calendar app as an .ics file: an invitation by `message_id`, or `event`.
@@ -128,6 +139,10 @@ export async function importSystemContacts() {
 }
 /** When Mac Contacts were last imported in this session (ms since the epoch), so turning them on does not import twice. */
 export let systemContactsImportedAt = 0;
+/** Where the desktop app saved a message's attachments in Downloads, by index, for files still there. */
+export async function savedAttachments(messageId: string) {
+  return invoke<Record<number, string>>('saved_attachments', { messageId });
+}
 /** Shows a saved attachment in Finder or Explorer. */
 export async function revealDownload(path: string) {
   await invoke('reveal_download', { path });

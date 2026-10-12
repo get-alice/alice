@@ -1,33 +1,52 @@
-//! Saving attachments to the user's Downloads folder and showing them there, and handing calendar
-//! events to the system calendar app.
+//! Saving attachments to the user's Downloads folder, opening them or showing them there, and
+//! handing calendar events to the system calendar app.
 
 use crate::{Daemon, desktop};
 use alice_core::{
     client::needs_reconnect,
     i18n::{self, Locale},
 };
+use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 use std::{
+    collections::BTreeMap,
     fs::OpenOptions,
     io::{ErrorKind, Write},
     path::{Path, PathBuf},
+    sync::Mutex,
 };
 use tauri::Manager;
 
-/// Fetches attachment `index` of a message from the mail server (through the daemon) and saves it
-/// in Downloads under its own name, numbered when that name is taken. Returns `{path, name}`.
-#[tauri::command]
-pub async fn save_attachment(
-    app: tauri::AppHandle,
-    daemon: tauri::State<'_, Daemon>,
-    message_id: String,
+/// Which file in Downloads holds each attachment Alice saved, by `<message id>:<index>`, so
+/// opening an attachment again reuses its file instead of fetching it from the mail server. Kept
+/// in `downloads.json` in Alice's data folder.
+type Records = BTreeMap<String, Record>;
+
+/// A saved attachment: its file name in Downloads and the size Alice wrote. A file that is gone,
+/// or whose size differs, is no longer that attachment, and the next open saves it anew.
+#[derive(Serialize, Deserialize)]
+struct Record {
+    name: String,
+    size: u64,
+}
+
+/// Serializes reading and rewriting `downloads.json`.
+static RECORDS: Mutex<()> = Mutex::new(());
+
+/// Files that run a program, a script, an installer or a link when opened. Alice shows these in
+/// the file manager instead of opening them.
+const RUNNABLE: &str = "app appref-ms application bash bat cmd com command cpl csh desktop exe \
+    fileloc gadget hta inetloc inf jar js jse ksh lnk mpkg msc msi msp pif pkg pl ps1 psm1 py pyw \
+    rb reg run scf scr sh terminal tool url vbe vbs webloc ws wsc wsf wsh zsh";
+
+/// Fetches attachment `index` of a message from the mail server (through the daemon): its name
+/// and bytes.
+async fn fetch(
+    daemon: &Daemon,
+    message_id: &str,
     index: usize,
-    locale: Option<String>,
-) -> Result<Value, String> {
-    let locale = locale
-        .as_deref()
-        .and_then(Locale::from_tag)
-        .unwrap_or_else(|| desktop::locale(&app));
+    locale: Locale,
+) -> Result<(String, Vec<u8>), String> {
     if message_id.is_empty()
         || !message_id
             .chars()
@@ -40,7 +59,7 @@ pub async fn save_attachment(
         .client(None)
         .await
         .map_err(|e| i18n::error_text(&e, locale))?;
-    let (name, bytes) = match client.download_in(locale, &path).await {
+    match client.download_in(locale, &path).await {
         Err(error) if needs_reconnect(&error) => {
             daemon
                 .client(Some(&client))
@@ -51,27 +70,121 @@ pub async fn save_attachment(
         }
         result => result,
     }
-    .map_err(|e| i18n::error_text(&e, locale))?;
+    .map_err(|e| i18n::error_text(&e, locale))
+}
+
+/// The bytes of attachment `index` of a message, for showing an image embedded in its HTML.
+#[tauri::command]
+pub async fn read_attachment(
+    app: tauri::AppHandle,
+    daemon: tauri::State<'_, Daemon>,
+    message_id: String,
+    index: usize,
+) -> Result<tauri::ipc::Response, String> {
+    let (_, bytes) = fetch(&daemon, &message_id, index, desktop::locale(&app)).await?;
+    Ok(tauri::ipc::Response::new(bytes))
+}
+
+/// Opens attachment `index` of a message with its default app, first saving it in Downloads under
+/// its own name (numbered when that name is taken) unless Alice already saved it there. Programs
+/// and scripts are shown in the file manager instead. Returns `{path, name, shown}`, `shown` when
+/// the file was shown rather than opened.
+#[tauri::command]
+pub async fn open_attachment(
+    app: tauri::AppHandle,
+    daemon: tauri::State<'_, Daemon>,
+    message_id: String,
+    index: usize,
+    locale: Option<String>,
+) -> Result<Value, String> {
+    let locale = locale
+        .as_deref()
+        .and_then(Locale::from_tag)
+        .unwrap_or_else(|| desktop::locale(&app));
     let folder = app
         .path()
         .download_dir()
         .map_err(|_| alice_core::t!(locale, "desktop.error.downloads_folder"))?;
-    let saved = tauri::async_runtime::spawn_blocking(move || {
-        write_new(&folder, &file_name(&name, locale), &bytes, locale)
+    let records = records_file(&app, locale)?;
+    let key = format!("{message_id}:{index}");
+    let known = {
+        let (records, folder, key) = (records.clone(), folder.clone(), key.clone());
+        blocking(move || Ok(saved(&load(&records), &key, &folder))).await?
+    };
+    let path = match known {
+        Some(path) => path,
+        None => {
+            let (name, bytes) = fetch(&daemon, &message_id, index, locale).await?;
+            blocking(move || {
+                record_new(
+                    &records,
+                    &folder,
+                    &key,
+                    &file_name(&name, locale),
+                    &bytes,
+                    locale,
+                )
+                .map_err(|e| {
+                    alice_core::t!(
+                        locale,
+                        "desktop.error.attachment_save",
+                        error = e.to_string()
+                    )
+                })
+            })
+            .await?
+        }
+    };
+    let shown = runs_when_opened(&path);
+    let target = path.clone();
+    blocking(move || {
+        if shown {
+            show_in_folder(&target)
+        } else {
+            open::that(&target)
+        }
+        .map_err(|e| {
+            alice_core::t!(
+                locale,
+                "desktop.error.attachment_open",
+                error = e.to_string()
+            )
+        })
+    })
+    .await?;
+    Ok(json!({
+        "path": path.display().to_string(),
+        "name": path.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_default(),
+        "shown": shown,
+    }))
+}
+
+/// Where the attachments of a message that Alice saved in Downloads are, by index, for those still
+/// there.
+#[tauri::command]
+pub async fn saved_attachments(
+    app: tauri::AppHandle,
+    message_id: String,
+) -> Result<BTreeMap<usize, String>, String> {
+    let locale = desktop::locale(&app);
+    let folder = app
+        .path()
+        .download_dir()
+        .map_err(|_| alice_core::t!(locale, "desktop.error.downloads_folder"))?;
+    let records = records_file(&app, locale)?;
+    blocking(move || {
+        let prefix = format!("{message_id}:");
+        let records = load(&records);
+        Ok(records
+            .range(prefix.clone()..)
+            .take_while(|(key, _)| key.starts_with(&prefix))
+            .filter_map(|(key, _)| {
+                let index: usize = key[prefix.len()..].parse().ok()?;
+                Some((index, saved(&records, key, &folder)?.display().to_string()))
+            })
+            .collect())
     })
     .await
-    .map_err(|e| e.to_string())?
-    .map_err(|e| {
-        alice_core::t!(
-            locale,
-            "desktop.error.attachment_save",
-            error = e.to_string()
-        )
-    })?;
-    Ok(json!({
-        "path": saved.display().to_string(),
-        "name": saved.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_default(),
-    }))
 }
 
 /// Shows a saved attachment in the system file manager. Only files in Downloads are accepted.
@@ -90,19 +203,107 @@ pub fn reveal_download(app: tauri::AppHandle, path: String) -> Result<(), String
     if file.parent() != Some(folder.as_path()) || !file.is_file() {
         return Err(alice_core::t!(locale, "desktop.error.saved_only"));
     }
+    show_in_folder(&file).map_err(|e| e.to_string())
+}
+
+/// Selects `file` in Finder or Explorer; elsewhere opens its folder.
+fn show_in_folder(file: &Path) -> std::io::Result<()> {
     #[cfg(target_os = "macos")]
     let status = std::process::Command::new("open")
         .arg("-R")
-        .arg(&file)
+        .arg(file)
         .status();
     #[cfg(target_os = "windows")]
     let status = std::process::Command::new("explorer")
         .arg(format!("/select,{}", file.display()))
-        .status()
-        .map(|_| std::process::ExitStatus::default());
+        .status();
     #[cfg(not(any(target_os = "macos", target_os = "windows")))]
-    let status = open::that(&folder).map(|_| std::process::ExitStatus::default());
-    status.map(|_| ()).map_err(|e| e.to_string())
+    let status =
+        open::that(file.parent().unwrap_or(file)).map(|()| std::process::ExitStatus::default());
+    status.map(|_| ())
+}
+
+/// Runs blocking file work off the async runtime.
+async fn blocking<T: Send + 'static>(
+    work: impl FnOnce() -> Result<T, String> + Send + 'static,
+) -> Result<T, String> {
+    tauri::async_runtime::spawn_blocking(work)
+        .await
+        .map_err(|e| e.to_string())?
+}
+
+fn records_file(app: &tauri::AppHandle, locale: Locale) -> Result<PathBuf, String> {
+    app.path()
+        .app_data_dir()
+        .map(|folder| folder.join("downloads.json"))
+        .map_err(|_| alice_core::t!(locale, "desktop.error.data_folder"))
+}
+
+/// The saved attachments; none when the file is missing or unreadable, which only costs fetching
+/// them again. It is replaced whole, so reading needs no lock.
+fn load(records: &Path) -> Records {
+    std::fs::read(records)
+        .ok()
+        .and_then(|bytes| serde_json::from_slice(&bytes).ok())
+        .unwrap_or_default()
+}
+
+/// The file in `folder` that holds attachment `key`, if Alice saved it and it is unchanged.
+fn saved(records: &Records, key: &str, folder: &Path) -> Option<PathBuf> {
+    let record = records.get(key)?;
+    // Only a plain name in Downloads, whatever the records file says.
+    if Path::new(&record.name).file_name()? != record.name.as_str() {
+        return None;
+    }
+    let path = folder.join(&record.name);
+    let metadata = std::fs::metadata(&path).ok()?;
+    (metadata.is_file() && metadata.len() == record.size).then_some(path)
+}
+
+/// Saves attachment `key` as a new file in `folder` and records it, unless another open saved it
+/// meanwhile. Returns its path.
+fn record_new(
+    records: &Path,
+    folder: &Path,
+    key: &str,
+    name: &str,
+    bytes: &[u8],
+    locale: Locale,
+) -> std::io::Result<PathBuf> {
+    let _lock = RECORDS.lock().unwrap_or_else(|e| e.into_inner());
+    let mut known = load(records);
+    if let Some(path) = saved(&known, key, folder) {
+        return Ok(path);
+    }
+    let path = write_new(folder, name, bytes, locale)?;
+    let record = Record {
+        name: path
+            .file_name()
+            .unwrap_or_default()
+            .to_string_lossy()
+            .into_owned(),
+        size: bytes.len() as u64,
+    };
+    known.insert(key.to_string(), record);
+    if let Some(parent) = records.parent() {
+        std::fs::create_dir_all(parent)?;
+    }
+    // Replaced whole, so readers never see half a file.
+    let partial = records.with_extension("json.partial");
+    std::fs::write(&partial, serde_json::to_vec(&known)?)?;
+    std::fs::rename(&partial, records)?;
+    Ok(path)
+}
+
+/// Whether opening the file would run something rather than show a document.
+fn runs_when_opened(path: &Path) -> bool {
+    let Some(extension) = path.extension() else {
+        return false;
+    };
+    let extension = extension.to_string_lossy().to_ascii_lowercase();
+    RUNNABLE
+        .split_whitespace()
+        .any(|runnable| runnable == extension)
 }
 
 /// Opens an iCalendar event with the default calendar app, which offers to add it. The file is
@@ -249,6 +450,50 @@ mod tests {
         assert_eq!(second.file_name().unwrap(), "plan (2).pdf");
         assert_eq!(std::fs::read(&first)?, b"one");
         std::fs::remove_dir_all(&dir)
+    }
+
+    #[test]
+    fn an_attachment_is_saved_once_until_its_file_changes() -> std::io::Result<()> {
+        let dir = std::env::temp_dir().join(format!("alice-saved-{}", std::process::id()));
+        let records = dir.join("data").join("downloads.json");
+        std::fs::create_dir_all(&dir)?;
+        let first = record_new(&records, &dir, "m1:0", "plan.pdf", b"one", Locale::EnUs)?;
+        let again = record_new(&records, &dir, "m1:0", "plan.pdf", b"one", Locale::EnUs)?;
+        assert_eq!(again, first);
+        assert_eq!(saved(&load(&records), "m1:0", &dir), Some(first.clone()));
+        // Another attachment with the same name gets its own file.
+        let other = record_new(&records, &dir, "m2:0", "plan.pdf", b"two", Locale::EnUs)?;
+        assert_eq!(other.file_name().unwrap(), "plan (2).pdf");
+        // Edited or removed, the file is no longer that attachment.
+        std::fs::write(&first, b"edited")?;
+        assert_eq!(saved(&load(&records), "m1:0", &dir), None);
+        std::fs::remove_file(&other)?;
+        assert_eq!(saved(&load(&records), "m2:0", &dir), None);
+        let fresh = record_new(&records, &dir, "m1:0", "plan.pdf", b"one", Locale::EnUs)?;
+        assert_eq!(fresh.file_name().unwrap(), "plan (2).pdf");
+        assert_eq!(std::fs::read(&first)?, b"edited");
+        std::fs::remove_dir_all(&dir)
+    }
+
+    #[test]
+    fn records_cannot_point_outside_downloads() {
+        let dir = std::env::temp_dir();
+        let records = Records::from([(
+            "m:0".to_string(),
+            Record {
+                name: "../etc/hosts".into(),
+                size: 0,
+            },
+        )]);
+        assert_eq!(saved(&records, "m:0", &dir.join("downloads")), None);
+    }
+
+    #[test]
+    fn programs_are_shown_instead_of_opened() {
+        assert!(runs_when_opened(Path::new("/d/invoice.EXE")));
+        assert!(runs_when_opened(Path::new("/d/setup (2).command")));
+        assert!(!runs_when_opened(Path::new("/d/invoice.pdf")));
+        assert!(!runs_when_opened(Path::new("/d/README")));
     }
 
     #[test]

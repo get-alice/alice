@@ -1,0 +1,25 @@
+---
+import Base from './Base.astro';
+
+interface Props { frontmatter: { title: string; description: string; updated: string } }
+const { title, description, updated } = Astro.props.frontmatter;
+---
+<Base title={`${title} | Alice`} {description}>
+    <article class="legal">
+    <h1>{title}</h1>
+    <p class="updated">Last updated <time datetime={updated}>{new Date(updated).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</time></p>
+    <slot />
+  </article>
+</Base>
+
+<style>
+  .legal { max-width: 44rem; margin: 0 auto; padding: 8rem clamp(1rem, 4vw, 2.5rem) 5rem; font-size: 1.05rem; line-height: 1.7; }
+  h1 { font-size: clamp(2.6rem, 2rem + 2.5vw, 4rem); }
+  .updated { color: var(--ink-2); margin: 0.75rem 0 2.5rem; }
+  .legal :global(p), .legal :global(li) { color: var(--ink-2); }
+  .legal :global(h2) { font-size: 1.75rem; margin: 2.5rem 0 0.75rem; }
+  .legal :global(h3) { font-size: 1.3rem; margin: 1.75rem 0 0.5rem; }
+  .legal :global(p), .legal :global(ul) { margin: 0 0 1rem; }
+  .legal :global(li) { margin-bottom: 0.4rem; }
+  .legal :global(code) { font: 0.88em/1 ui-monospace, 'SF Mono', Menlo, Consolas, monospace; padding: 0.1em 0.35em; border-radius: 5px; background: var(--petal); }
+</style>

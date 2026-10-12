@@ -123,6 +123,46 @@ struct CallbackState {
     locale: Locale,
     sender: Mutex<Option<oneshot::Sender<Result<String>>>>,
 }
+
+enum CallbackPage {
+    Success,
+    Cancelled,
+    Unverified,
+}
+
+fn callback_page(locale: Locale, page: CallbackPage) -> Html<String> {
+    let (heading, detail, tone, icon) = match page {
+        CallbackPage::Success => (
+            crate::t!(locale, "mail.oauth.browser_success"),
+            crate::t!(locale, "mail.oauth.browser_close"),
+            "success",
+            "M5 12l4 4L19 6",
+        ),
+        CallbackPage::Cancelled => (
+            crate::t!(locale, "mail.oauth.browser_cancelled"),
+            crate::t!(locale, "mail.oauth.browser_return"),
+            "neutral",
+            "M7 7l10 10M17 7L7 17",
+        ),
+        CallbackPage::Unverified => (
+            crate::t!(locale, "mail.oauth.browser_unverified"),
+            crate::t!(locale, "mail.oauth.browser_retry"),
+            "error",
+            "M12 5v9M12 18v.01",
+        ),
+    };
+    Html(format!(
+        include_str!("oauth-callback.html"),
+        lang = locale.tag(),
+        heading = heading,
+        detail = detail,
+        tone = tone,
+        icon = icon,
+        styles = include_str!("oauth-callback.css"),
+        logo = include_str!("../../../public/alice.svg"),
+    ))
+}
+
 async fn callback(
     State(state): State<Arc<CallbackState>>,
     Query(query): Query<Callback>,
@@ -134,11 +174,7 @@ async fn callback(
     {
         return (
             StatusCode::BAD_REQUEST,
-            Html(format!(
-                "<h1>{}</h1><p>{}</p>",
-                crate::t!(state.locale, "mail.oauth.browser_unverified"),
-                crate::t!(state.locale, "mail.oauth.browser_retry")
-            )),
+            callback_page(state.locale, CallbackPage::Unverified),
         );
     }
     let code = if query.error.is_some() {
@@ -155,19 +191,14 @@ async fn callback(
     }
     (
         StatusCode::OK,
-        Html(if ok {
-            format!(
-                "<!doctype html><meta name='viewport' content='width=device-width'><style>body{{font:18px system-ui;background:#f7f7f9;color:#323039;padding:12vh 12vw}}h1{{font-size:40px}}</style><h1>{}</h1><p>{}</p>",
-                crate::t!(state.locale, "mail.oauth.browser_success"),
-                crate::t!(state.locale, "mail.oauth.browser_close")
-            )
-        } else {
-            format!(
-                "<h1>{}</h1><p>{}</p>",
-                crate::t!(state.locale, "mail.oauth.browser_cancelled"),
-                crate::t!(state.locale, "mail.oauth.browser_return")
-            )
-        }),
+        callback_page(
+            state.locale,
+            if ok {
+                CallbackPage::Success
+            } else {
+                CallbackPage::Cancelled
+            },
+        ),
     )
 }
 pub struct Pending {

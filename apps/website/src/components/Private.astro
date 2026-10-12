@@ -1,0 +1,59 @@
+---
+import Icon from './Icon.astro';
+import { repo } from '../lib/release';
+---
+<section class="private" id="privacy" aria-labelledby="privacy-title" data-private>
+  <div class="wrap">
+    <h2 id="privacy-title" data-split>There is no <em>Alice server.</em></h2>
+    <p class="lede" data-reveal>Alice talks to your mail provider directly over encrypted IMAP and SMTP. Nobody in between reads, stores or indexes your mail.</p>
+
+    <div class="route" aria-hidden="true">
+      <div class="node"><Icon name="envelope-simple" size={26} /><span>Your mail provider</span></div>
+      <div class="wire">
+        <span class="line" data-wire></span>
+        <span class="packet" data-packet></span>
+        <span class="ghost" data-ghost><Icon name="cloud" size={20} />Someone else’s server<span class="strike" data-strike></span></span>
+      </div>
+      <div class="node you"><Icon name="laptop" size={26} /><span>Your computer</span></div>
+    </div>
+
+    <ul class="facts">
+      <li data-reveal><Icon name="lock-key" size={24} /><p><b>Passwords stay in your keychain.</b> macOS Keychain, Windows Credential Manager or Secret Service.</p></li>
+      <li data-reveal><Icon name="database" size={24} /><p><b>Your mail stays on your device.</b> A local copy, in a database you can back up or delete.</p></li>
+      <li data-reveal><Icon name="copyleft" size={24} /><p><b>Every line is public.</b> Read it, build it, fork it. <a href={repo}>GNU AGPL v3</a>.</p></li>
+    </ul>
+  </div>
+</section>
+
+<style>
+  .private { padding: clamp(5rem, 10vw, 9rem) 0; text-align: center; }
+  h2 { margin: 0 auto; max-width: 12ch; font-size: clamp(2.8rem, 1.4rem + 5.5vw, 7rem); }
+  .lede { margin: 1.5rem auto 0; }
+
+  .route { margin: clamp(3rem, 7vw, 6rem) auto; max-width: 62rem; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 0; }
+  .node { display: grid; justify-items: center; gap: 0.75rem; width: 9rem; color: var(--ink-2); font-size: 0.92rem; }
+  .node :global(svg) { width: 4.25rem; height: 4.25rem; padding: 1.05rem; border-radius: 50%; background: var(--bg-raise); border: 1px solid var(--line-strong); color: var(--ink); box-shadow: 0 16px 40px -22px rgb(var(--shade) / 0.5); }
+  .node.you :global(svg) { color: var(--violet); border-color: var(--lavender); background: var(--petal); }
+  .wire { position: relative; height: 4.25rem; align-self: start; }
+  .line { position: absolute; left: -1.5rem; right: -1.5rem; top: 50%; height: 2px; translate: 0 -50%; background: linear-gradient(90deg, var(--line-strong), var(--lavender)); transform-origin: 0 50%; }
+  .packet { position: absolute; left: 0; top: 50%; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: var(--violet); opacity: 0; }
+  .ghost {
+    position: absolute; left: 50%; bottom: calc(100% + 0.5rem); translate: -50% 0; white-space: nowrap;
+    display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.9rem; border-radius: 999px;
+    border: 1px dashed var(--line-strong); color: var(--ink-3); font-size: 0.88rem;
+  }
+  .strike { position: absolute; left: 0.6rem; right: 0.6rem; top: 50%; height: 1.5px; background: var(--ink-3); transform-origin: 0 50%; }
+
+  .facts { list-style: none; margin: 0 auto; padding: 0; max-width: 72rem; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem var(--gutter); text-align: left; }
+  .facts li { display: grid; grid-template-columns: auto 1fr; gap: 1rem; color: var(--ink-2); }
+  .facts li > :global(svg) { color: var(--violet); margin-top: 0.15rem; }
+  .facts b { color: var(--ink); font-weight: 600; }
+  @media (max-width: 60rem) {
+    .route { grid-template-columns: 1fr; justify-items: center; gap: 0; }
+    .wire { width: 2px; height: 9rem; align-self: auto; }
+    .line { left: 50%; right: auto; top: -1rem; bottom: -1rem; width: 2px; height: auto; translate: -50% 0; background: linear-gradient(180deg, var(--line-strong), var(--lavender)); transform-origin: 50% 0; }
+    .packet { left: 50%; top: 0; }
+    .ghost { left: 50%; bottom: auto; top: 50%; translate: -50% -50%; background: var(--bg); }
+    .facts { grid-template-columns: 1fr; max-width: 30rem; }
+  }
+</style>

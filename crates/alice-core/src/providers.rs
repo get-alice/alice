@@ -126,8 +126,12 @@ pub fn modify(
             "inbox" => &account.folders.inbox,
             "archive" => &account.folders.archive,
             "trash" => &account.folders.trash,
+            "spam" => &account.folders.spam,
             _ => bail!(crate::text!("mail.message.unsupported_folder")),
         };
+        if destination.is_empty() {
+            bail!(crate::text!("mail.message.unsupported_folder"));
+        }
         if !session.capabilities()?.has_str("MOVE") {
             bail!(crate::text!("mail.imap.no_safe_move"));
         }

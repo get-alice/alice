@@ -155,6 +155,12 @@ async fn arrivals_since(
 ) -> Json<Arrivals> {
     Json(state.arrivals.lock().since(query.after.as_deref()))
 }
+async fn pending_otp(State(state): State<AppState>) -> ApiResult<Vec<OtpArrival>> {
+    Ok(Json(state.store.pending_otp()?))
+}
+async fn claim_otp(State(state): State<AppState>, Path(id): Path<String>) -> ApiResult<bool> {
+    Ok(Json(state.store.claim_otp(&id)?))
+}
 pub struct ApiError(StatusCode, i18n::Message);
 impl From<anyhow::Error> for ApiError {
     fn from(error: anyhow::Error) -> Self {
@@ -245,7 +251,9 @@ fn routes(state: AppState) -> Router {
     Router::new()
         .route(
             "/v1/health",
-            get(|| async { Json(json!({"status":"ok","version":env!("CARGO_PKG_VERSION")})) }),
+            get(|| async {
+                Json(json!({"status":"ok","version":env!("CARGO_PKG_VERSION"),"build":client::BUILD}))
+            }),
         )
         .route("/v1/state", get(snapshot))
         .route("/v1/preferences", get(preferences).patch(preferences_save))
@@ -271,6 +279,7 @@ fn routes(state: AppState) -> Router {
             "/v1/messages/{id}",
             get(message).patch(change).delete(discard),
         )
+        .route("/v1/messages/{id}/otp", get(message_otp))
         .route("/v1/messages/{id}/send", post(send))
         .route("/v1/messages/{id}/attachments/{index}", get(attachment))
         .route("/v1/messages/{id}/rsvp", post(rsvp))
@@ -281,6 +290,8 @@ fn routes(state: AppState) -> Router {
         .route("/v1/sync", post(sync))
         .route("/v1/storage", get(storage))
         .route("/v1/arrivals", get(arrivals_since))
+        .route("/v1/otp", get(pending_otp))
+        .route("/v1/otp/{id}/claim", post(claim_otp))
         .route("/v1/ai/settings", get(ai_settings).post(ai_settings_save))
         .route("/v1/ai", post(ask))
         .fallback(|| async {
@@ -384,6 +395,14 @@ async fn messages(
 async fn message(State(state): State<AppState>, Path(id): Path<String>) -> ApiResult<Message> {
     Ok(Json(state.store.message(&id)?))
 }
+/// Explicit reader lookup: does not depend on automatic delivery, read state or mail age.
+async fn message_otp(
+    State(state): State<AppState>,
+    Path(id): Path<String>,
+) -> ApiResult<Option<String>> {
+    let message = state.store.message(&id)?;
+    Ok(Json(crate::otp::recognize(&message).map(|code| code.code)))
+}
 async fn threads(
     State(state): State<AppState>,
     Query(query): Query<MessageQuery>,
@@ -433,16 +452,24 @@ async fn change(
                 .store
                 .record_move(&updated, (mailbox, validity, uid))?;
         }
+        if message.folder != updated.folder
+            && (message.folder == "spam" || updated.folder == "spam")
+        {
+            state.contacts.invalidate();
+        }
         return Ok(Json(updated));
     }
     let result = state.store.patch(&id, &input)?;
+    if message.folder != result.folder && (message.folder == "spam" || result.folder == "spam") {
+        state.contacts.invalidate();
+    }
     Ok(Json(result))
 }
 fn validate_patch(input: &MessagePatch) -> Result<()> {
     if input
         .folder
         .as_ref()
-        .is_some_and(|f| !["inbox", "archive", "trash"].contains(&f.as_str()))
+        .is_some_and(|f| !["inbox", "archive", "trash", "spam"].contains(&f.as_str()))
     {
         bail!(crate::text!("server.error.choose_folder"));
     }
@@ -655,10 +682,10 @@ async fn storage(State(state): State<AppState>) -> ApiResult<StorageReport> {
     let report = tokio::task::spawn_blocking(move || -> Result<StorageReport> {
         let (database_bytes, folders) = state.store.storage()?;
         let order = |folder: &str| {
-            ["inbox", "sent", "drafts", "archive", "trash"]
+            ["inbox", "sent", "drafts", "archive", "spam", "trash"]
                 .iter()
                 .position(|f| *f == folder)
-                .unwrap_or(5)
+                .unwrap_or(6)
         };
         let mut accounts = Vec::new();
         for account in state.store.accounts()? {
@@ -1043,9 +1070,9 @@ async fn preferences_save(
     State(state): State<AppState>,
     JsonBody(input): JsonBody<PreferencesPatch>,
 ) -> ApiResult<Preferences> {
-    let before = state.store.preferences()?.sync_window;
+    let before = state.store.preferences()?;
     let saved = state.store.save_preferences(input)?;
-    if saved.sync_window != before {
+    if saved.sync_window != before.sync_window || saved.otp_autocopy != before.otp_autocopy {
         state.sync.wake();
     }
     Ok(Json(saved))
@@ -1348,6 +1375,73 @@ mod tests {
         Ok(())
     }
     #[tokio::test]
+    async fn message_patch_moves_to_spam_and_not_spam_restores_inbox() -> Result<()> {
+        let dir = tempfile::tempdir()?;
+        let store = demo_store(&dir.path().join("mail.db"))?;
+        let mut mail = store.message("demo-2")?;
+        mail.from_name = "Quarantine Contact".into();
+        mail.from_email = "quarantine-contact@example.test".into();
+        store.save_message(&mail)?;
+        let app = router(store.clone(), "test-token".into());
+        // Warm the recipient-suggestion cache before moving mail into quarantine.
+        let contacts = || async {
+            let response = app
+                .clone()
+                .oneshot(
+                    Request::builder()
+                        .uri("/v1/contacts?q=quarantine")
+                        .header("Authorization", "Bearer test-token")
+                        .body(Body::empty())?,
+                )
+                .await?;
+            anyhow::Ok(serde_json::from_slice::<Vec<Contact>>(
+                &to_bytes(response.into_body(), 1_000_000).await?,
+            )?)
+        };
+        assert_eq!(contacts().await?.len(), 1);
+        for folder in ["spam", "inbox"] {
+            let response = app
+                .clone()
+                .oneshot(
+                    Request::builder()
+                        .method("PATCH")
+                        .uri("/v1/messages/demo-2")
+                        .header("Authorization", "Bearer test-token")
+                        .header("Content-Type", "application/json")
+                        .body(Body::from(format!(r#"{{"folder":"{folder}"}}"#)))?,
+                )
+                .await?;
+            assert_eq!(response.status(), StatusCode::OK);
+            let updated: Message =
+                serde_json::from_slice(&to_bytes(response.into_body(), 1_000_000).await?)?;
+            assert_eq!(updated.folder, folder);
+            let response = app
+                .clone()
+                .oneshot(
+                    Request::builder()
+                        .uri(format!("/v1/messages?folder={folder}"))
+                        .header("Authorization", "Bearer test-token")
+                        .body(Body::empty())?,
+                )
+                .await?;
+            let page: MessagePage =
+                serde_json::from_slice(&to_bytes(response.into_body(), 1_000_000).await?)?;
+            assert!(page.messages.iter().any(|m| m.id == "demo-2"));
+            assert_eq!(contacts().await?.len(), usize::from(folder == "inbox"));
+        }
+        assert_eq!(
+            store
+                .list(&MessageQuery {
+                    folder: Some("spam".into()),
+                    ..Default::default()
+                })?
+                .total,
+            0
+        );
+        Ok(())
+    }
+
+    #[tokio::test]
     async fn authenticated_clients_share_the_same_inbox() -> Result<()> {
         let dir = tempfile::tempdir()?;
         let app = router(
@@ -1418,6 +1512,98 @@ mod tests {
         let snapshot: Value =
             serde_json::from_slice(&to_bytes(response.into_body(), 1_000_000).await?)?;
         assert_eq!(snapshot["unread_count"], before + 120);
+        Ok(())
+    }
+    #[tokio::test]
+    async fn otp_api_is_cursorless_ordered_and_claims_without_a_request_body() -> Result<()> {
+        let dir = tempfile::tempdir()?;
+        let store = demo_store(&dir.path().join("mail.db"))?;
+        let now = chrono::Utc::now();
+        let mut account = store.account(DEMO_ACCOUNT_ID)?;
+        account.last_synced = Some((now - chrono::Duration::minutes(1)).to_rfc3339());
+        store.save_account(&account)?;
+        store.save_preferences(PreferencesPatch {
+            otp_autocopy: Some(true),
+            ..Default::default()
+        })?;
+        for (uid, code, seconds) in [(900, "001234", 10), (901, "009876", 5)] {
+            let raw = format!(
+                "From: Security <security@example.test>\r\nSubject: Sign-in code\r\nMessage-ID: <otp-{uid}@example.test>\r\n\r\nYour sign-in code is {code}"
+            );
+            let message =
+                providers::parse_message(&account, "inbox", "INBOX", 1, uid, raw.as_bytes())?;
+            store.import_copies(
+                &account.id,
+                "inbox",
+                "INBOX",
+                1,
+                Some(900),
+                vec![crate::sync_store::Incoming {
+                    uid,
+                    message_id: message.message_id.clone(),
+                    is_read: true,
+                    is_starred: false,
+                    date: Some((now - chrono::Duration::seconds(seconds)).to_rfc3339()),
+                    message: Some(message),
+                }],
+            )?;
+        }
+        let app = router(store.clone(), "test-token".into());
+        let request = |method: &str, uri: &str| {
+            Request::builder()
+                .method(method)
+                .uri(uri)
+                .header("Authorization", "Bearer test-token")
+                .body(Body::empty())
+        };
+        let denied = app
+            .clone()
+            .oneshot(Request::builder().uri("/v1/otp").body(Body::empty())?)
+            .await?;
+        assert_eq!(denied.status(), StatusCode::UNAUTHORIZED);
+        let response = app.clone().oneshot(request("GET", "/v1/otp")?).await?;
+        assert_eq!(response.status(), StatusCode::OK);
+        let pending: Vec<OtpArrival> =
+            serde_json::from_slice(&to_bytes(response.into_body(), 1_000_000).await?)?;
+        assert_eq!(
+            pending
+                .iter()
+                .map(|event| event.code.as_str())
+                .collect::<Vec<_>>(),
+            ["009876", "001234"]
+        );
+        let uri = format!("/v1/otp/{}/claim", pending[0].id);
+        for expected in [true, false] {
+            let response = app.clone().oneshot(request("POST", &uri)?).await?;
+            assert_eq!(response.status(), StatusCode::OK);
+            let claimed: bool =
+                serde_json::from_slice(&to_bytes(response.into_body(), 100).await?)?;
+            assert_eq!(claimed, expected);
+        }
+        let response = app.clone().oneshot(request("GET", "/v1/otp")?).await?;
+        let remaining: Vec<OtpArrival> =
+            serde_json::from_slice(&to_bytes(response.into_body(), 1_000_000).await?)?;
+        assert_eq!(remaining, [pending[1].clone()]);
+        store.save_preferences(PreferencesPatch {
+            otp_autocopy: Some(false),
+            ..Default::default()
+        })?;
+        let uri = format!("/v1/messages/{}/otp", pending[0].message_id);
+        let denied = app
+            .clone()
+            .oneshot(Request::builder().uri(&uri).body(Body::empty())?)
+            .await?;
+        assert_eq!(denied.status(), StatusCode::UNAUTHORIZED);
+        let response = app.clone().oneshot(request("GET", &uri)?).await?;
+        let code: Option<String> =
+            serde_json::from_slice(&to_bytes(response.into_body(), 100).await?)?;
+        assert_eq!(code.as_deref(), Some("009876"));
+        let response = app
+            .oneshot(request("GET", "/v1/messages/demo-1/otp")?)
+            .await?;
+        let code: Option<String> =
+            serde_json::from_slice(&to_bytes(response.into_body(), 100).await?)?;
+        assert_eq!(code, None);
         Ok(())
     }
     #[test]

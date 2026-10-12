@@ -108,11 +108,12 @@ enum Target {
 /// Which folder's copy a message shows when it has several.
 fn rank(folder: &str) -> u8 {
     match folder {
-        "inbox" => 0,
-        "sent" => 1,
-        "archive" => 2,
-        "trash" => 3,
-        _ => 4,
+        "spam" => 0,
+        "inbox" => 1,
+        "sent" => 2,
+        "archive" => 3,
+        "trash" => 4,
+        _ => 5,
     }
 }
 
@@ -156,7 +157,7 @@ fn target(
     let mut stmt = tx.prepare_cached(
         "SELECT id,json_extract(data,'$.folder') FROM messages WHERE json_extract(data,'$.account_id')=?1 AND json_extract(data,'$.message_id')=?2 AND json_extract(data,'$.folder')!='drafts'
             AND NOT EXISTS(SELECT 1 FROM remote_messages r WHERE r.message=messages.id AND r.account_id=?1 AND r.mailbox=?3 AND r.uid_validity=?4 AND r.uid!=?5)
-            AND NOT (json_extract(data,'$.remote_mailbox') IS ?3 AND json_extract(data,'$.uid_validity') IS ?4 AND json_extract(data,'$.remote_uid') IS NOT ?5)",
+            AND NOT (json_extract(data,'$.remote_mailbox') IS ?3 AND json_extract(data,'$.uid_validity') IS ?4 AND json_extract(data,'$.remote_uid') IS NOT NULL AND json_extract(data,'$.remote_uid')!=?5)",
     )?;
     let rows: Vec<(String, String)> = stmt
         .query_map(
@@ -172,9 +173,9 @@ fn target(
         })
     };
     let found = match folder {
-        "sent" => pick(&["sent", "archive"]),
-        "inbox" => pick(&["inbox", "archive", "trash"]),
-        _ => pick(&["inbox", "archive", "trash", "sent"]),
+        "sent" => pick(&["spam", "sent", "archive"]),
+        "inbox" => pick(&["spam", "inbox", "archive", "trash"]),
+        _ => pick(&["spam", "inbox", "archive", "trash", "sent"]),
     };
     Ok(found.map_or(Target::New, Target::Existing))
 }
@@ -207,17 +208,25 @@ fn make_primary(
     Ok(())
 }
 
+/// A message's folder and primary copy: mailbox, UIDVALIDITY and UID.
+type Primary = (String, Option<String>, Option<u32>, Option<u32>);
+
 /// After copies of `ids` were removed: messages whose primary copy is gone switch to their best
 /// remaining copy, and messages without copies are deleted.
 fn settle(tx: &Transaction<'_>, account_id: &str, ids: HashSet<String>) -> Result<usize> {
     let mut deleted = 0;
     for id in ids {
-        let primary: Option<(Option<String>, Option<u32>, Option<u32>)> = tx
-            .query_row("SELECT json_extract(data,'$.remote_mailbox'),json_extract(data,'$.uid_validity'),json_extract(data,'$.remote_uid') FROM messages WHERE id=?1", [&id], |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?)))
+        let primary: Option<Primary> = tx
+            .query_row("SELECT json_extract(data,'$.folder'),json_extract(data,'$.remote_mailbox'),json_extract(data,'$.uid_validity'),json_extract(data,'$.remote_uid') FROM messages WHERE id=?1", [&id], |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?, r.get(3)?)))
             .optional()?;
-        let Some((mailbox, validity, uid)) = primary else {
+        let Some((folder, mailbox, validity, uid)) = primary else {
             continue;
         };
+        // A successful MOVE can be known before its destination UID is. Keep Spam isolated until
+        // its mailbox sync resolves that UID, even if stale normal copies disappear meanwhile.
+        if folder == "spam" && uid.is_none() {
+            continue;
+        }
         let still_there: bool = tx.query_row(
             "SELECT EXISTS(SELECT 1 FROM remote_messages WHERE account_id=?1 AND mailbox=?2 AND uid_validity=?3 AND uid=?4 AND message=?5)",
             params![account_id, mailbox, validity, uid, id],
@@ -423,17 +432,30 @@ impl Store {
     /// Returns the messages added to the cache, and the UIDs whose content turned out to be
     /// needed (the message they would join changed since [`Self::needs_content`]) but was not
     /// supplied; those copies are not recorded.
+    /// `new_since` is the previous mailbox UIDNEXT, absent on first sync/reset. Only Inbox
+    /// UIDs at or above that floor may enqueue OTPs, in this same import transaction.
     pub fn import_copies(
         &self,
         account_id: &str,
         folder: &str,
         mailbox: &str,
         validity: u32,
+        new_since: Option<u32>,
         incoming: Vec<Incoming>,
     ) -> Result<(Vec<Message>, Vec<u32>)> {
         let mut db = self.db.lock();
         let tx = db.transaction()?;
         account_exists(&tx, account_id)?;
+        let otp_enabled = crate::otp::enabled(&tx)?;
+        let previous: Option<String> = tx.query_row(
+            "SELECT json_extract(data,'$.last_synced') FROM accounts WHERE id=?1",
+            [account_id],
+            |r| r.get(0),
+        )?;
+        let previous = previous
+            .and_then(|s| chrono::DateTime::parse_from_rfc3339(&s).ok())
+            .map(|t| t.timestamp());
+        let now = chrono::Utc::now().timestamp();
         let mut added = Vec::new();
         let mut skipped = Vec::new();
         for copy in incoming {
@@ -486,7 +508,12 @@ impl Store {
                     };
                     // A sent delivery without a server copy yet adopts this one; Gmail's All Mail
                     // copy of it keeps it in Sent, any other copy shows where it is.
-                    if !has_primary || rank(folder) < rank(&current.0) {
+                    // A move without COPYUID may leave Spam's UID unresolved. Until Junk sync finds
+                    // it, a stale normal copy must not pull the message out of quarantine.
+                    if (!has_primary && current.0 != "spam")
+                        || rank(folder) < rank(&current.0)
+                        || (folder == "spam" && !has_primary)
+                    {
                         let folder = if current.0 == "sent" && folder == "archive" {
                             "sent"
                         } else {
@@ -531,6 +558,9 @@ impl Store {
                     }
                     tx.prepare_cached("INSERT INTO messages VALUES(?1,?2)")?
                         .execute(params![message.id, serde_json::to_string(&message)?])?;
+                    if otp_enabled && new_since.is_some_and(|floor| copy.uid >= floor) {
+                        crate::otp::enqueue(&tx, &message, previous, copy.date.as_deref(), now)?;
+                    }
                     let id = message.id.clone();
                     added.push(message);
                     id
@@ -664,6 +694,10 @@ pub(crate) fn delete_account(tx: &Transaction<'_>, account_id: &str) -> Result<(
         [account_id],
     )?;
     tx.execute("DELETE FROM mailbox_sync WHERE account_id=?1", [account_id])?;
+    tx.execute(
+        "DELETE FROM otp_deliveries WHERE account_id=?1",
+        [account_id],
+    )?;
     Ok(())
 }
 
@@ -686,6 +720,7 @@ mod tests {
             ("sent", "Sent"),
             ("archive", "All Mail"),
             ("trash", "Trash"),
+            ("spam", "Junk"),
         ] {
             store.save_mailbox_state(
                 DEMO_ACCOUNT_ID,
@@ -752,7 +787,7 @@ mod tests {
             Ok((
                 needed,
                 self.store
-                    .import_copies(DEMO_ACCOUNT_ID, folder, mailbox, 1, vec![incoming])?
+                    .import_copies(DEMO_ACCOUNT_ID, folder, mailbox, 1, None, vec![incoming])?
                     .0,
             ))
         }
@@ -832,6 +867,146 @@ mod tests {
     }
 
     #[test]
+    fn junk_copies_quarantine_normal_copies_regardless_of_sync_order() -> Result<()> {
+        for junk_first in [false, true] {
+            let f = fixture()?;
+            let locations = if junk_first {
+                [("spam", "Junk", 5, true), ("inbox", "INBOX", 7, false)]
+            } else {
+                [("inbox", "INBOX", 7, false), ("spam", "Junk", 5, true)]
+            };
+            let (_, added) = f.arrive(
+                locations[0].0,
+                locations[0].1,
+                locations[0].2,
+                "<junk@x>",
+                locations[0].3,
+            )?;
+            let id = added[0].id.clone();
+            for (folder, mailbox, uid, read) in [
+                locations[1],
+                ("archive", "All Mail", 70, false),
+                ("sent", "Sent", 4, false),
+                ("trash", "Trash", 6, false),
+            ] {
+                let (needed, added) = f.arrive(folder, mailbox, uid, "<junk@x>", read)?;
+                assert!(!needed && added.is_empty());
+            }
+            let spam = f.store.message(&id)?;
+            assert_eq!(
+                (spam.folder.as_str(), spam.remote_uid, spam.is_read),
+                ("spam", Some(5), true)
+            );
+            assert_eq!(
+                f.store.apply_flags(
+                    DEMO_ACCOUNT_ID,
+                    "INBOX",
+                    1,
+                    &[RemoteFlags {
+                        uid: 7,
+                        is_read: false,
+                        is_starred: true,
+                    }]
+                )?,
+                0
+            );
+            f.store.apply_flags(
+                DEMO_ACCOUNT_ID,
+                "Junk",
+                1,
+                &[RemoteFlags {
+                    uid: 5,
+                    is_read: false,
+                    is_starred: true,
+                }],
+            )?;
+            for folder in [
+                None,
+                Some("inbox"),
+                Some("sent"),
+                Some("archive"),
+                Some("starred"),
+            ] {
+                let query = MessageQuery {
+                    folder: folder.map(str::to_string),
+                    q: Some("Plans".into()),
+                    ..Default::default()
+                };
+                assert_eq!(f.store.list(&query)?.total, 0);
+                assert_eq!(f.store.threads(&query)?.unread_total, 0);
+            }
+            let spam_page = f.store.threads(&MessageQuery {
+                folder: Some("spam".into()),
+                ..Default::default()
+            })?;
+            assert_eq!(spam_page.total, 1);
+            assert_eq!(spam_page.unread_total, 1);
+            assert_eq!(spam_page.threads[0].count, 1);
+            assert_eq!(
+                f.store
+                    .remove_copies(DEMO_ACCOUNT_ID, "All Mail", 1, &[70])?,
+                0
+            );
+            assert_eq!(f.store.message(&id)?.folder, "spam");
+            // Removing Junk on the provider restores the best remaining normal copy and its flags.
+            assert_eq!(f.store.remove_copies(DEMO_ACCOUNT_ID, "Junk", 1, &[5])?, 0);
+            let restored = f.store.message(&id)?;
+            assert_eq!(
+                (restored.folder.as_str(), restored.remote_uid),
+                ("inbox", Some(7))
+            );
+            assert!(!restored.is_read && restored.is_starred);
+        }
+        Ok(())
+    }
+
+    #[test]
+    fn spam_move_without_destination_uid_stays_quarantined_until_sync_and_can_restore() -> Result<()>
+    {
+        let f = fixture()?;
+        let (_, added) = f.arrive("inbox", "INBOX", 7, "<moved-junk@x>", false)?;
+        let id = added[0].id.clone();
+        f.arrive("archive", "All Mail", 70, "<moved-junk@x>", false)?;
+        // A successful MOVE without COPYUID, whose Message-ID lookup did not find its UID yet.
+        let mut moved = f.store.message(&id)?;
+        moved.folder = "spam".into();
+        moved.remote_mailbox = Some("Junk".into());
+        moved.remote_uid = None;
+        f.store.save_message(&moved)?;
+        f.store.record_move(&moved, ("INBOX", 1, 7))?;
+        assert!(f.store.known_uids(DEMO_ACCOUNT_ID, "INBOX", 1)?.is_empty());
+        assert!(
+            !f.arrive("archive", "All Mail", 70, "<moved-junk@x>", true)?
+                .0
+        );
+        assert_eq!(f.store.message(&id)?.folder, "spam");
+        f.store
+            .remove_copies(DEMO_ACCOUNT_ID, "All Mail", 1, &[70])?;
+        assert_eq!(f.store.message(&id)?.folder, "spam");
+        let (needed, added) = f.arrive("spam", "Junk", 5, "<moved-junk@x>", false)?;
+        assert!(
+            !needed && added.is_empty(),
+            "Junk sync resolves the moved message, not a duplicate"
+        );
+        assert_eq!(f.store.message(&id)?.remote_uid, Some(5));
+        let mut restored = f.store.message(&id)?;
+        restored.folder = "inbox".into();
+        restored.remote_mailbox = Some("INBOX".into());
+        restored.remote_uid = Some(8);
+        f.store.save_message(&restored)?;
+        f.store.record_move(&restored, ("Junk", 1, 5))?;
+        assert!(f.store.known_uids(DEMO_ACCOUNT_ID, "Junk", 1)?.is_empty());
+        assert!(
+            !f.arrive("archive", "All Mail", 71, "<moved-junk@x>", true)?
+                .0
+        );
+        assert_eq!(f.store.message(&id)?.folder, "inbox");
+        assert_eq!(f.store.known_uids(DEMO_ACCOUNT_ID, "INBOX", 1)?, [8]);
+        assert_eq!(f.store.conversation(&id)?.len(), 1);
+        Ok(())
+    }
+
+    #[test]
     fn deliveries_reusing_a_message_id_stay_apart_and_copies_needing_content_are_reported()
     -> Result<()> {
         let f = fixture()?;
@@ -852,7 +1027,7 @@ mod tests {
         };
         let (added, skipped) =
             f.store
-                .import_copies(DEMO_ACCOUNT_ID, "inbox", "INBOX", 1, vec![lone])?;
+                .import_copies(DEMO_ACCOUNT_ID, "inbox", "INBOX", 1, None, vec![lone])?;
         assert!(added.is_empty());
         assert_eq!(skipped, [9]);
         assert!(
@@ -1148,6 +1323,7 @@ mod tests {
             "inbox",
             "INBOX",
             1,
+            None,
             vec![Incoming {
                 uid: 2,
                 message_id: legacy.message_id.clone(),
