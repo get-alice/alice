@@ -2,12 +2,52 @@ use crate::i18n::Locale;
 use anyhow::{Context, Result, bail};
 use serde::{Serialize, de::DeserializeOwned};
 use serde_json::{Value, value::RawValue};
-use std::{
-    path::PathBuf,
-    process::{Command, Stdio},
-    sync::Arc,
-    time::Duration,
-};
+#[cfg(not(windows))]
+use std::process::{Command, Stdio};
+use std::{path::PathBuf, sync::Arc, time::Duration};
+
+#[cfg(windows)]
+fn spawn_daemon(
+    exe: &std::path::Path,
+    daemon_args: &[&str],
+) -> Result<winsafe::guard::CloseHandlePiGuard> {
+    let exe = exe
+        .to_str()
+        .context(crate::text!("server.error.daemon_start"))?;
+    let mut command_line = format!("\"{exe}\"");
+    for arg in daemon_args {
+        command_line.push_str(" \"");
+        let mut backslashes = 0;
+        for ch in arg.chars() {
+            if ch == '\\' {
+                backslashes += 1;
+                continue;
+            }
+            let count = if ch == '"' {
+                backslashes * 2 + 1
+            } else {
+                backslashes
+            };
+            command_line.extend(std::iter::repeat_n('\\', count));
+            command_line.push(ch);
+            backslashes = 0;
+        }
+        command_line.extend(std::iter::repeat_n('\\', backslashes * 2));
+        command_line.push('"');
+    }
+    // Stdio::null() still leaks inheritable parent pipes through Rust's Windows spawn.
+    Ok(winsafe::CreateProcess(
+        Some(exe),
+        Some(&command_line),
+        None,
+        None,
+        false,
+        winsafe::co::CREATE::NO_WINDOW,
+        &[],
+        None,
+        &mut winsafe::STARTUPINFO::default(),
+    )?)
+}
 
 pub fn data_dir() -> Result<PathBuf> {
     if let Some(path) = std::env::var_os("ALICE_DATA_DIR") {
@@ -62,26 +102,27 @@ impl Client {
             return Ok(client);
         }
         let exe = std::env::current_exe()?;
-        let mut command = Command::new(exe);
-        command
-            .args(daemon_args)
-            .stdin(Stdio::null())
-            .stdout(Stdio::null())
-            .stderr(Stdio::null());
-        #[cfg(unix)]
-        {
-            use std::os::unix::process::CommandExt;
-            // Keep terminal hangups and foreground signals from reaching the daemon.
-            command.process_group(0);
-        }
+        #[cfg(not(windows))]
+        let mut child = {
+            let mut command = Command::new(exe);
+            command
+                .args(daemon_args)
+                .stdin(Stdio::null())
+                .stdout(Stdio::null())
+                .stderr(Stdio::null());
+            #[cfg(unix)]
+            {
+                use std::os::unix::process::CommandExt;
+                // Keep terminal hangups and foreground signals from reaching the daemon.
+                command.process_group(0);
+            }
+            command
+                .spawn()
+                .context(crate::text!("server.error.daemon_start"))?
+        };
         #[cfg(windows)]
-        {
-            use std::os::windows::process::CommandExt;
-            command.creation_flags(0x08000000);
-        }
-        let mut child = command
-            .spawn()
-            .context(crate::text!("server.error.daemon_start"))?;
+        let child =
+            spawn_daemon(&exe, daemon_args).context(crate::text!("server.error.daemon_start"))?;
         for _ in 0..100 {
             tokio::time::sleep(Duration::from_millis(100)).await;
             if let Ok(client) = Self::existing()
@@ -92,7 +133,20 @@ impl Client {
             {
                 return Ok(client);
             }
-            if let Some(status) = child.try_wait()? {
+            #[cfg(not(windows))]
+            let status = child.try_wait()?;
+            #[cfg(windows)]
+            let status = {
+                use std::os::windows::process::ExitStatusExt;
+                if child.hProcess.WaitForSingleObject(Some(0))? == winsafe::co::WAIT::OBJECT_0 {
+                    Some(std::process::ExitStatus::from_raw(
+                        child.hProcess.GetExitCodeProcess()?,
+                    ))
+                } else {
+                    None
+                }
+            };
+            if let Some(status) = status {
                 bail!(crate::text!(
                     "server.error.daemon_exited",
                     status = status.to_string()
